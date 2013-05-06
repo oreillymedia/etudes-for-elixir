@@ -2,30 +2,32 @@
 Atoms, Tuples, and Pattern Matching
 -----------------------------------
 
+////
 NOTE: You can learn more about working with atoms, tuples, and pattern matching in Chapter 2 of _Erlang Programming_, Chapter 2 of _Programming Erlang_, Sections 2.2 and 2.4 of _Erlang and OTP in Action_, and Chapters 1 and 3 of _Learn You Some Erlang For Great Good!_. 
+////
 
 [[CH03-ET01]]
 Étude 3-1: Pattern Matching
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Use atoms and pattern matching to make your +area+ function calculate the
 area of a rectangle, triangle, or ellipse.  If your parameters are
-+Shape+, +A+ and +B+, the area for the atom +rectangle+ is +A * B+,
-where +A+ and +B+ represent the length and width. For a +triangle+ atom,
-the area is +A * B / 2.0+, with +A+ and +B+ representing
-the base and height of the triangle. For an +ellipse+ atom, the area is 
-+math:pi() * A * B+, where +A+ and +B+ represent the major and minor radiuses.
++shape+, +a+ and +b+, the area for the atom +:rectangle+ is +a * b+,
+where +a+ and +b+ represent the length and width. For a +:triangle+ atom,
+the area is +a * b / 2.0+, with +a+ and +b+ representing
+the base and height of the triangle. For an +:ellipse+ atom, the area is 
++:math.pi() * a * b+, where +a+ and +b+ represent the major and minor radiuses.
 
 Here is some sample output.
 
-[source,erl]
+// [source,iex]
 ----
-1> c(geom).
-{ok,geom}
-2> geom:area(rectangle, 3, 4).
+iex(1)> c("geom.ex")
+[Geom]
+iex(2)> Geom.area(:rectangle, 3, 4)
 12
-3> geom:area(triangle, 3, 5).
+iex(3)> Geom.area(:triangle, 3, 5)
 7.5
-4> geom:area(ellipse, 2, 4).
+iex(4)> Geom.area(:ellipse, 2, 4)
 25.132741228718345
 ----
 
@@ -42,18 +44,36 @@ commas to separate your guards.
 
 Here is some sample output.
 
-[source,erl]
+// [source,iex]
 ----
-1> c(geom).
-{ok,geom}
-2> geom:area(rectangle, 3, 4).
+iex(1)> c("geom.ex")
+/home/david/code/ch03-02/geom.ex:1: redefining module Geom
+[Geom]
+iex(2)> Geom.area(:rectangle, -3, 4)
+** (FunctionClauseError) no function clause matching: Geom.area(:rectangle, -3, 4)
+    /home/david/code/ch03-02/geom.ex:21: Geom.area(:rectangle, -3, 4)
+    erl_eval.erl:569: :erl_eval.do_apply/6
+    src/elixir.erl:133: :elixir.eval_forms/3
+    /bin/elixir/lib/iex/lib/iex/server.ex:19: IEx.Server.do_loop/1
+
+iex(2)> Geom.area(:triangle, 3, -4)
+** (FunctionClauseError) no function clause matching: Geom.area(:triangle, 3, -4)
+    /home/david/code/ch03-02/geom.ex:21: Geom.area(:triangle, 3, -4)
+    erl_eval.erl:569: :erl_eval.do_apply/6
+    src/elixir.erl:133: :elixir.eval_forms/3
+    /bin/elixir/lib/iex/lib/iex/server.ex:19: IEx.Server.do_loop/1
+
+iex(2)> Geom.area(:ellipse, -3, -4)
+** (FunctionClauseError) no function clause matching: Geom.area(:ellipse, -3, -4)
+    /home/david/code/ch03-02/geom.ex:21: Geom.area(:ellipse, -3, -4)
+    erl_eval.erl:569: :erl_eval.do_apply/6
+    src/elixir.erl:133: :elixir.eval_forms/3
+    /bin/elixir/lib/iex/lib/iex/server.ex:19: IEx.Server.do_loop/1
+iex(2)> Geom.area(:rectangle, 3, 4)
 12
-3> geom:area(ellipse, 2, 3).
-18.84955592153876
-4> geom:area(triangle, 4, 5).
-10.0
-5> geom:area(rectangle, -1, 3).
-** exception error: no function clause matching geom:area(rectangle,-1,3) (geom.erl, line 18)
+iex(3)> Geom.area(:triangle, 3, 4)
+6.0
+iex(4)> Geom.area(:ellipse, 3, 4)
 ----
 
 <<SOLUTION03-ET02,See a suggested solution in Appendix A.>>
@@ -62,23 +82,25 @@ Here is some sample output.
 Étude 3-3: Underscores
 ~~~~~~~~~~~~~~~~~~~~~~
 If you enter a shape that +area/3+ doesn't know about, or if you enter negative
-dimensions, Erlang will give you an error message. Use underscores to create a
+dimensions, Elixir will give you an error message. Use underscores to create a
 ``catch-all'' version, so that anything at all that doesn't match a valid
 rectangle, triangle, or ellipse will return zero. This goes against
-the Erlang philosophy of ``let it fail,'' but let's look the other way
+the Elixir philosophy of ``let it fail,'' but let's look the other way
 and learn about underscores anyway.
 
 Here is some sample output.
 
-[source,erl]
+// [source,iex]
 ----
-1> geom:area(rectangle, 3, 4).
+iex(1)> c("geom.ex")
+[Geom]
+iex(2)> Geom.area(:rectangle, 3, 4)
 12
-2> geom:area(pentagon, 3, 4).
+iex(3)> Geom.area(:pentagon, 3, 4)
 0
-3> geom:area(hexagon, -1, 5).
+iex(4)> Geom.area(:ellipse, -1, 5)
 0
-4> geom:area(rectangle, 1, -3).
+iex(5)> Geom.area(:triangle, 5, -1)
 0
 ----
 
@@ -88,22 +110,30 @@ Here is some sample output.
 Étude 3-4: Tuples as Parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Add an +area/1+ function that takes a tuple of the form
-+{*shape*,*number*,*number*}+ as its parameter. Export it
-instead of +area/3+. The +area/1+ function will call the
-private +area/3+ function.
++{*shape*,*number*,*number*}+ as its parameter.
+The +area/1+ function will call the
+private +area/3+ function. Hint: use +defp+ for private functions.
 
-Here is some sample output.
+Here is some sample output. The last line tests to see that you cannot call the private function directly.
 
-[source,erl]
+// [source,iex]
 ----
-1> c(geom).
-{ok,geom}
-2> geom:area({rectangle, 7, 3}).
+iex(1)> c("geom.ex")
+[Geom]
+iex(2)> Geom.area({:rectangle, 7, 3})
 21
-3> geom:area({triangle, 7, 3}).
+iex(3)> Geom.area({:triangle, 7, 3})
 10.5
-4> geom:area({ellipse, 7, 3}).
+iex(4)> Geom.area({:ellipse, 7, 3})
 65.97344572538566
+iex(5)> Geom.area({:pentagon, 7, 3})
+0
+iex(6)> Geom.area(:rectangle, 7, 3)
+** (UndefinedFunctionError) undefined function: Geom.area/3
+    Geom.area(:rectangle, 7, 3)
+    erl_eval.erl:569: :erl_eval.do_apply/6
+    src/elixir.erl:133: :elixir.eval_forms/3
+    /bin/elixir/lib/iex/lib/iex/server.ex:19: IEx.Server.do_loop/1
 ----
 
 <<SOLUTION03-ET04,See a suggested solution in Appendix A.>>

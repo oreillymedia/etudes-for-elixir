@@ -12,21 +12,21 @@ defmodule Geom do
   shape and two of the dimensions. Returns the product
   of its arguments for a rectangle, one half the
   product of the arguments for a triangle, and
-  math:pi times the product of the arguments for
+  :math.pi times the product of the arguments for
   an ellipse.
   """
   
   @spec area(atom(), number(), number()) :: number()
   
-  def area(:rectangle, length, width) do
+  def area(:rectangle, length, width) when length >= 0 and width >= 0 do
     length * width
   end
   
-  def area(:triangle, base, height) do
+  def area(:triangle, base, height) when base >= 0 and height >= 0 do
     base * height / 2.0
   end
   
-  def area(:ellipse, radius_a, radius_b) do
-    :math.pi * radius_a * radius_b
+  def area(:ellipse, a, b) when a >= 0 and b >= 0 do
+    :math.pi * a * b
   end
 end

@@ -8,12 +8,11 @@ defmodule Geom do
   @vsn 0.1 
 
   @doc """
-  Calculates the area of a shape, given the
-  shape and two of the dimensions. Returns the product
-  of its arguments for a rectangle, one half the
-  product of the arguments for a triangle, and
-  math:pi times the product of the arguments for
-  an ellipse.
+  Calculates the area of a shape, given the shape and two of the
+  dimensions. Returns the product of its arguments for a rectangle,
+  one half the product of the arguments for a triangle, and
+  :math.pi times the product of the arguments for an ellipse.
+  Ensures that all dimensions are non-negative.
   """
   
   @spec area(atom(), number(), number()) :: number()

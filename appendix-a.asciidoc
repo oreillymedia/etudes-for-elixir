@@ -4,7 +4,7 @@ Solutions to Études
 -------------------
 
 Here are the solutions that I came up with for the études in
-this book. Since I was learning Erlang as I wrote them, you
+this book. Since I was learning Elixir as I wrote them, you
 may expect some of the code to be naïve in the extreme.
 
 [[SOLUTION02-ET01]]
@@ -12,10 +12,10 @@ may expect some of the code to be naïve in the extreme.
 Here is a suggested solution for
 <<CH02-ET01,Étude 2-1>>.
 
-==== +geom.erl+
-[source, erlang]
+==== +geom.ex+
+// [source,elixir]
 ----
-include::code/ch02-01/geom.erl[]
+include::code/ch02-01/geom.ex[]
 ----
 
 [[SOLUTION02-ET02]]
@@ -23,10 +23,10 @@ include::code/ch02-01/geom.erl[]
 Here is a suggested solution for
 <<CH02-ET02,Étude 2-2>>.
 
-==== +geom.erl+
-[source, erlang]
+==== +geom.ex+
+// [source,elixir]
 ----
-include::code/ch02-02/geom.erl[]
+include::code/ch02-02/geom.ex[]
 ----
 
 [[SOLUTION02-ET03]]
@@ -34,10 +34,10 @@ include::code/ch02-02/geom.erl[]
 Here is a suggested solution for
 <<CH02-ET03,Étude 2-3>>.
 
-==== +geom.erl+
-[source, erlang]
+==== +geom.ex+
+// [source,elixir]
 ----
-include::code/ch02-03/geom.erl[]
+include::code/ch02-03/geom.ex[]
 ----
 
 [[SOLUTION03-ET01]]
@@ -45,10 +45,10 @@ include::code/ch02-03/geom.erl[]
 Here is a suggested solution for
 <<CH03-ET01,Étude 3-1>>.
 
-==== +geom.erl+
-[source, erlang]
+==== +geom.ex+
+// [source,elixir]
 ----
-include::code/ch03-01/geom.erl[]
+include::code/ch03-01/geom.ex[]
 ----
 
 [[SOLUTION03-ET02]]
@@ -56,10 +56,10 @@ include::code/ch03-01/geom.erl[]
 Here is a suggested solution for
 <<CH03-ET02,Étude 3-2>>.
 
-==== +geom.erl+
-[source, erlang]
+==== +geom.ex+
+// [source,elixir]
 ----
-include::code/ch03-02/geom.erl[]
+include::code/ch03-02/geom.ex[]
 ----
 
 [[SOLUTION03-ET03]]
@@ -67,10 +67,10 @@ include::code/ch03-02/geom.erl[]
 Here is a suggested solution for
 <<CH03-ET03,Étude 3-3>>.
 
-==== +geom.erl+
-[source, erlang]
+==== +geom.ex+
+// [source,elixir]
 ----
-include::code/ch03-03/geom.erl[]
+include::code/ch03-03/geom.ex[]
 ----
 
 [[SOLUTION03-ET04]]
@@ -78,10 +78,10 @@ include::code/ch03-03/geom.erl[]
 Here is a suggested solution for
 <<CH03-ET04,Étude 3-4>>.
 
-==== +geom.erl+
-[source, erlang]
+==== +geom.ex+
+// [source,elixir]
 ----
-include::code/ch03-04/geom.erl[]
+include::code/ch03-04/geom.ex[]
 ----
 
 [[SOLUTION04-ET01]]
@@ -89,10 +89,10 @@ include::code/ch03-04/geom.erl[]
 Here is a suggested solution for
 <<CH04-ET01,Étude 4-1>>.
 
-==== +geom.erl+
-[source, erlang]
+==== +geom.ex+
+// [source,elixir]
 ----
-include::code/ch04-01/geom.erl[]
+include::code/ch04-01/geom.ex[]
 ----
 
 [[SOLUTION04-ET02]]
@@ -100,10 +100,10 @@ include::code/ch04-01/geom.erl[]
 Here is a suggested solution for
 <<CH04-ET02,Étude 4-2>>.
 
-==== +dijkstra.erl+
-[source, erlang]
+==== +dijkstra.ex+
+// [source,elixir]
 ----
-include::code/ch04-02/dijkstra.erl[]
+include::code/ch04-02/dijkstra.ex[]
 ----
 
 [[SOLUTION04-ET03]]
@@ -111,19 +111,19 @@ include::code/ch04-02/dijkstra.erl[]
 Here is a suggested solution for
 <<CH04-ET03,Étude 4-3>>.
 
-==== +powers.erl+
-[source, erlang]
+==== +powers.ex+
+// [source,elixir]
 ----
-include::code/ch04-03/powers.erl[]
+include::code/ch04-03/powers.ex[]
 ----
 
-==== +powers_traced.erl+
+==== +powers_traced.ex+
 This code contains output that lets you see the progress
 of the recursion.
 
-[source, erlang]
+// [source,elixir]
 ----
-include::code/ch04-03/powers_traced.erl[]
+include::code/ch04-03/powers_traced.ex[]
 ----
 
 [[SOLUTION04-ET04]]
@@ -131,19 +131,19 @@ include::code/ch04-03/powers_traced.erl[]
 Here is a suggested solution for
 <<CH04-ET04,Étude 4-4>>.
 
-==== +powers.erl+
-[source, erlang]
+==== +powers.ex+
+// [source,elixir]
 ----
-include::code/ch04-04/powers.erl[]
+include::code/ch04-04/powers.ex[]
 ----
 
-==== +powers_traced.erl+
+==== +powers_traced.ex+
 This code contains output that lets you see the progress
 of the recursion.
 
-[source, erlang]
+// [source,elixir]
 ----
-include::code/ch04-04/powers_traced.erl[]
+include::code/ch04-04/powers_traced.ex[]
 ----
 
 [[SOLUTION04-ET05]]
@@ -151,10 +151,10 @@ include::code/ch04-04/powers_traced.erl[]
 Here is a suggested solution for
 <<CH04-ET05,Étude 4-5>>.
 
-==== +powers.erl+
-[source, erlang]
+==== +powers.ex+
+// [source,elixir]
 ----
-include::code/ch04-05/powers.erl[]
+include::code/ch04-05/powers.ex[]
 ----
 
 [[SOLUTION05-ET01]]
@@ -162,16 +162,16 @@ include::code/ch04-05/powers.erl[]
 Here is a suggested solution for
 <<CH05-ET01,Étude 5-1>>.
 
-==== +geom.erl+
-[source, erlang]
+==== +geom.ex+
+// [source,elixir]
 ----
-include::code/ch05-01/geom.erl[]
+include::code/ch05-01/geom.ex[]
 ----
 
-==== +ask_area.erl+
-[source, erlang]
+==== +ask_area.ex+
+// [source,elixir]
 ----
-include::code/ch05-01/ask_area.erl[]
+include::code/ch05-01/ask_area.ex[]
 ----
 
 [[SOLUTION05-ET02]]
@@ -179,10 +179,10 @@ include::code/ch05-01/ask_area.erl[]
 Here is a suggested solution for
 <<CH05-ET02,Étude 5-2>>.
 
-==== +dates.erl+
-[source, erlang]
+==== +dates.ex+
+// [source,elixir]
 ----
-include::code/ch05-02/dates.erl[]
+include::code/ch05-02/dates.ex[]
 ----
 
 [[SOLUTION06-ET01]]
@@ -190,10 +190,10 @@ include::code/ch05-02/dates.erl[]
 Here is a suggested solution for
 <<CH06-ET01,Étude 6-1>>.
 
-==== +stats.erl+
-[source, erlang]
+==== +stats.ex+
+// [source,elixir]
 ----
-include::code/ch06-01/stats.erl[]
+include::code/ch06-01/stats.ex[]
 ----
 
 [[SOLUTION06-ET02]]
@@ -201,10 +201,10 @@ include::code/ch06-01/stats.erl[]
 Here is a suggested solution for
 <<CH06-ET02,Étude 6-2>>.
 
-==== +stats.erl+
-[source, erlang]
+==== +stats.ex+
+// [source,elixir]
 ----
-include::code/ch06-02/stats.erl[]
+include::code/ch06-02/stats.ex[]
 ----
 
 [[SOLUTION06-ET03]]
@@ -213,20 +213,20 @@ Here is a suggested solution for
 <<CH06-ET03,Étude 6-3>> with leap years handled in the
 +julian/5+ function.
 
-==== +dates.erl+
-[source, erlang]
+==== +dates.ex+
+// [source,elixir]
 ----
-include::code/ch06-03/dates.erl[]
+include::code/ch06-03/dates.ex[]
 ----
 
 Here is a suggested solution for
 <<CH06-ET03,Étude 6-3>> with leap years handled in the
 +julian/1+ function.
 
-==== +dates.erl+
-[source, erlang]
+==== +dates.ex+
+// [source,elixir]
 ----
-include::code/ch06-03b/dates.erl[]
+include::code/ch06-03b/dates.ex[]
 ----
 ////
 [[SOLUTION06-ETinterlude]]
@@ -234,16 +234,16 @@ include::code/ch06-03b/dates.erl[]
 Here is the code for
 <<CH06-Interlude,the interlude in Chapter 6>>.
 
-==== +bad_code.erl+
-[source, erlang]
+==== +bad_code.ex+
+// [source,elixir]
 ----
-include::code/ch06-interlude/bad_code.erl[]
+include::code/ch06-interlude/bad_code.ex[]
 ----
 
-==== +good_code.erl+
-[source, erlang]
+==== +good_code.ex+
+// [source,elixir]
 ----
-include::code/ch06-interlude/good_code.erl[]
+include::code/ch06-interlude/good_code.ex[]
 ----
 ////
 
@@ -252,16 +252,16 @@ include::code/ch06-interlude/good_code.erl[]
 Here is a suggested solution for
 <<CH06-ET04,Étude 6-4>>.
 
-==== +teeth.erl+
-[source, erlang]
+==== +teeth.ex+
+// [source,elixir]
 ----
-include::code/ch06-04/teeth.erl[]
+include::code/ch06-04/teeth.ex[]
 ----
 
-==== +stats.erl+
-[source, erlang]
+==== +stats.ex+
+// [source,elixir]
 ----
-include::code/ch06-04/stats.erl[]
+include::code/ch06-04/stats.ex[]
 ----
 
 [[SOLUTION06-ET05]]
@@ -269,10 +269,10 @@ include::code/ch06-04/stats.erl[]
 Here is a suggested solution for
 <<CH06-ET05,Étude 6-5>>.
 
-==== +non_fp.erl+
-[source, erlang]
+==== +non_fp.ex+
+// [source,elixir]
 ----
-include::code/ch06-05/non_fp.erl[]
+include::code/ch06-05/non_fp.ex[]
 ----
 
 [[SOLUTION07-ET01]]
@@ -280,10 +280,10 @@ include::code/ch06-05/non_fp.erl[]
 Here is a suggested solution for
 <<CH07-ET01,Étude 7-1>>.
 
-==== +calculus.erl+
-[source, erlang]
+==== +calculus.ex+
+// [source,elixir]
 ----
-include::code/ch07-01/calculus.erl[]
+include::code/ch07-01/calculus.ex[]
 ----
 
 [[SOLUTION07-ET02]]
@@ -291,10 +291,10 @@ include::code/ch07-01/calculus.erl[]
 Here is a suggested solution for
 <<CH07-ET02,Étude 7-2>>.
 
-==== +patmatch.erl+
-[source, erlang]
+==== +patmatch.ex+
+// [source,elixir]
 ----
-include::code/ch07-02/patmatch.erl[]
+include::code/ch07-02/patmatch.ex[]
 ----
 
 [[SOLUTION07-ET03]]
@@ -302,10 +302,10 @@ include::code/ch07-02/patmatch.erl[]
 Here is a suggested solution for
 <<CH07-ET03,Étude 7-3>>.
 
-==== +stats.erl+
-[source, erlang]
+==== +stats.ex+
+// [source,elixir]
 ----
-include::code/ch07-03/stats.erl[]
+include::code/ch07-03/stats.ex[]
 ----
 
 [[SOLUTION07-ET04]]
@@ -313,10 +313,10 @@ include::code/ch07-03/stats.erl[]
 Here is a suggested solution for
 <<CH07-ET04,Étude 7-4>>.
 
-==== +dates.erl+
-[source, erlang]
+==== +dates.ex+
+// [source,elixir]
 ----
-include::code/ch07-04/dates.erl[]
+include::code/ch07-04/dates.ex[]
 ----
 
 [[SOLUTION07-ET05]]
@@ -324,10 +324,10 @@ include::code/ch07-04/dates.erl[]
 Here is a suggested solution for
 <<CH07-ET05,Étude 7-5>>.
 
-==== +cards.erl+
-[source, erlang]
+==== +cards.ex+
+// [source,elixir]
 ----
-include::code/ch07-05/cards.erl[]
+include::code/ch07-05/cards.ex[]
 ----
 
 [[SOLUTION07-ET06]]
@@ -335,10 +335,10 @@ include::code/ch07-05/cards.erl[]
 Here is a suggested solution for
 <<CH07-ET06,Étude 7-6>>.
 
-==== +cards.erl+
-[source, erlang]
+==== +cards.ex+
+// [source,elixir]
 ----
-include::code/ch07-06/cards.erl[]
+include::code/ch07-06/cards.ex[]
 ----
 
 [[SOLUTION08-ET01]]
@@ -346,16 +346,16 @@ include::code/ch07-06/cards.erl[]
 Here is a suggested solution for
 <<CH08-ET01,Étude 8-1>>.
 
-==== +cards.erl+
-[source, erlang]
+==== +cards.ex+
+// [source,elixir]
 ----
-include::code/ch08-01/cards.erl[]
+include::code/ch08-01/cards.ex[]
 ----
 
-==== +game.erl+
-[source, erlang]
+==== +game.ex+
+// [source,elixir]
 ----
-include::code/ch08-01/game.erl[]
+include::code/ch08-01/game.ex[]
 ----
 
 [[SOLUTION09-ET01]]
@@ -363,10 +363,10 @@ include::code/ch08-01/game.erl[]
 Here is a suggested solution for
 <<CH09-ET01,Étude 9-1>>.
 
-==== +stats.erl+
-[source, erlang]
+==== +stats.ex+
+// [source,elixir]
 ----
-include::code/ch09-01/stats.erl[]
+include::code/ch09-01/stats.ex[]
 ----
 
 [[SOLUTION09-ET02]]
@@ -374,10 +374,10 @@ include::code/ch09-01/stats.erl[]
 Here is a suggested solution for
 <<CH09-ET02,Étude 9-2>>.
 
-==== +bank.erl+
-[source, erlang]
+==== +bank.ex+
+// [source,elixir]
 ----
-include::code/ch09-02/bank.erl[]
+include::code/ch09-02/bank.ex[]
 ----
 
 [[SOLUTION10-ET01]]
@@ -386,21 +386,21 @@ Here is a suggested solution for
 <<CH10-ET01,Étude 10-1>>.
 
 ==== +phone_records.hrl+
-[source, erlang]
+// [source,elixir]
 ----
 include::code/ch10-01/phone_records.hrl[]
 ----
 
-==== +phone_ets.erl+
-[source, erlang]
+==== +phone_ets.ex+
+// [source,elixir]
 ----
-include::code/ch10-01/phone_ets.erl[]
+include::code/ch10-01/phone_ets.ex[]
 ----
 
-==== +generate_calls.erl+
-[source, erlang]
+==== +generate_calls.ex+
+// [source,elixir]
 ----
-include::code/ch10-01/generate_calls.erl[]
+include::code/ch10-01/generate_calls.ex[]
 ----
 
 
@@ -410,27 +410,27 @@ Here is a suggested solution for
 <<CH10-ET02,Étude 10-2>>.
 
 ==== +phone_records.hrl+
-[source, erlang]
+// [source,elixir]
 ----
 include::code/ch10-02/phone_records.hrl[]
 ----
 
-==== +phone_mnesia.erl+
-[source, erlang]
+==== +phone_mnesia.ex+
+// [source,elixir]
 ----
-include::code/ch10-02/phone_mnesia.erl[]
+include::code/ch10-02/phone_mnesia.ex[]
 ----
 
 ==== +pet_records.hrl+
-[source, erlang]
+// [source,elixir]
 ----
 include::code/ch10-02/pet_records.hrl[]
 ----
 
-==== +pet_mnesia.erl+
-[source, erlang]
+==== +pet_mnesia.ex+
+// [source,elixir]
 ----
-include::code/ch10-02/pet_mnesia.erl[]
+include::code/ch10-02/pet_mnesia.ex[]
 ----
 
 
@@ -439,16 +439,16 @@ include::code/ch10-02/pet_mnesia.erl[]
 Here is a suggested solution for
 <<CH11-ET01,Étude 11-1>>.
 
-==== +weather.erl+
-[source, erlang]
+==== +weather.ex+
+// [source,elixir]
 ----
-include::code/ch11-01/weather.erl[]
+include::code/ch11-01/weather.ex[]
 ----
 
-==== +weather_sup.erl+
-[source, erlang]
+==== +weather_sup.ex+
+// [source,elixir]
 ----
-include::code/ch11-01/weather_sup.erl[]
+include::code/ch11-01/weather_sup.ex[]
 ----
 
 [[SOLUTION11-ET02]]
@@ -459,9 +459,9 @@ is identical to the code in the previous étude,
 the only code shown here is the revised +-export+ list
 and the added functions.
 
-==== +weather.erl+
+==== +weather.ex+
 
-[source, erlang]
+// [source,elixir]
 ----
 -export([report/1, recent/0]). % wrapper functions
 
@@ -482,7 +482,7 @@ Here is a suggested solution for
 is identical to the previous étude,
 the only code shown here is the added and revised code.
 
-[source, erlang]
+// [source,elixir]
 ----
 %% @doc Connect to a named server
 connect(ServerName) ->
@@ -526,15 +526,15 @@ handle_cast(_Message, State) ->
 Here is a suggested solution for
 <<CH11-ET04,Étude 11-4>>.
 
-==== +chatroom.erl+
-[source, erlang]
+==== +chatroom.ex+
+// [source,elixir]
 ----
-include::code/ch11-04/chatroom.erl[]
+include::code/ch11-04/chatroom.ex[]
 ----
 
-==== +person.erl+
-[source, erlang]
+==== +person.ex+
+// [source,elixir]
 ----
-include::code/ch11-04/person.erl[]
+include::code/ch11-04/person.ex[]
 ----
 

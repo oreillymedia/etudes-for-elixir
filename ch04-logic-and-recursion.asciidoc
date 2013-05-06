@@ -2,7 +2,9 @@
 Logic and Recursion
 -------------------
 
+////
 NOTE: You can learn more about working with logical flow and recursion in Chapter 3 of _Erlang Programming_, Chapter 3 of _Programming Erlang_, Sections 2.6 and 2.15 of _Erlang and OTP in Action_, and Chapters 3 and 5 of _Learn You Some Erlang For Great Good!_.
+////
 
 [[CH04-ET01]]
 Étude 4-1: Using +case+
@@ -29,22 +31,23 @@ To find the GCD of integers M and N:
 * If M is greater than N, the result is the GCD of M - N and N
 * Otherwise M must be less than N, and the result is the GCD of M and N - M.
 
-Write a function +gcd/2+ in a module named +dijkstra+ that implements
-the algorithm. This program is an ideal place to use Erlang's +if+ construct. 
+Write a function +gcd/2+ in a module named +Dijkstra+ that implements
+the algorithm. This program is an ideal place to use Elixir's +cond+ construct. 
 Here is some sample output.
 
-[source,erl]
+// [source,iex]
 ----
-1> c(dijkstra).
-{ok,dijkstra}
-2> dijkstra:gcd(12, 8).
-4
-3> dijkstra:gcd(14, 21).
+iex(1)> c("dijkstra.ex")
+[Dijkstra]
+iex(2)> Dijkstra.gcd(2,8)
+2
+iex(3)> Dijkstra.gcd(14, 21)
 7
-4> dijkstra:gcd(125, 46).
+iex(4)> Dijkstra.gcd(125, 46)
 1
-5> dijkstra:gcd(120, 36).
+iex(5)> Dijkstra.gcd(120, 36)
 12
+
 ----
 
 <<SOLUTION04-ET02,See a suggested solution in Appendix A.>>
@@ -53,42 +56,42 @@ The next two exercises involve writing code to raise a number to an integer
 power (like 2.5^3^ or 4^-2^) and finding the __n__th root of a number, such
 as the cube root of 1728 or the fifth root of 3.2. 
 
-These capabilities already exist with the +math:pow/2+ function, so you may
+These capabilities already exist with the +:math.pow/2+ function, so you may
 wonder why I'm asking you to re-invent the wheel. The reason is not to replace
-+math:pow/2+, but to experiment with recursion by writing functions that can be
++:math.pow/2+, but to experiment with recursion by writing functions that can be
 expressed quite nicely that way.
 
 [[CH04-ET03]]
 Étude 4-3: Non-Tail Recursive Functions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Create a module named +powers+ (no relation to Francis Gary Powers), and
-write a function named +raise/2+ which takes parameters +X+  and +N+ and
-returns the value of X^N^.
+Create a module named +Powers+ (no relation to Francis Gary Powers), and
+write a function named +take/2+ which takes parameters +x+  and +x+ and
+returns the value of _x_^_n_^.
 
 Here's the information you need to know to write the function:
 
 * Any number to the power 0 equals 1.
 * Any number to the power 1 is that number itself -- that stops the
   recursion.
-* When +N+ is positive, +X^N^+ is equal to +X+ times +X^(N - 1)^+ -- 
+* When +n+ is positive, +x^n^+ is equal to +x+ times +x^(n - 1)^+ -- 
   there's your recursion.
-* When +N+ is negative, +X^N^+ is equal to +1.0 / X^-N^+
+* When +n+ is negative, +x^n^+ is equal to +1.0 / x^-n^+
 
-Note that this function is _not_ tail recursive.  Here is some sample output.
+Note that this algorithm is _not_ tail recursive.  Here is some sample output.
 
 [source, erl]
 -------
-1> c(powers).
-{ok,powers}
-2> powers:raise(5, 1).
+iex(1)> c("powers.ex")
+[Powers]
+iex(2)> Powers.take(5,1)
 5
-3> powers:raise(2, 3).
+iex(3)> Powers.take(2,3) 
 8
-4> powers:raise(1.2, 3).
+iex(4)> Powers.take(1.2, 3)
 1.728
-5> powers:raise(2, 0).
+iex(5)> Powers.take(2, 0)
 1
-6> powers:raise(2, -3).
+iex(6)> Powers.take(2, -3)
 0.125
 ------
 
@@ -151,7 +154,7 @@ will simply be this:
 Use +io:format+ to show each new approximation as you
 calculate it. Here is some sample output.
 
-[source,erl]
+// [source,iex]
 ----
 1> c(powers).         
 {ok,powers}
