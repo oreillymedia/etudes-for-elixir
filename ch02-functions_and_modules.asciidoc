@@ -1,0 +1,83 @@
+[[FUNCTIONSMODULES]]
+Functions and Modules
+---------------------
+
+////
+NOTE: You can learn more about working with functions and modules in Chapters 2, 3, and 9 of _Erlang Programming_, Chapter 3 of _Programming Erlang_, Sections 2.3, 2.5, and 2.7 of _Erlang and OTP in Action_, and Chapters 2 and 3 of _Learn You Some Erlang For Great Good!_.  There's more on documentation in Chapter 18 of _Erlang Programming_ and types in Chapter 30 of _Learn You Some Erlang For Great Good!_.
+////
+
+[[CH02-ET01]]
+Étude 2-1: Writing a Function
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Write a module with a function that takes the length and width of a
+rectangle and returns (yields) its area.  Name the module +Geom+, and
+name the function +area+. Save the module in a file named +geom.ex+.
+The function has arity 2, because it needs
+two pieces of information to make the calculation. In Elixir-speak: 
+write function +area/2+.
+
+Here is some sample output.
+
+// [source,iex]
+----
+iex(1)> c("geom.ex")
+[Geom]
+iex(2)> Geom.area(3,4)
+12
+iex(3)> Geom.area(12, 7)
+84
+----
+
+<<SOLUTION02-ET01,See a suggested solution in Appendix A.>>
+
+[[CH02-ET02]]
+Étude 2-2: Writing a Function with Default Values
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Modify the function you wrote in <<CH02-ET01, Étude 2-2>> so that
+the default variables for the length and width are +1+. Here is some
+sample output.
+
+// [source,iex]
+----
+iex(1)> c("geom.ex")
+[Geom]
+iex(2)> Geom.area(7, 5)
+35
+iex(3)> Geom.area(7)
+7
+iex(4)> Geom.area()
+1
+----
+
+[[CH02-ET03]]
+Étude 2-3: Documenting a Module
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Document the +Geom+ module and +area+ function that you wrote in
+<<CH02-ET02,Étude 2-2>>.
+<<SOLUTION02-ET04,See a suggested solution in Appendix A.>>
+
+
+[[CH02-ET04]]
+Étude 2-4: Discovery Étude
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+What happens if you have default values that aren't the last ones in the function definition?  Try it and find out. Enter this code into a file named +test.ex+
+
+// [source,elixir]
+----
+defmodule Test do
+  def sum( a // 3, b, c // 7) do
+    a + b + c
+  end
+end
+----
+
+See what happens when you try the following in +iex+ (remember to compile the file first).
+
+// [source,iex]
+----
+Test.sum(11, 22, 33)
+Test.sum(11, 22)
+Test.sum(11)
+----
+
