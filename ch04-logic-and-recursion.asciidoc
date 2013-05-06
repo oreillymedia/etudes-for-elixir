@@ -65,7 +65,7 @@ expressed quite nicely that way.
 Étude 4-3: Non-Tail Recursive Functions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Create a module named +Powers+ (no relation to Francis Gary Powers), and
-write a function named +take/2+ which takes parameters +x+  and +x+ and
+write a function named +raise/2+ which takes parameters +x+  and +x+ and
 returns the value of _x_^_n_^.
 
 Here's the information you need to know to write the function:
@@ -77,21 +77,32 @@ Here's the information you need to know to write the function:
   there's your recursion.
 * When +n+ is negative, +x^n^+ is equal to +1.0 / x^-n^+
 
-Note that this algorithm is _not_ tail recursive.  Here is some sample output.
+Note that this algorithm is _not_ tail recursive.
+
+[WARNING]
+=====
+The Elixir kernel already has a +raise/2+ function, so your function will cause a conflict unless you add this after the +defmodule+:
+
+// [source, elixir]
+---
+import Kernel, except: [raise: 2]
+----
+
+Here is some sample output.
 
 [source, erl]
 -------
 iex(1)> c("powers.ex")
 [Powers]
-iex(2)> Powers.take(5,1)
+iex(2)> Powers.raise(5,1)
 5
-iex(3)> Powers.take(2,3) 
+iex(3)> Powers.raise(2,3) 
 8
-iex(4)> Powers.take(1.2, 3)
+iex(4)> Powers.raise(1.2, 3)
 1.728
-iex(5)> Powers.take(2, 0)
+iex(5)> Powers.raise(2, 0)
 1
-iex(6)> Powers.take(2, -3)
+iex(6)> Powers.raise(2, -3)
 0.125
 ------
 
@@ -101,29 +112,43 @@ iex(6)> Powers.take(2, -3)
 Étude 4-4: Tail Recursion with an Accumulator
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Practice the "accumulator trick." 
-Rewrite the +raise/2+ function for +N+ greater than zero so that it
-calls a helper function +raise/3+  This new function has +X+, +N+, and
-an +Accumulator+ as its parameters.
+Rewrite the +raise/2+ function for +n+ greater than zero so that it
+calls a helper function +raise/3+  This new function has +x+, +n+, and
+an +accumulator+ as its parameters.
 
-Your +raise/2+ function will return 1 when +N+ is equal to 0,
-and will return +1.0 / raise(X, -N)+ when N is less than zero.
+Your +raise/2+ function will return 1 when +n+ is equal to 0,
+and will return +1.0 / raise(x, -n)+ when +n+ is less than zero.
 
-When +N+ is greater than zero, +raise/2+ will
-call +raise/3+ with arguments +X+, +N+, and 1 as the Accumulator.
+When +n+ is greater than zero, +raise/2+ will
+call +raise/3+ with arguments +x+, +n+, and 1 as the +accumulator+.
 
 The +raise/3+ function will return the
-+Accumulator+ when +N+ equals 0 (this will stop the recursion).
++accumulator+ when +n+ equals 0 (this will stop the recursion).
 
-Otherwise, recursively call +raise/3+ with +X+, +N - 1+,
-and +X+ times the +Accumulator+ as its arguments.
+Otherwise, recursively call +raise/3+ with +x+, +n - 1+,
+and +x+ times the +accumulator+ as its arguments.
 
 The +raise/3+ function _is_ tail recursive.
+
+[WARNING]
+=====
+Because the kernel also contains a +raise/3+ function, you have to change
+your +import+ as follows:
+
+// [source,elixir]
+----
+  import Kernel, except: [raise: 2, raise: 3]
+----
+====
+
+<<SOLUTION04-ET04,See a suggested solution in Appendix A.>>
+
 
 [[CH04-ET05]]
 Étude 4-5: Recursion with a Helper Function
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 In this exercise, you will add a function +nth_root/2+ to the
-+powers+ module. This new function finds the
++Powers+ module. This new function finds the
 __n__th root of a number, where _n_ is an integer.
 For example, +nth_root(36, 2)+ will calculate
 the square root of 36, and +nth_root(1.728, 3)+ will return the cube
@@ -133,25 +158,25 @@ The algorithm used here is the Newton-Raphson method for calculating
 roots. (See http://en.wikipedia.org/wiki/Newton%27s_method for details).
 
 You will need a helper function +nth_root/3+, whose parameters
-are +X+, +N+, and an approximation to the result, which we
-will call +A+. +nth_root/3+ works as follows:
+are +x+, +n+, and an approximation to the result, which we
+will call +a+. +nth_root/3+ works as follows:
 
-* Calculate +F+ as +(A^N^ - X)+
-* Calculate +Fprime+ as +N * A^(N - 1)^+
-* Calculate your next approximation (call it +Next+) as +A - F / Fprime+
-* Calculate the change in value (call it +Change+) as the absolute value of +Next - A+
-* If the +Change+ is
+* Calculate +f+ as +(a^n^ - x)+
+* Calculate +f_prime+ as +n * a^(n - 1)^+
+* Calculate your next approximation (call it +next+) as +a - f / f_prime+
+* Calculate the change in value (call it +change+) as the absolute value of +next - a+
+* If the +change+ is
 less than some limit (say, 1.0e-8), stop the recursion and return
-+Next+; that's as close to the root as you are going to get.
++next+; that's as close to the root as you are going to get.
 * Otherwise, call the +nth_root/3+ function again with
-+X+, +N+, and +Next+ as its arguments.
++x+, +n+, and +next+ as its arguments.
 
-For your first approximation, use +X / 2.0+. Thus, your +nth_root/2+ function
+For your first approximation, use +x / 2.0+. Thus, your +nth_root/2+ function
 will simply be this:
 
-+nth_root(X, N) -> nth_root(X, N, X / 2.0)+
++nth_root(x, n) -> nth_root(x, n, x / 2.0)+
 
-Use +io:format+ to show each new approximation as you
+Use +IO.puts+ to show each new approximation as you
 calculate it. Here is some sample output.
 
 // [source,iex]
