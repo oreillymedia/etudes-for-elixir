@@ -1,0 +1,540 @@
+[appendix]
+[[APPENDIX]]
+Solutions to Études
+-------------------
+
+Here are the solutions that I came up with for the études in
+this book. Since I was learning Erlang as I wrote them, you
+may expect some of the code to be naïve in the extreme.
+
+[[SOLUTION02-ET01]]
+=== Solution 2-1
+Here is a suggested solution for
+<<CH02-ET01,Étude 2-1>>.
+
+==== +geom.erl+
+[source, erlang]
+----
+include::code/ch02-01/geom.erl[]
+----
+
+[[SOLUTION02-ET02]]
+=== Solution 2-2
+Here is a suggested solution for
+<<CH02-ET02,Étude 2-2>>.
+
+==== +geom.erl+
+[source, erlang]
+----
+include::code/ch02-02/geom.erl[]
+----
+
+[[SOLUTION02-ET03]]
+=== Solution 2-3
+Here is a suggested solution for
+<<CH02-ET03,Étude 2-3>>.
+
+==== +geom.erl+
+[source, erlang]
+----
+include::code/ch02-03/geom.erl[]
+----
+
+[[SOLUTION03-ET01]]
+=== Solution 3-1
+Here is a suggested solution for
+<<CH03-ET01,Étude 3-1>>.
+
+==== +geom.erl+
+[source, erlang]
+----
+include::code/ch03-01/geom.erl[]
+----
+
+[[SOLUTION03-ET02]]
+=== Solution 3-2
+Here is a suggested solution for
+<<CH03-ET02,Étude 3-2>>.
+
+==== +geom.erl+
+[source, erlang]
+----
+include::code/ch03-02/geom.erl[]
+----
+
+[[SOLUTION03-ET03]]
+=== Solution 3-3
+Here is a suggested solution for
+<<CH03-ET03,Étude 3-3>>.
+
+==== +geom.erl+
+[source, erlang]
+----
+include::code/ch03-03/geom.erl[]
+----
+
+[[SOLUTION03-ET04]]
+=== Solution 3-4
+Here is a suggested solution for
+<<CH03-ET04,Étude 3-4>>.
+
+==== +geom.erl+
+[source, erlang]
+----
+include::code/ch03-04/geom.erl[]
+----
+
+[[SOLUTION04-ET01]]
+=== Solution 4-1
+Here is a suggested solution for
+<<CH04-ET01,Étude 4-1>>.
+
+==== +geom.erl+
+[source, erlang]
+----
+include::code/ch04-01/geom.erl[]
+----
+
+[[SOLUTION04-ET02]]
+=== Solution 4-2
+Here is a suggested solution for
+<<CH04-ET02,Étude 4-2>>.
+
+==== +dijkstra.erl+
+[source, erlang]
+----
+include::code/ch04-02/dijkstra.erl[]
+----
+
+[[SOLUTION04-ET03]]
+=== Solution 4-3
+Here is a suggested solution for
+<<CH04-ET03,Étude 4-3>>.
+
+==== +powers.erl+
+[source, erlang]
+----
+include::code/ch04-03/powers.erl[]
+----
+
+==== +powers_traced.erl+
+This code contains output that lets you see the progress
+of the recursion.
+
+[source, erlang]
+----
+include::code/ch04-03/powers_traced.erl[]
+----
+
+[[SOLUTION04-ET04]]
+=== Solution 4-4
+Here is a suggested solution for
+<<CH04-ET04,Étude 4-4>>.
+
+==== +powers.erl+
+[source, erlang]
+----
+include::code/ch04-04/powers.erl[]
+----
+
+==== +powers_traced.erl+
+This code contains output that lets you see the progress
+of the recursion.
+
+[source, erlang]
+----
+include::code/ch04-04/powers_traced.erl[]
+----
+
+[[SOLUTION04-ET05]]
+=== Solution 4-5
+Here is a suggested solution for
+<<CH04-ET05,Étude 4-5>>.
+
+==== +powers.erl+
+[source, erlang]
+----
+include::code/ch04-05/powers.erl[]
+----
+
+[[SOLUTION05-ET01]]
+=== Solution 5-1
+Here is a suggested solution for
+<<CH05-ET01,Étude 5-1>>.
+
+==== +geom.erl+
+[source, erlang]
+----
+include::code/ch05-01/geom.erl[]
+----
+
+==== +ask_area.erl+
+[source, erlang]
+----
+include::code/ch05-01/ask_area.erl[]
+----
+
+[[SOLUTION05-ET02]]
+=== Solution 5-2
+Here is a suggested solution for
+<<CH05-ET02,Étude 5-2>>.
+
+==== +dates.erl+
+[source, erlang]
+----
+include::code/ch05-02/dates.erl[]
+----
+
+[[SOLUTION06-ET01]]
+=== Solution 6-1
+Here is a suggested solution for
+<<CH06-ET01,Étude 6-1>>.
+
+==== +stats.erl+
+[source, erlang]
+----
+include::code/ch06-01/stats.erl[]
+----
+
+[[SOLUTION06-ET02]]
+=== Solution 6-2
+Here is a suggested solution for
+<<CH06-ET02,Étude 6-2>>.
+
+==== +stats.erl+
+[source, erlang]
+----
+include::code/ch06-02/stats.erl[]
+----
+
+[[SOLUTION06-ET03]]
+=== Solution 6-3
+Here is a suggested solution for
+<<CH06-ET03,Étude 6-3>> with leap years handled in the
++julian/5+ function.
+
+==== +dates.erl+
+[source, erlang]
+----
+include::code/ch06-03/dates.erl[]
+----
+
+Here is a suggested solution for
+<<CH06-ET03,Étude 6-3>> with leap years handled in the
++julian/1+ function.
+
+==== +dates.erl+
+[source, erlang]
+----
+include::code/ch06-03b/dates.erl[]
+----
+////
+[[SOLUTION06-ETinterlude]]
+=== Solution 6-interlude
+Here is the code for
+<<CH06-Interlude,the interlude in Chapter 6>>.
+
+==== +bad_code.erl+
+[source, erlang]
+----
+include::code/ch06-interlude/bad_code.erl[]
+----
+
+==== +good_code.erl+
+[source, erlang]
+----
+include::code/ch06-interlude/good_code.erl[]
+----
+////
+
+[[SOLUTION06-ET04]]
+=== Solution 6-4
+Here is a suggested solution for
+<<CH06-ET04,Étude 6-4>>.
+
+==== +teeth.erl+
+[source, erlang]
+----
+include::code/ch06-04/teeth.erl[]
+----
+
+==== +stats.erl+
+[source, erlang]
+----
+include::code/ch06-04/stats.erl[]
+----
+
+[[SOLUTION06-ET05]]
+=== Solution 6-5
+Here is a suggested solution for
+<<CH06-ET05,Étude 6-5>>.
+
+==== +non_fp.erl+
+[source, erlang]
+----
+include::code/ch06-05/non_fp.erl[]
+----
+
+[[SOLUTION07-ET01]]
+=== Solution 7-1
+Here is a suggested solution for
+<<CH07-ET01,Étude 7-1>>.
+
+==== +calculus.erl+
+[source, erlang]
+----
+include::code/ch07-01/calculus.erl[]
+----
+
+[[SOLUTION07-ET02]]
+=== Solution 7-2
+Here is a suggested solution for
+<<CH07-ET02,Étude 7-2>>.
+
+==== +patmatch.erl+
+[source, erlang]
+----
+include::code/ch07-02/patmatch.erl[]
+----
+
+[[SOLUTION07-ET03]]
+=== Solution 7-3
+Here is a suggested solution for
+<<CH07-ET03,Étude 7-3>>.
+
+==== +stats.erl+
+[source, erlang]
+----
+include::code/ch07-03/stats.erl[]
+----
+
+[[SOLUTION07-ET04]]
+=== Solution 7-4
+Here is a suggested solution for
+<<CH07-ET04,Étude 7-4>>.
+
+==== +dates.erl+
+[source, erlang]
+----
+include::code/ch07-04/dates.erl[]
+----
+
+[[SOLUTION07-ET05]]
+=== Solution 7-5
+Here is a suggested solution for
+<<CH07-ET05,Étude 7-5>>.
+
+==== +cards.erl+
+[source, erlang]
+----
+include::code/ch07-05/cards.erl[]
+----
+
+[[SOLUTION07-ET06]]
+=== Solution 7-6
+Here is a suggested solution for
+<<CH07-ET06,Étude 7-6>>.
+
+==== +cards.erl+
+[source, erlang]
+----
+include::code/ch07-06/cards.erl[]
+----
+
+[[SOLUTION08-ET01]]
+=== Solution 8-1
+Here is a suggested solution for
+<<CH08-ET01,Étude 8-1>>.
+
+==== +cards.erl+
+[source, erlang]
+----
+include::code/ch08-01/cards.erl[]
+----
+
+==== +game.erl+
+[source, erlang]
+----
+include::code/ch08-01/game.erl[]
+----
+
+[[SOLUTION09-ET01]]
+=== Solution 9-1
+Here is a suggested solution for
+<<CH09-ET01,Étude 9-1>>.
+
+==== +stats.erl+
+[source, erlang]
+----
+include::code/ch09-01/stats.erl[]
+----
+
+[[SOLUTION09-ET02]]
+=== Solution 9-2
+Here is a suggested solution for
+<<CH09-ET02,Étude 9-2>>.
+
+==== +bank.erl+
+[source, erlang]
+----
+include::code/ch09-02/bank.erl[]
+----
+
+[[SOLUTION10-ET01]]
+=== Solution 10-1
+Here is a suggested solution for
+<<CH10-ET01,Étude 10-1>>.
+
+==== +phone_records.hrl+
+[source, erlang]
+----
+include::code/ch10-01/phone_records.hrl[]
+----
+
+==== +phone_ets.erl+
+[source, erlang]
+----
+include::code/ch10-01/phone_ets.erl[]
+----
+
+==== +generate_calls.erl+
+[source, erlang]
+----
+include::code/ch10-01/generate_calls.erl[]
+----
+
+
+[[SOLUTION10-ET02]]
+=== Solution 10-2
+Here is a suggested solution for
+<<CH10-ET02,Étude 10-2>>.
+
+==== +phone_records.hrl+
+[source, erlang]
+----
+include::code/ch10-02/phone_records.hrl[]
+----
+
+==== +phone_mnesia.erl+
+[source, erlang]
+----
+include::code/ch10-02/phone_mnesia.erl[]
+----
+
+==== +pet_records.hrl+
+[source, erlang]
+----
+include::code/ch10-02/pet_records.hrl[]
+----
+
+==== +pet_mnesia.erl+
+[source, erlang]
+----
+include::code/ch10-02/pet_mnesia.erl[]
+----
+
+
+[[SOLUTION11-ET01]]
+=== Solution 11-1
+Here is a suggested solution for
+<<CH11-ET01,Étude 11-1>>.
+
+==== +weather.erl+
+[source, erlang]
+----
+include::code/ch11-01/weather.erl[]
+----
+
+==== +weather_sup.erl+
+[source, erlang]
+----
+include::code/ch11-01/weather_sup.erl[]
+----
+
+[[SOLUTION11-ET02]]
+=== Solution 11-2
+Here is a suggested solution for
+<<CH11-ET02,Étude 11-2>>. Since the bulk of the code
+is identical to the code in the previous étude,
+the only code shown here is the revised +-export+ list
+and the added functions.
+
+==== +weather.erl+
+
+[source, erlang]
+----
+-export([report/1, recent/0]). % wrapper functions
+
+%% Wrapper to hide internal details when getting a weather report
+report(Station) ->
+  gen_server:call(?SERVER, Station).
+
+%% Wrapper to hide internal details when getting a list of recently used
+%% stations.
+recent() ->
+  gen_server:cast(?SERVER, "").
+----
+
+[[SOLUTION11-ET03]]
+=== Solution 11-3
+Here is a suggested solution for
+<<CH11-ET03,Étude 11-3>>. Since the bulk of the code
+is identical to the previous étude,
+the only code shown here is the added and revised code.
+
+[source, erlang]
+----
+%% @doc Connect to a named server
+connect(ServerName) ->
+  Result = net_adm:ping(ServerName),
+  case Result of
+    pong -> io:format("Connected to server.~n");
+    pang -> io:format("Cannot connect to ~p.~n", [ServerName])
+  end.
+
+%% Wrapper to hide internal details when getting a weather report
+report(Station) ->
+  gen_server:call({global, weather}, Station).
+
+%% Wrapper to hide internal details when getting a list of recently used
+%% stations.
+recent() ->
+  gen_server:call({global,weather}, recent).
+
+%%% convenience method for startup
+start_link() ->
+  gen_server:start_link({global, ?SERVER}, ?MODULE, [], []).
+
+%%% gen_server callbacks
+init([]) ->
+  inets:start(),
+  {ok, []}.
+
+handle_call(recent, _From, State) ->
+  {reply, State, State};
+handle_call(Request, _From, State) ->
+  {Reply, NewState} = get_weather(Request, State),
+  {reply, Reply, NewState}.
+
+handle_cast(_Message, State) ->
+  io:format("Most recent requests: ~p\n", [State]),
+  {noreply, State}.
+----
+
+[[SOLUTION11-ET04]]
+=== Solution 11-4
+Here is a suggested solution for
+<<CH11-ET04,Étude 11-4>>.
+
+==== +chatroom.erl+
+[source, erlang]
+----
+include::code/ch11-04/chatroom.erl[]
+----
+
+==== +person.erl+
+[source, erlang]
+----
+include::code/ch11-04/person.erl[]
+----
+
