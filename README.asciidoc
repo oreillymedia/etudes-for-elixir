@@ -1,0 +1,127 @@
+[preface]
+== Études for Elixir
+
+Welcome to _Études for Elixir_.  In this book, you will find descriptions of programs that you can write in Elixir. The programs will usually be short, and each one has been designed to provide practice material for a particular Elixir programming concept. These programs have not been designed to be of considerable difficulty, though they may ask you to stretch a bit beyond the immediate material and examples that you find in the book http://shop.oreilly.com/product/0000000000000.do[Introducing Elixir].
+
+This book is open source, so if you'd like to contribute, make a correction, or otherwise participate in the project, check out https://github.com/oreillymedia/etudes-for-elixir[oreillymedia/etudes-for-erlang] on GitHub for details. If we accept your work, we'll add you to the contributors chapter.
+
+The online version of the book is at http://chimera.labs.oreilly.com/books/1234000000726[Études for Elixir] on O'Reilly Labs.
+
+=== Contributor Guidelines 
+
+If you're considering making a contribution, here are some guidelines to keep in mind: 
+
+Creative Commons license.::
+   All contributions made to this site are required to be made under the link::http://creativecommons.org/licenses/by-nc-nd/3.0/[Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License]. This means that by making a content contribution, you are agreeing that it is licensed to us and to others under this license. If you do not want your content to be available under this license, you should not contribute it.
+
+Submit only your own work.::
+   You warrant that all work that you contribute to this site is your original work, except for material that is in the public domain or for which you have obtained permission. Feel free to draw from your own existing work (blogs, articles, talks, etc.), so long as you are happy with the Creative Commons license.
+
+Your submission may not be accepted.::
+   Be aware that we may not be able to accept your contribution.
+
+Keep your title pithy and to the point.::
+  The title should only be a 2 to 10 words long if possible and should summarize or capture the essence of the advice. Keep your discussion between 400 and 500 words. 
+
+Volunteers only.::
+   Contributions are made on a volunteer basis — in other words, contributors are not paid for their contributions. The contributions will be made easily available to everyone on the Web for free. However, remember that those of you whose contributions are chosen for publication will get your name attached to your work and your bio published next to it. Any item you contribute you can also reuse in any form you wish, such as in a blog posting.
+
+Only submit a pull request when you consider your work complete.::
+   Please submit your work once it is complete.  Once you make a pull request, the editor will review the submission and (possibly) suggest some changes.  Reducing work in progress makes it easier for you to see your own progress and for others to see the progress of the whole project.
+
+Check spelling, word count, and formatting.::
+   Such checking seems obvious part, but it is worth a reminder — sometimes it seems that it is honored more in the breach than in the observance. US spelling is used for the contributions, which should be between 400 and 500 words in length. Formatting can be checked by looking at the saved page in GitHub.  If it looks right there, it's probably right.
+
+=== How to Contribute
+
+If you're new to git and GitHub and just want to keep things as simple as possible, this tutorial will give you a quick and easy way to make your contribution.  Here are the steps you'll need to follow:
+
+==== Create a GitHub account
+
+To create and edit a page or to comment on an existing page, you will need to create an account on GitHub. If you don't have one already, then go to the https://github.com/signup/free[GitHub Signup page]. It's free.
+
+image::images/tutorial_github_signup.png[]
+
+GitHub has excellent tools for collaborating and workflow management, and will be the primary way we communicate with you over the course of the project.
+
+==== Copy ("fork") the project repository to your account 
+
+Once you've got an account, fork (GitHub lingo for copying) the main project to your account.  To do this, go to the  https://github.com/oreillymedia/etudes-for-elixir[Etudes for Elixir] repository on GitHub and click the "Fork" button at the upper right hand side of the screen.
+
+image::images/tutorial_click_fork.png[]
+
+The following screen will appear while GitHub copies the repository to your account:
+
+image::images/tutorial_forking.png[]
+
+==== Edit your file using AsciiDoc
+
+Once you've got the file created, you can start editing it at your leisure.  Remember to:
+
+* Mark up your text using http://powerman.name/doc/asciidoc[AsciiDoc], which is similar to Markdown and other basic wiki-like markup formats.
+* Change the line wrapping from "No Wrap" to "Soft Wrap."  Otherwise, all your text will appear on a single line.
+
+To edit the file, all you have to do is click its name in the directory listing in GitHub and then press the "Edit" button.  
+
+image::images/tutorial_edit.png[]
+
+[NOTE]
+****
+
+If you want to add an entirely new topic area, you'll need to create a new file in GitHub.  To do this, click the "+" button next to the directory name to create a new file
+
+Locate the small "\+" sign next to the repository name.  (A tooltip will appear that says "Create a new file here" when you hover your mouse above it.)  Click the "\+" button:
+
+image::images/tutorial_add_a_file.png[]
+
+In the new screen, you'll need to: 
+
+* Enter a name for the file.  Name the file according to the general topic area, and be sure to include the extension ".asciidoc" at the end.  For example, "foo_and_bar.asciidoc".
+* Enter the chapter title in the editing box; it should be prefaced with two "==" signs.  For example, "== Always Foo the Bar"
+* Once you've entered the filename and title, the "Commit Changes" button at the bottom of the screen will activate.  Click the button to save your file.
+
+You will see something like this:
+
+image::images/tutorial_naming_a_file.png[]
+
+****
+
+==== Double check your submission and add your biography
+
+Before you submit your request, make sure that you have:
+
+* Run a spell check
+* Make sure it's 400-500 words in length
+* Add your name and a short biography
+* Check the formatting to make sure it looks OK
+
+Your biography should look like this:
+
+[source, asciidoc]
+----
+.About the Author
+[NOTE]
+****
+Name:: 
+   Nicola Tesla
+Biography:: 
+   Nicola Tesla is an inventor, electrical engineer, mechanical engineer, physicist, and futurist best known for his contributions to the design of the modern alternating current (AC) electrical supply system.
+****
+----
+
+==== Submit a pull request
+
+Once you've completed and double checked your submission, you're ready to submit it back to O'Reilly.  This is done by creating a "pull request" that will trigger the review process.  
+
+image::images/tutorial_submit_pull_request.png[]
+
+When you submit the pull request, you'll also be able to submit some additional information that will help us track your work:
+
+* A title.  Please enter your name and the title of the contribution.  For example, "Andrew Odewahn: Always Foo the Bar"
+* A comment.  Tell us a little bit about your contribution, as well as anything else you think we should know.
+
+image::images/tutorial_pull_request_submission_form.png[]
+
+==== Engage in back-and-forth
+
+Once you submit your pull request, the project's maintainers will begin a back and forth with you in the discussion features.  You might be asked to make some revisions, shorten it, add additional elements, and so forth.

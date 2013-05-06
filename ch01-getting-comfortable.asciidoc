@@ -1,0 +1,26 @@
+[[GETTINGCOMFORTABLE]]
+Getting Comfortable with Elixir
+-------------------------------
+
+////
+NOTE: You can learn more about working with +erl+ in Chapter 2 of _Erlang Programming_, Chapters 2 and 6 of _Programming Erlang_, Section 2.1 of _Erlang and OTP in Action_, and Chapter 1 of _Learn You Some Erlang For Great Good!_.
+////
+
+[[CH01-ET01]]
+Étude 1-1: Experimenting with Errors
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The first chapter of
+http://shop.oreilly.com/product/0000000000000.do[Introducing Elixir]
+encourages you to play around with the interactive +iex+ system.
+In this étude, keep using +iex+, but purposely make errors.
+
+Try leaving out parentheses in arithmetic expressions. Try putting
+numbers next to each other without an operator between them.
+Try adding +"adam"+ to +12+. Make up variable names that you are sure
+Elixir wouldn't ever accept.
+
+That way, you'll get a feel for the sort of error messages
+Elixir produces and not be as baffled when you get errors that
+you aren't expecting.
+
+

@@ -1,0 +1,53 @@
+[preface]
+[[PREFACE]]
+Preface: What's an étude?
+-------------------------
+
+An étude, according to Wikipedia, is "an instrumental musical composition, usually short and of considerable difficulty, usually designed to provide practice material for perfecting a particular musical skill."
+
+What are Études for Elixir?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In this book, you will find descriptions of programs that you
+can compose (write) in Elixir. The programs will usually be short,
+and each one has been designed to provide practice material for a particular
+Erlang programming concept. Unlike musical études, these programs have not been
+designed to be of considerable difficulty, though they may ask you to
+stretch a bit beyond the immediate material and examples that you find
+in the book http://shop.oreilly.com/product/0000000000000.do[Introducing Elixir].
+
+How This Book was Written
+~~~~~~~~~~~~~~~~~~~~~~~~~
+While reading the early release version of _Introducing Erlang_,
+I began by copying the examples in the book. (This always helps me
+learn the material better.) I then began experimenting with small
+programs of my own to make sure I really understood the concepts.
+As I continued writing my own examples, I thought they might be useful
+to other people as well. I contacted Simon St. Laurent, the author
+of Introducing Erlang, and he liked the idea of having these companion
+exercises and suggested naming them études.
+At some point, the études took on a life of their own. When Simon began
+writing _Introducing Elixir_, I decided to convert the études to Elixir,
+and you are reading the result now.
+
+I was learning Elixir as I was creating the solutions to the
+études, following the 
+philosophy that "the first way that works is the right way."
+Therefore, don't be surprised if you see some fairly
+naïve code that an expert at functional programming would never write.
+
+Elixir is a Young Language
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Elixir is still in the process of development; as of this writing its stable version number is 0.8.2.
+
+
+=== Acknowledgments
+
+Many thanks to Simon St. Laurent, who wrote _Introducing Erlang_ and _Introducing Elixir_. His book not only got me to begin to understand functional programming, but also made me realize that it was a lot of fun. Simon also felt that the exercises I was writing for myself could be useful to others, and he encouraged me to continue developing them.
+
+[[suggested_topic]]
+[role="shoutout"]
+.Have any suggested topics?
+****
+Suggest topics you'd like to see covered here, or just go add them yourself at https://github.com/oreillymedia/etudes-for-elixir[oreillymedia/etudes-for-elixir] on GitHub.
+****
