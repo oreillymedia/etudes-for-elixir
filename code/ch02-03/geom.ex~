@@ -1,0 +1,20 @@
+defmodule Geom do
+  @moduledoc """ 
+  Functions for calculating areas of geometric shapes.
+  
+  from *Études for Elixir*, O'Reilly Media, Inc., 2013.
+  Copyright 2013 by J. David Eisenberg.
+  """ 
+  @vsn 0.1 
+
+  @doc """
+  Calculates the area of a rectangle, given the length and width.
+  Returns the product of its arguments.
+  """
+  
+  @spec area(number(), number()) :: number()
+  
+  def area(l, w) do
+    l * w
+  end
+end

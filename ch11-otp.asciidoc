@@ -1,0 +1,722 @@
+[[OTP]]
+Getting Started with OTP
+------------------------
+In order to help me understand how the +gen_server+ behavior works,
+I drew the diagram shown in <<FIG1101>>.
+
+[[FIG1101]]
+.Processing a call in +gen_server+ 
+image::images/eter_1101.png[float="true"]
+
+The client does a +gen_server:call(Server, Request)+. The server will
+then call the +handle_call/3+ function that you have provided in the
++Module+ that you told +gen_server+ to use. +gen_server+ will send your
+module the client's +Request+, an identifier telling who the request is
++From+, and the server's current +State+.
+
+Your +handle_call/3+ function will fulfill the client's +Request+ and
+send a +{reply, Reply, NewState}+ tuple back to the server. It, in turn,
+will send the +Reply+ back to the client, and use the +NewState+ to update
+its state.
+
+In _Introducing Erlang_ and in the next two études,
+the client is you, using the shell. The module that handles the
+client's call is contained within the same module as the +gen_server+
+framework, but, as the preceding diagram shows, it does not have to be.
+
+NOTE: You can learn more about working with OTP basics in Chapters 11 and 12 of _Erlang Programming_, Chapters 16 and 18 of _Programming Erlang_, Chapter 4 of _Erlang and OTP in Action_, and Chapters 14 through 20 of _Learn You Some Erlang For Great Good!_.
+
+[[CH11-ET01]]
+Étude 11-1: Get the Weather
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In this étude, you will create a weather server using the +gen_server+
+OTP behavior.This server will handle requests using a four-letter weather
+station identifier and will return a brief summary of the weather. You may
+also ask the server for a list of most recently accessed weather stations.
+
+Here is some sample output:
+
+----
+1> c(weather).
+{ok,weather}
+2> weather:start_link().
+{ok,<0.42.0>}
+3> gen_server:call(weather, "KSJC").
+{ok,[{location,"San Jose International Airport, CA"},
+     {observation_time_rfc822,"Mon, 18 Feb 2013 13:53:00 -0800"},
+     {weather,"Overcast"},
+     {temperature_string,"51.0 F (10.6 C)"}]}
+4> gen_server:call(weather, "KITH").
+{ok,[{location,"Ithaca / Tompkins County, NY"},
+     {observation_time_rfc822,"Mon, 18 Feb 2013 16:56:00 -0500"},
+     {weather,"A Few Clouds"},
+     {temperature_string,"29.0 F (-1.6 C)"}]}
+5> gen_server:call(weather,"NONE").
+{error,404}
+6> gen_server:cast(weather, "").
+Most recent requests: ["KITH","KSJC"]
+----
+
+Obtaining Weather Data
+^^^^^^^^^^^^^^^^^^^^^^
+To retrieve a web page, you must first call +inets:start/0+; you will
+want to do this in your +init/1+ code. Then, simply call
++httpc:request(_url_)+, where +_url_+ is a string containing the URL
+you want. In this case, you will use the
+server provided by http://www.noaa.gov/[National Oceanic and Atmospheric Administration]. This server accepts four-letter
+weather station codes and returns an
+XML file summarizing the current weather at that station. You request
+this data with a URL in the form
+
++http://w1.weather.gov/xml/current_obs/_NNNN_.xml+
+
+where +_NNNN_+ is the station code.
+
+If the call to +httpc:request/1+ fails you will get a tuple of the form
++{error,_information_}+.
+
+If it succeeds, you will get a tuple in the form:
+
+[subs="quotes"]
+----
+{ok,{{"HTTP/1.1",_code_,"_code message_"},
+     [{"_HTTP header attribute_","_value_"},
+      {"_Another attribute_","_another value_"}],
+     "_page contents_"}}
+----
+
+where +_code_+ is the return code (200 means the page was found,
+404 means it's missing, anything else is some sort of error).
+
+So, let's say you have successfully retrieved a station's data. You will
+then get page content that contains something like this:
+
+----
+<?xml version="1.0" encoding="ISO-8859-1"?> 
+<?xml-stylesheet href="latest_ob.xsl" type="text/xsl"?>
+<current_observation version="1.0"
+	 xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:noNamespaceSchemaLocation="http://www.weather.gov/view/current_observation.xsd">
+	<credit>NOAA's National Weather Service</credit>
+	<credit_URL>http://weather.gov/</credit_URL>
+	<image>
+		<url>http://weather.gov/images/xml_logo.gif</url>
+		<title>NOAA's National Weather Service</title>
+		<link>http://weather.gov</link>
+	</image>
+	<suggested_pickup>15 minutes after the hour</suggested_pickup>
+	<suggested_pickup_period>60</suggested_pickup_period>
+	<location>San Jose International Airport, CA</location>
+	<station_id>KSJC</station_id>
+	<latitude>37.37</latitude>
+	<longitude>-121.93</longitude>
+	<observation_time>Last Updated on Feb 18 2013, 11:53 am PST</observation_time>
+  <observation_time_rfc822>Mon, 18 Feb 2013 11:53:00 -0800</observation_time_rfc822>
+	<weather>Overcast</weather>
+	<temperature_string>50.0 F (10.0 C)</temperature_string>
+	<temp_f>50.0</temp_f>
+	<temp_c>10.0</temp_c>
+	<relative_humidity>77</relative_humidity>
+	<wind_string>Calm</wind_string>
+	<wind_dir>North</wind_dir>
+	<wind_degrees>0</wind_degrees>
+	<wind_mph>0.0</wind_mph>
+	<wind_kt>0</wind_kt>
+	<pressure_string>1017.7 mb</pressure_string>
+	<pressure_mb>1017.7</pressure_mb>
+	<pressure_in>30.05</pressure_in>
+	<dewpoint_string>43.0 F (6.1 C)</dewpoint_string>
+	<dewpoint_f>43.0</dewpoint_f>
+	<dewpoint_c>6.1</dewpoint_c>
+	<visibility_mi>10.00</visibility_mi>
+ 	<icon_url_base>http://forecast.weather.gov/images/wtf/small/</icon_url_base>
+	<two_day_history_url>http://www.weather.gov/data/obhistory/KSJC.html</two_day_history_url>
+	<icon_url_name>ovc.png</icon_url_name>
+	<ob_url>http://www.weather.gov/data/METAR/KSJC.1.txt</ob_url>
+	<disclaimer_url>http://weather.gov/disclaimer.html</disclaimer_url>
+	<copyright_url>http://weather.gov/disclaimer.html</copyright_url>
+	<privacy_policy_url>http://weather.gov/notice.html</privacy_policy_url>
+</current_observation>
+----
+
+Parsing the Data
+^^^^^^^^^^^^^^^^
+
+You now have to parse that XML data. Luckily, Erlang comes with the
++xmerl_scan:string/1+ function, which will parse your XML into a rather
+imposing-looking tuple. Here is what it looks like for a very simple
+bit of XML:
+
+[source, erl]
+----
+1> XML = "<pets><cat>Misha</cat><dog>Lady</dog></pets>".
+"<pets><cat>Misha</cat><dog>Lady</dog></pets>"
+3> Result = xmerl_scan:string(XML).
+{{xmlElement,pets,pets,[],
+     {xmlNamespace,[],[]},
+     [],1,[],
+     [{xmlElement,cat,cat,[],
+                  {xmlNamespace,[],[]},
+                  [{pets,1}],
+                  1,[],
+                  [{xmlText,[{cat,1},{pets,1}],1,[],"Misha",text}],
+                  [],
+                  "/home/david/etudes/code/ch11-01",
+                  undeclared},
+      {xmlElement,dog,dog,[],
+                  {xmlNamespace,[],[]},
+                  [{pets,1}],
+                  2,[],
+                  [{xmlText,[{dog,2},{pets,1}],1,[],"Lady",text}],
+                  [],undefined,undeclared}],
+     [],
+     "/home/david/etudes/code/ch11-01",
+     undeclared},
+     []}
+----
+
+Ye cats! How you do work with that?! First, put this at the top of your
+code so that you can use +xmerl+'s record definitions:
+
+[source, erlang]
+----
+-include_lib("xmerl/include/xmerl.hrl").
+----
+
+You can see all the details of the records at 
+http://erlang.googlecode.com/svn-history/r160/trunk/lib/xmerl/include/xmerl.hrl
+
+Then, copy and paste this into your code. You could figure it out
+on your own, but that would take away from setting up the server, which is
+the whole point of this étude.
+
+[source, erlang]
+----
+%% Take raw XML data and return a set of {key, value} tuples
+
+analyze_info(WebData) ->
+  %% list of fields that you want to extract
+  ToFind = [location, observation_time_rfc822, weather, temperature_string],
+  
+  %% get just the parsed data from the XML parse result
+  Parsed = element(1, xmerl_scan:string(WebData)),
+  
+  %% This is the list of all children under <current_observation>
+  Children = Parsed#xmlElement.content,
+  
+  %% Find only XML elements and extract their names and their text content.
+  %% You need the guard so that you don't process the newlines in the
+  %% data (they are XML text descendants of the root element).
+  ElementList = [{El#xmlElement.name, extract_text(El#xmlElement.content)}
+    || El <- Children, element(1, El) == xmlElement],
+    
+  %% ElementList is now a keymap; get the data you want from it.
+  lists:map(fun(Item) -> lists:keyfind(Item, 1, ElementList) end, ToFind).
+
+
+%% Given the parsed content of an XML element, return its first node value
+%% (if it's a text node); otherwise return the empty string.
+
+extract_text(Content) ->
+  Item = hd(Content),
+  case element(1, Item) of
+    xmlText -> Item#xmlText.value;
+    _ -> ""
+  end.
+----
+
+Set up a Supervisor
+^^^^^^^^^^^^^^^^^^^
+Finally, you can easily crash the server by handing it a number instead
+of a string for the station code.  Set up a supervisor to restart the
+server when it crashes.
+
+[source, erl]
+----
+1> c(weather_sup).
+{ok,weather_sup}
+2> {ok, Pid} = weather_sup:start_link().
+{ok,<0.38.0>}
+3> unlink(Pid).
+true
+4> gen_server:call(weather, "KGAI").
+{ok,[{location,"Montgomery County Airpark, MD"},
+     {observation_time_rfc822,"Mon, 18 Feb 2013 17:55:00 -0500"},
+     {weather,"Fair"},
+     {temperature_string,"37.0 F (3.0 C)"}]}
+5> gen_server:call(weather, 1234).  
+** exception exit: {{badarg,[{erlang,'++',[1234,".xml"],[]},
+                             {weather,get_weather,2,[{file,"weather.erl"},{line,43}]},
+                             {weather,handle_call,3,[{file,"weather.erl"},{line,23}]},
+                             {gen_server,handle_msg,5,
+                                         [{file,"gen_server.erl"},{line,588}]},
+                             {proc_lib,init_p_do_apply,3,
+                                       [{file,"proc_lib.erl"},{line,227}]}]},
+                    {gen_server,call,[weather,1234]}}
+     in function  gen_server:call/2 (gen_server.erl, line 180)
+
+=INFO REPORT==== 18-Feb-2013::15:57:19 ===
+    application: inets
+    exited: stopped
+    type: temporary
+6> 
+=ERROR REPORT==== 18-Feb-2013::15:57:19 ===
+** Generic server weather terminating 
+** Last message in was 1234
+** When Server state == ["KGAI"]
+** Reason for termination == 
+** {badarg,[{erlang,'++',[1234,".xml"],[]},
+            {weather,get_weather,2,[{file,"weather.erl"},{line,43}]},
+            {weather,handle_call,3,[{file,"weather.erl"},{line,23}]},
+            {gen_server,handle_msg,5,[{file,"gen_server.erl"},{line,588}]},
+            {proc_lib,init_p_do_apply,3,[{file,"proc_lib.erl"},{line,227}]}]}
+
+6> gen_server:call(weather, "KCMI").
+{ok,[{location,"Champaign / Urbana, University of Illinois-Willard, IL"},
+     {observation_time_rfc822,"Mon, 18 Feb 2013 16:53:00 -0600"},
+     {weather,"Overcast and Breezy"},
+     {temperature_string,"47.0 F (8.3 C)"}]}
+----
+
+<<SOLUTION11-ET01,See a suggested solution in Appendix A.>>
+
+[[CH11-ET02]]
+Étude 11-2: Wrapper Functions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In the previous étude, you made calls directly to +gen_server+. This is
+great for experimentation, but in a real application, you do not want
+other modules to have to know the exact format of the arguments you gave
+to +gen_server:call/2+ or +gen_server:cast/2+. Instead, you provide a
+"wrapper" function that makes the actual call. In this way, you can change
+the internal format of your server requests while the interface you present
+to other users remains unchanged.
+
+In this étude, then, you will provide two wrapper functions
++report/1+ and +recent/0+. The +report/1+ function will take a station name
+as its argument and do the appropriate +gen_server:call+; the
++recent/0+ function will do an appropriate +gen_server:cast+. Everything
+else in your code will remain unchanged. You will, of course, have to add
++report/1+ and +recent/0+ to the +-export+ list.
+
+Here's some sample output.
+
+[source, erl]
+------
+1> c(weather).
+{ok,weather}
+2> weather:start_link().
+{ok,<0.45.0>}
+3> weather:report("KSJC").
+{ok,[{location,"San Jose International Airport, CA"},
+     {observation_time_rfc822,"Tue, 26 Feb 2013 17:53:00 -0800"},
+     {weather,"Fair"},
+     {temperature_string,"56.0 F (13.3 C)"}]}
+4> weather:report("XYXY").
+{error,404}
+5> weather:report("KCMI").
+{ok,[{location,"Champaign / Urbana, University of Illinois-Willard, IL"},
+     {observation_time_rfc822,"Tue, 26 Feb 2013 19:53:00 -0600"},
+     {weather,"Light Rain Fog/Mist"},
+     {temperature_string,"34.0 F (1.1 C)"}]}
+6> weather:recent().
+Most recent requests: ["KCMI","KSJC"]
+------
+
+<<SOLUTION11-ET02,See a suggested solution in Appendix A.>>
+
+[[CH11-ET03]]
+Étude 11-3: Independent Server and Client
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In the previous études, the client and server have been running in
+the same shell. In this étude, you will make the server available to
+clients running in other shells.
+
+To make a node available to other nodes, you need to name the node by using
+the +-name+ option when starting +erl+. It looks like this:
+
+[source, erl]
+----
+michele@localhost $ erl -name serverNode
+Erlang R15B02 (erts-5.9.2) [source] [smp:2:2] [async-threads:0] [hipe] [kernel-poll:false]
+
+Eshell V5.9.2  (abort with ^G)
+(serverNode@localhost.gateway.2wire.net)1> 
+----
+
+This is a _long name_. You can also set up a node with a short name by using
+the +-sname+ option:
+
+[source, erl]
+----
+michele@localhost $ erl -sname serverNode
+Erlang R15B02 (erts-5.9.2) [source] [smp:2:2] [async-threads:0] [hipe] [kernel-poll:false]
+
+Eshell V5.9.2  (abort with ^G)
+(serverNode@localhost)1> 
+----
+
+WARNING: If you set up a node in this way, _any_ other node can connect
+to it and do any shell commands at all. In order to prevent this,
+you may use the +-setcookie _Cookie_+ when starting +erl+. Then,
+only nodes that have the same _Cookie_ (which is an atom) can
+connect to your node.
+
+To connect to a node, use the +net_adm:ping/1+ function, and give it
+the name of the server you want to connect to as its argument. If you
+connect succesfully, the function will return the atom +pong+; otherwise,
+it will return +pang+.
+
+Here is an example. First, start a shell with a (very bad) secret
+cookie:
+
+[source, erl]
+----
+michele@localhost $ erl -sname serverNode -setcookie chocolateChip
+Erlang R15B02 (erts-5.9.2) [source] [smp:2:2] [async-threads:0] [hipe] [kernel-poll:false]
+
+Eshell V5.9.2  (abort with ^G)
+(serverNode@localhost)1> 
+----
+
+Now, open another terminal window, start a shell with a different
+cookie, and try to connect to the server node. I have purposely used
+a different user name to show that this works too.
+
+[source, erl]
+----
+steve@localhost $ erl -sname clientNode -setcookie oatmealRaisin
+Erlang R15B02 (erts-5.9.2) [source] [smp:2:2] [async-threads:0] [hipe] [kernel-poll:false]
+
+Eshell V5.9.2  (abort with ^G)
+(clientNode@localhost)1> net_adm:ping(serverNode@localhost).
+pang
+----
+
+The server node will detect this attempt and let you know about it:
+
+[source, erl]
+----
+=ERROR REPORT==== 28-Feb-2013::22:41:38 ===
+** Connection attempt from disallowed node clientNode@localhost ** 
+----
+
+Quit the client shell, and restart it with a matching cookie, and
+all will be well.
+
+[source, erl]
+----
+steve@localhost erltest $ erl -sname clientNode -setcookie chocolateChip
+Erlang R15B02 (erts-5.9.2) [source] [smp:2:2] [async-threads:0] [hipe] [kernel-poll:false]
+
+Eshell V5.9.2  (abort with ^G)
+(clientNode@localhost)1> net_adm:ping(serverNode@localhost).
+pong
+----
+
+To make your weather report server available to other nodes, you
+need to do these things:
+
+* In the +start_link/0+ convenience method, set the first argument to
++gen_server:start_link/4+ to +{global, ?SERVER}+ instead of
++{local, ?SERVER}+
+* In calls to +gen_server:call/2+ and +gen_server:cast/2+, replace the
+module name +weather+ with +{global, weather}+
+* Add a +connect/1+ function that takes the server node name as its
+argument. This function will use +net_adm:ping/1+ to attempt to contact
+the server. It provides appropriate feedback when it succeeds or fails.
+
+Here is what it looks like when one user starts the server in a shell.
+
+[source, erl]
+----
+michele@localhost $ erl -sname serverNode -setcookie meteorology
+Erlang R15B02 (erts-5.9.2) [source] [smp:2:2] [async-threads:0] [hipe] [kernel-poll:false]
+
+Eshell V5.9.2  (abort with ^G)
+(serverNode@localhost)1> weather:start_link().
+{ok,<0.39.0>}
+----
+
+And here's another user in a different shell, calling upon the server.
+
+[source, erl]
+----
+steve@localhost $ erl -sname clientNode -setcookie meteorology
+Erlang R15B02 (erts-5.9.2) [source] [smp:2:2] [async-threads:0] [hipe] [kernel-poll:false]
+
+Eshell V5.9.2  (abort with ^G)
+(clientNode@localhost)1> weather:connect(serverNode@localhost).
+Connected to server.
+ok
+(clientNode@localhost)2> weather:report("KSJC").
+{ok,[{location,"San Jose International Airport, CA"},
+     {observation_time_rfc822,"Thu, 28 Feb 2013 21:53:00 -0800"},
+     {weather,"Fair"},
+     {temperature_string,"52.0 F (11.1 C)"}]}
+(clientNode@localhost)3> weather:report("KITH").
+{ok,[{location,"Ithaca / Tompkins County, NY"},
+     {observation_time_rfc822,"Fri, 01 Mar 2013 00:56:00 -0500"},
+     {weather,"Light Snow"},
+     {temperature_string,"31.0 F (-0.5 C)"}]}
+(clientNode@localhost)4> weather:recent().
+ok
+----
+
+Whoa! What happened to the output from that last call?
+The problem is that the +weather:recent/0+ call does
+an +io:format/3+ call; that output will go to the server shell, since the
+server is running that code, not the client. Bonus points if you fix this
+problem by changing +weather:recent/0+ from using
++gen_server:cast/2+ to use +gen_server:call/2+ instead to return
+the recently reported weather stations as its reply.
+
+There's one more question that went through my mind after I implemented
+my solution: how did I know that the client was calling the +weather+ code
+running on the server and not the +weather+ code in its own shell? It was
+easy to find out: I stopped the server.
+
+[source, erl]
+----
+(serverNode@localhost)2> 
+User switch command
+ --> q
+michele@localhost $ 
+----
+
+Then I had the client try to get a weather report.
+
+[source, erl]
+----
+(clientNode@localhost)5> weather:report("KSJC").
+** exception exit: {noproc,{gen_server,call,[{global,weather},"KSJC"]}}
+     in function  gen_server:call/2 (gen_server.erl, line 180)
+----
+
+The fact that it failed told me that yes, indeed, the client was getting its
+information from the server.
+
+<<SOLUTION11-ET03,See a suggested solution in Appendix A.>>
+
+[[CH11-ET04]]
+Étude 11-4: Chat Room
+~~~~~~~~~~~~~~~~~~~~~
+In the previous études, the client simply made a call to the server, and
+didn't do any processing of its own. In this étude, you will create a
+"chat room" with a chat server and multiple clients, much as you see in
+<<FIG1102>>.
+
+[[FIG1102]]
+.Server with multiple clients
+image:images/eter_1102.png[float="true"]
+
+The interesting part of this program is that the client will _also_ be
+a +gen_server+, as shown in <<FIG1103>>.
+
+[[FIG1103]]
+.Client as a +gen_server+
+image:images/eter_1103.png[float="true"]
+
+Up until now, you have been using a module name as the first argument to
++gen_server:call/2+, and in the previous étude, you used
++net_adm:ping/1+ to connect to a server.
+
+In this étude, you won't need +net_adm:ping/1+. Instead,
+you will use a tuple of the form
++{Module, Node}+ to directly connect to the node you want. So, for
+example, if you want to make a call to a module named +chatroom+ on
+a node named +lobby@localhost+, you would do something like this:
+
++gen_server:call({chatroom, lobby@localhost}, Request)+
+
+This means
+you won't need to connect with +net_adm:ping/1+. 
+
+Here is my design for the solution. You, of course, may come up
+with an entirely different and better design.
+
+My solution has two modules, both of which use the +gen_server+ behavior.
+
+The +chatroom+ Module
+^^^^^^^^^^^^^^^^^^^^^
+The first module, +chatroom+, will keep as its state a list of tuples, one
+tuple for each person in the chat. Each tuple has the format
++{{UserName, UserServer}, Pid}+. The Pid is the one that +gen_server:call+
+receives in the +From+ parameter; it's guaranteed to be unique for each
+person in chat.
+
+The +handle_call/3+ function will accept the following requests.
+
++{login, UserName, ServerName}+::
+Adds the user name, server name, and Pid (which is in the +From+ parameter)
+to the server's state. Don't allow a duplicate user name from the same server.
+
++logout+::
+Removes the user from the state list.
+
++{say, Text}+::
+Sends the given Text to all the other users in the chat room. Use
++gen_server:cast/2+ to send the message.
+
++users+::
+Returns the list of names and servers for all people currently in the
+chat room.
+
++{who, Person, ServerName}+::
+Return the profile of the given person/server. (This is "extra credit";
+see the following details about the +person+ module). It works by
+calling the +person+ module at +ServerName+ and giving it a
++get_profile+ request.
+
+The +person+ Module
+^^^^^^^^^^^^^^^^^^^
+The other module, +person+, has a +start_link/1+ function; the argument
+is the node name of the chat room server. This will be passed on to the
++init/1+ function. This is stored in the server's state. I did this because
+many other calls need to know the chat room server's name, and keeping it in the
+person's state seemed a reasonable choice.
+
+For extra credit, the state will also include the person's profile, which
+is a list of +{Key, Value}+ tuples.
+
+The +handle_call/3+ takes care of these requests:
+
++get_chat_node+::
+Returns the chat node name that's stored in the server's state. (Almost all of
+the wrapper functions to be described in the following section will need
+the chat node name.)
+
++get_profile+::
+Returns the profile that's stored in the server's state (extra credit)
+
++{profile, Key, Value}+::
+If the profile already contains the key, replace it with the given value.
+Otherwise, add the key and value to the profile. Hint: use 
++lists:keymember/3+ and +lists:keyreplace/4+. (extra credit)
+
+Because the chat room server uses +gen_server:cast/2+ to send messages
+to the people in the room, your +handle_cast/3+ function will receive messages sent from other users in this form:
+
++{message, {FromUser, FromServer}, Text}+
+
+Wrapper Functions for the +person+ module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
++get_chat_node()+::
+A convenience function to get the name of the chat host node by doing
++gen_server:call(person, get_chat_node)+
+
++login(UserName)+::
+Calls the chat room server with a {login, UserName} request. If the
+user name is an atom, use +atom_to_list/1+ to convert it to a string.
+
++logout()+::
+Calls the chat room server with a +logout+ request. As you saw in the
+description of +chatroom+, the server uses the process ID to figure out
+who should be logged out.
+
++say(Text)+::
+Calls the chat server with a +{say, Text}+ request.
+
++users()+::
+Calls the chat server with a +users+ request.
+
++who(UserName, UserNode)+::
+Calls the chat server with a +{who, UserName, UserNode}+ request to
+see the profile of the given person. (extra credit)
+
++profile(Key, Value)+::
+A convenience method that calls the +person+ module with a
++{profile, Key, Value}+ request. (extra credit)
+
+Putting it All Together
+^^^^^^^^^^^^^^^^^^^^^^^
+Here is what the chat room server looks like. The lines beginning with
++Recipient list:+ are debug output. I have gotten rid of the startup lines
+from the +erl+ command.
+
+[source, erl]
+-------
+erl -sname lobby
+
+(lobby@localhost)1> chatroom:start_link().
+{ok,<0.39.0>}
+Recipient list: [{"Steve",sales@localhost},{"Michele",marketing@localhost}] 
+Recipient list: [{"David",engineering@localhost},
+                 {"Michele",marketing@localhost}]
+Recipient list: [{"David",engineering@localhost},{"Steve",sales@localhost}] 
+Recipient list: [{"David",engineering@localhost},
+                 {"Michele",marketing@localhost}]
+-----
+
+And here are three other servers talking to one another and setting
+profile information.
+
+[source, erl]
+-------    
+erl -sname sales
+
+(sales@localhost)1> person:start_link(lobby@localhost).
+Chat node is: lobby@localhost
+{ok,<0.39.0>}
+(sales@localhost)2> person:login("Steve").
+{ok,"Logged in."}
+(sales@localhost)3> person:profile(city, "Chicago").
+{ok,[{city,"Chicago"}]}
+David (engineering@localhost) says: "Hi, everyone."
+(sales@localhost)4> person:say("How's things in Toronto, David?").
+ok
+Michele (marketing@localhost) says: "New product launch is next week."
+(sales@localhost)5> person:say("oops, gotta run.").
+ok
+(sales@localhost)6> person:logout().
+ok
+------
+
+[source, erl]
+-------
+erl -sname engineering
+
+(engineering@localhost)1> person:start_link(lobby@localhost).
+Chat node is: lobby@localhost
+{ok,<0.39.0>}
+(engineering@localhost)2> person:login("David").
+{ok,"Logged in."}
+(engineering@localhost)3> person:profile(city, "Toronto").
+{ok,[{city,"Toronto"}]}
+(engineering@localhost)4> person:profile(department, "New Products").
+{ok,[{department,"New Products"},{city,"Toronto"}]}
+(engineering@localhost)5> person:say("Hi, everyone.").  
+ok
+Steve (sales@localhost) says: "How's things in Toronto, David?"
+Michele (marketing@localhost) says: "New product launch is next week."
+(engineering@localhost)6> person:users().
+[{"David",engineering@localhost},
+ {"Steve",sales@localhost},
+ {"Michele",marketing@localhost}]
+Steve (sales@localhost) says: "oops, gotta run."
+------
+
+[source, erl]
+------
+erl -sname marketing
+
+(marketing@localhost)1> person:start_link(lobby@localhost).
+Chat node is: lobby@localhost
+{ok,<0.39.0>}
+(marketing@localhost)2> person:login("Michele").
+{ok,"Logged in."}
+(marketing@localhost)3> person:profile(city, "San Jose").
+{ok,[{city,"San Jose"}]}
+David (engineering@localhost) says: "Hi, everyone."
+Steve (sales@localhost) says: "How's things in Toronto, David?"
+(marketing@localhost)4> person:say("New product launch is next week.").
+ok
+Steve (sales@localhost) says: "oops, gotta run."
+(marketing@localhost)5> person:users().
+[{"David",engineering@localhost},
+ {"Michele",marketing@localhost}]
+----
+
+<<SOLUTION11-ET04,See a suggested solution in Appendix A.>>
+

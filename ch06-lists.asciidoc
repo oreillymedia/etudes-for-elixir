@@ -1,0 +1,422 @@
+[[LISTS]]
+Lists
+-----
+NOTE: You can learn more about working with lists in Chapter 2 of _Erlang Programming_, Sections 2.10 and 3.5 of _Programming Erlang_, Section 2.2.5 of _Erlang and OTP in Action_, and Chapter 1 of _Learn You Some Erlang For Great Good!_.
+
+
+[[CH06-ET01]]
+Étude 6-1: Recursive Iteration through a List
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In a module named +stats+, write a function named +minimum/1+. It takes
+a list of numbers as its argument and returns the smallest value. This
+function already exists in the +lists+ module (+lists:min/1+), but it's
+a good exercise in learning about recursion.
+
+Here's the pseudocode for +minimum/1+.
+
+* Split the list into the first number and the remainder of the list using
+the cons operator `|`.
+* Call function +minimum/2+, which takes a list as its first argument and
+the "smallest number so far" (the _current candidate_) as its second argument.
+Use the remainder of the list (which you extracted in the previous step) as
+the first argument to +minimum/2+, and the first item in the list as the second
+argument.
+
+Here's the pseudocode for +minimum/2+.
+
+* When the list passed to +minimum/2+ is empty, the final result is the current
+candidate. This stops the recursion.
+* If the list passed to +minimum/2+ is not empty, then see if the head of
+the list is less than the current candidate.
+  ** If so, call +minimum/2+ with the tail of the list as the first argument
+  and the list head (the new "smallest number") as the second argument.
+  ** If not, call +minimum/2+ with the tail of the list as the first argument
+  and the current candidate (still the "smallest number")
+  as the second argument.
+
+Unlike most examples in 
+http://shop.oreilly.com/product/0636920025818.do[Introducing Erlang],
+passing an empty list to this 
+function will make it crash. That's a reasonable thing to do, as an empty
+list can't really be said to have a minimum value.
+
+[source, erl]
+-----
+1> c(stats).
+{ok,stats}
+2> N = [4, 1, 7, -17, 8, 2, 5].
+[4,1,7,-17,8,2,5]
+3> stats:minimum(N).
+-17
+4> stats:minimum([]).
+** exception error: no match of right hand side value []
+     in function  stats:minimum/1 (stats.erl, line 15)
+5> stats:minimum([52.46]).
+52.46
+-----
+
+<<SOLUTION06-ET01,See a suggested solution in Appendix A.>>
+
+[[CH06-ET02]]
+Étude 6-2: Iteration through Lists (More Practice)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Add two more functions to the +stats+ module:
+
++maximum/1+, which is just
+the same as +minimum/1+, but don't forget--as I did--to reverse the direction
+of your test for "smaller" to become a test for "larger." (This function
+also already exists as +lists:max/1+.)
+
++range/1+, which takes a list of numbers as its argument and returns a
+list of two numbers: the minimum and maximum entries in the list.
+
+[source,erl]
+------
+1> c(stats).
+{ok,stats}
+2> N = [4, 1, 7, -17, 8, 2, 5].
+[4,1,7,-17,8,2,5]
+3> stats:maximum(N).
+8
+4> stats:range(N).
+[-17,8]
+------
+
+<<SOLUTION06-ET02,See a suggested solution in Appendix A.>>
+
+[[CH06-ET03]]
+Étude 6-3: Accumulating the Sum of a List
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Add a function +julian/1+ to the +dates+ module that you wrote in
+<<CH05-ET02, Étude 5-2>>. Given a string in ISO format (+"yyyy-mm-dd"+), it
+returns the Julian date: the day of the year.
+
+Here is some sample output.
+
+[source, erl]
+----
+1> c(dates).            
+{ok,dates}
+2> dates:julian("2012-12-31").
+366
+3> dates:julian("2013-12-31").
+365
+4> dates:julian("2012-02-05").
+36
+5> dates:julian("2013-02-05").
+36
+6> dates:julian("1900-03-01").
+60
+7> dates:julian("2000-03-01").
+61
+126> dates:julian("2013-01-01").
+1
+----
+
+The +julian/1+ function defines a 12-item list called +DaysPerMonth+ that
+contains the number of days in each month, splits the date into 
+the year, month, and day (using the +date_parts/1+ function you wrote in
+<<CH05-ET02,Étude 5-2>>, and then calls helper function +julian/5+ (yes, 
+five arguments).
+
+The +julian/5+ function does all of the work. Its arguments are the year,
+month, day, the list of days per month, and an accumulated total, which
+starts at zero. +julian/5+ takes the head of the days per month list and
+adds it to the accumulator, and then calls +julian/5+ again with the
+tail of the days per month list and the accumulator value as its last two
+arguments.
+
+Let's take, as an example, the sequence of calls for April 18, 2013:
+
+   julian(2013, 4, 18, [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31], 0).
+   julian(2013, 4, 18, [28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31], 31).
+   julian(2013, 4, 18, [31, 30, 31, 30, 31, 31, 30, 31, 30, 31], 59).
+   julian(2013, 4, 18, [30, 31, 30, 31, 31, 30, 31, 30, 31], 90).
+
+At this point, the accumulator has all the days up through the beginning of
+April, so the last call to +julian/5+ just adds the 18 remaining days
+and yields 108 as its result.
+
+You know you are doing the last call when you have "used up"
+the first _month-1_ items in
+the list of days per month. That happens +when+ the month number is greater
+than +(13 - length(_days_per_month_list_))+. Hint: use a guard.
+
+Of course, there's still the problem of leap years. You can handle it in
+either +julian/5+ or +julian/1+. 
+
+If you want to do the work in +julian/5+, then for non-leap years,
+the last call to +julian/5+ adds the number of days in the target month.
+For leap years, the function must add the number of days in the
+target month plus one--but only if the month is after February.
+
+If you want to do the work in +julian/5+, use a +case+ to assign either
++28+ or +29+ to a variable named +DaysInFeb+ (depending on whether the
+year is a leap year), and then use that variable instead of 28 when you
+construct your original days per month list.
+
+I'll give you the code for the +is_leap_year/1+ function for free; it returns
++true+ if the given year is a leap year, +false+ otherwise.
+
+[source, erlang]
+------
+is_leap_year(Year) ->
+  (Year rem 4 == 0 andalso Year rem 100 /= 0)
+  orelse (Year rem 400 == 0).
+------
+
+<<SOLUTION06-ET03,See suggested solutions in Appendix A.>>
+
+[[CH06-INTERLUDE]]
+Interlude: "Mistakes were made."
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+As I was writing the next two études, I tried, despite the examples in the
+book, to avoid using +lists:reverse/1+. I thought, "Why _can't_ I add items
+to the end of a list using the cons (vertical bar; +|+) notation?" Here's why.
+
+I decided to do a simple task: take a list of numbers and return a list
+consisting of the squares of the numbers. I tried adding new items to the end
+of the list with this code:
+
+[source, erlang]
+------
+-module(bad_code).
+-export([squares/1]).
+
+squares(Numbers) -> squares(Numbers, []).
+
+squares([], Result) -> Result;
+
+squares([H | T], Result) -> squares(T, [Result | H * H ]).
+----
+
+The resulting list was in the correct order, but it was an improper list.
+
+[source, erl]
+----
+1> c(bad_code).                           
+{ok,bad_code}
+2> bad_code:squares([9, 4.22, 5]).
+[[[[]|81]|17.8084]|25]
+----
+
+That didn't work. Wait a minute--the book said that the right hand side of the 
+cons (+|+) operator should be a list. "OK, you want a list?" I thought.
+"I've got your list right here." (See the last
+line of the code, where I wrap the new item in square brackets.)
+
+[source,erlang]
+------
+squares2(Numbers) -> squares2(Numbers, []).
+
+squares2([], Result) -> Result;
+
+squares2([H | T], Result) -> squares2(T, [Result | [H * H] ]).
+------
+
+There. That should do the trick.
+
+[source, erl]
+----
+6> c(bad_code).                           
+{ok,bad_code}
+7> bad_code:squares2([9, 4.22, 5]).
+[[[[],81],17.8084],25]
+----
+
+The result was better, but only slightly better. I didn't have an improper list
+any more, but now I had a list of list of list of lists.
+I could fix the problem by changing one line to flatten the final result.
+
+[source, erlang]
+------
+squares2([], Result) -> lists:flatten(Result);
+----
+
+That worked, but it wasn't a satisfying solution.
+
+* The longer the original list, the more deeply nested the final list
+would be, 
+* I still had to call a function from the +lists+ module, and
+* A look at http://www.erlang.org/doc/efficiency_guide/listHandling.html showed
+that +lists:flatten+ is a very expensive operation.
+
+In light of all of this, I decided to use +lists:reverse/1+ and write
+the code to generate a proper, non-nested list.
+
+[source, erlang]
+------
+-module(good_code).
+-export([correct_squares/1]).
+
+correct_squares(Numbers) -> correct_squares(Numbers, []).
+
+correct_squares([], Result) -> lists:reverse(Result);
+
+correct_squares([H | T], Result) ->
+  correct_squares(T, [H * H | Result]).
+----
+
+[source,erl]
+-----
+1> c(good_code).
+{ok,good_code}
+2> good_code:correct_squares([9, 4.22, 5]).
+[81,17.8084,25]
+----
+
+Success at last!  The moral of the story?
+
+* RTFM (Read the Fabulous Manual).
+* Believe what you read.
+* If you don't believe what you read, try it and find out.
+* Don't worry if you make this sort of mistake. You won't be the first person
+to do so, and you certainly won't be the last.
+* When using cons, "lists come last."
+
+OK. Back to work.
+
+[[CH06-ET04]]
+Étude 6-4: Lists of Lists
+~~~~~~~~~~~~~~~~~~~~~~~~~
+Dentists check the health of your gums by checking the depth of the "pockets"
+at six different locations around each of your 32 teeth.
+The depth is measured in millimeters. If any of the depths is greater
+than or equal to four millimeters, that tooth needs attention. (Thanks to
+Dr. Patricia Lee, DDS, for explaining this to me.)
+
+Your task is to write a module named +teeth+ and a function named
++alert/1+. The function takes a list of 32 lists of six numbers as its
+input. If a tooth isn't present, it is represented by the list
++[0]+ instead of a list of six numbers. The function produces
+a list of the tooth numbers that require attention.  The numbers
+must be in ascending order.
+
+Here's a set of pocket depths for a person who has had her
+upper wisdom teeth, numbers 1 and 16, removed. Just copy and paste it.
+
+  PocketDepths = [[0], [2,2,1,2,2,1], [3,1,2,3,2,3],
+  [3,1,3,2,1,2], [3,2,3,2,2,1], [2,3,1,2,1,1],
+  [3,1,3,2,3,2], [3,3,2,1,3,1], [4,3,3,2,3,3],
+  [3,1,1,3,2,2], [4,3,4,3,2,3], [2,3,1,3,2,2],
+  [1,2,1,1,3,2], [1,2,2,3,2,3], [1,3,2,1,3,3], [0],
+  [3,2,3,1,1,2], [2,2,1,1,3,2], [2,1,1,1,1,2],
+  [3,3,2,1,1,3], [3,1,3,2,3,2], [3,3,1,2,3,3],
+  [1,2,2,3,3,3], [2,2,3,2,3,3], [2,2,2,4,3,4],
+  [3,4,3,3,3,4], [1,1,2,3,1,2], [2,2,3,2,1,3],
+  [3,4,2,4,4,3], [3,3,2,1,2,3], [2,2,2,2,3,3],
+  [3,2,3,2,3,2]].
+
+And here's the output:
+
+[source, erl]
+----
+1> c(teeth).  
+{ok,teeth}
+2> teeth:alert(PocketDepths).
+[9,11,25,26,29]
+----
+
+<<SOLUTION06-ET04,See a suggested solution in Appendix A.>>
+
+[[CH06-ET05]]
+Étude 6-5: Random Numbers; Generating Lists of Lists
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+How do you think I got the numbers for the teeth in the preceding étude?
+Do you really think I made up and typed all 180 of them? No, of course not.
+Instead, I wrote an Erlang program to create the list of lists for me,
+and that's what you'll do in this étude.
+
+In order to create the data for the teeth,
+I had to generate random numbers with Erlang's
++random+ module. Try generating a random number uniformly
+distributed between 0 and 1.0 by typing this in +erl+:
+
+[source,erl]
+-----
+1> random:uniform().
+0.4435846174457203
+------
+
+Now, exit +erl+, restart, and type the same command again. You'll get the
+same number. In order to ensure that you get different sets of random numbers,
+you have to _seed_ the random number generator with a three-tuple. The easiest
+way to get a different seed every time you run the program is to use the
++now/0+ built-in function, which returns a different three-tuple every time
+you call it.
+
+[source,erl]
+-----
+1> now().
+{1356,887000,432535}
+2> now().
+{1356,887002,15527}
+3> now().
+{1356,887003,831752}
+-----
+
+Exit +erl+, restart, it and try these commands. Do this a couple of times to
+convince yourself that you really get different random numbers. Don't worry
+about the +undefined+; that's just Erlang's way of telling you that the
+random number generator wasn't seeded before.
+
+[source, erl]
+------
+1> random:seed(now()).
+undefined
+2> random:uniform().
+0.27846009966109264
+-----
+
+If you want to generate a random integer between 1 and +N+, use
++uniform/1+; thus +random:uniform(10)+ will generate a
+random integer from 1 to 10.
+
+Functions that use random numbers have side effects; unlike the +sin+ or
++sqrt+ function, which always gives you the same numbers for the same input,
+functions that use random numbers should always give you different numbers
+for the same input. Since these functions aren't "pure," it's best to isolate
+them in a module of their own.
+
+In this étude, create a module named +non_fp+, and write a function 
++generate_teeth/3+. This function has a string consisting of the characters
++T+ and +F+ for its first argument.
+A +T+ in the string indicates that the tooth is present, and a
++F+ indicates a missing tooth. In Erlang, a string is a list of characters,
+so you can treat this string just as you would any other list. Remember to
+refer to individual characters as +$T+ and +$F+.
+
+The second argument is a floating point
+number between 0 and 1.0 that indicates the probability that a tooth will be
+a good tooth.
+
+These are the helper functions I needed:
+
++generate_teeth/3+::
+  The first two arguments are the same as for +generate_teeth/2+; the
+  third argument is the accumulated list. When the first argument is
+  an empty list, the function yields the reverse of the accumulated list.
++
+Hint: use pattern matching to figure out whether a tooth is present or not.
+For a non-present tooth, add +[0]+ to the accumulated list; for a tooth
+that is present, create a list of six numbers by calling +generate_tooth/1+
+with the probability of a good tooth as its argument.
+
++generate_tooth/1+::
+  This generates the list of numbers for a single tooth. It generates a
+  random number between 0 and 1. If that number is less than the probability
+  of a good tooth, it sets the "base depth" to 2, otherwise it sets the base depth to 3.
++
+The function then calls +generate_tooth/3+ with the base depth, the
+number 6, and an empty list as its arguments.
+
++generate_tooth/3+::
+  The first argument is the base depth, the second is the number of items
+  left to generate, and the third argument is the accumulated list. When
+  the number of items hits zero, the function is finished. Otherwise, it
+  adds a random integer between -1 and 1 to the base depth,
+  adds it to the accumulated list, and does a recursive call with
+  one less item.
+
+<<SOLUTION06-ET05,See a suggested solution in Appendix A.>>
+

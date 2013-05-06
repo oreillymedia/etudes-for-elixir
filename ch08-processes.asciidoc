@@ -1,0 +1,159 @@
+[[PROCESSES]]
+Processes
+---------
+
+NOTE: You can learn more about working with simple processes in Chapter 4 of _Erlang Programming_, Chapter 8 of _Programming Erlang_, Section 2.13 of _Erlang and OTP in Action_, and Chapters 10 and 11 of _Learn You Some Erlang For Great Good!_.
+
+[[CH08-ET01]]
+Étude 8-1: Using Processes to Simulate a Card Game
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+There is only one étude for this chapter. You're going to
+write an Erlang program that lets the computer play the card
+game of "War" against itself.
+
+The Art of War
+^^^^^^^^^^^^^^
+These are the rules of the game as condensed from
+http://en.wikipedia.org/wiki/War_%28card_game%29,Wikipedia[Wikipedia], adapted
+to two players, and simplified further.
+
+Two players each take 26 cards from a shuffled deck. Each person
+puts her top card face up on the table. Whoever has the higher
+value card wins that battle, takes both cards, and puts
+them at the bottom of her stack. What happens the if the cards 
+have the same value?
+Then the players go to "war." Each person puts the next two cards from
+their stack face down in the pile and a third card face up. High card
+wins, and the winner takes all the cards for the bottom of her stack.
+If the cards match again, the war continues with another set of three cards from
+each person. If a person has fewer than three cards
+when a war happens, he puts in all his cards.
+
+Repeat this entire procedure until one person has all the cards. That player
+wins the game. In this game, aces are considered to have the highest value,
+and King > Queen > Jack.
+
+War: What is it good for?
+^^^^^^^^^^^^^^^^^^^^^^^^^
+Absolutely nothing. Well, almost nothing. War is possibly the most
+incredibly inane card game ever invented. It is a great way for children
+to spend time, and it's perfect as an étude because
+
+* it is naturally implementable as processes (players) passing messages
+(cards)
+* there is no strategy involved in the play, thus allowing you to concentrate
+on the processes and messages
+
+Pay Now or Pay Later
+^^^^^^^^^^^^^^^^^^^^
+When you purchase an item, if you pay cash on the spot, you often end up paying
+less than if you used credit. If you are cooking a meal, getting all of the
+ingredients collected before you start (pay now) is often less stressful than
+having to stop and go to the grocery store for items you found out you didn't
+have (pay later). In most cases, "pay now" ends up being less expensive than
+"pay later," and that certainly applies to most programming tasks.
+
+So, before you rush off to start writing code, let me give you a word of advice:
+Don't. Spend some time with paper and pencil, away from the computer, and
+_design_ this program first. This is a non-trivial program, and the "extra"
+time you spend planning it (pay now) will save you a lot of time in
+debugging and rewriting (pay later). As someone once told me, "Hours of
+programming will save you minutes of planning."
+
+Trust me, programs written at the keyboard look like it, and that
+is not meant as a compliment.
+
+Note: This does not mean that you should never use +erl+ or write anything
+at the keyboard. If you are wondering about how a specific part of Erlang
+works and need to write a small test program to find out, go ahead and do that
+right away.
+
+Hint: Do your design on paper. Don't try to keep the whole thing in your
+head. Draw diagrams. Sometimes a picture or a storyboard of how the
+messages should flow will clarify your thinking. (If your parents ever
+asked you, "Do I have to draw you a diagram?", you may now confidently
+answer "Yes. Please do that. It really helps.")
+
+The Design
+^^^^^^^^^^
+When I first started planning this, I was going to have just two processes
+communicating with one another, as it is in a real game. But let's think
+about that. There is a slight asymmetry between the players. One
+person usually brings the cards and suggests playing the game. He shuffles
+the deck and deals out the cards at the beginning. Once that's done, 
+things even out. The game play itself proceeds almost automatically. Neither
+player is in control of the play, yet both of them are. It seems as if
+there is an implicit, almost telepathic communication between the players.
+Actually, there are no profound metaphysical issues here. Both players
+are simultaneously following the same set of rules. And that's the point that
+bothered me--who makes the "decisions" in the program? I decided to sidestep
+the issue by introducing a third agent, the "dealer," who is responsible for
+giving the cards to each player at the start of the game. The dealer then
+can tell each player to turn over cards, make a decision as to who won, and
+then tell a particular player to take cards. This simplifies the message
+flow considerably and also fits in nicely with the OTP concepts of supervisors
+and servers, covered in Chapter 10 of
+http://shop.oreilly.com/product/0636920025818.do[Introducing Erlang].
+
+
+In my code, the dealer had to keep track of:
+
+* The process IDs of the players (this was a list)
+* The current state of play (see the following)
+* Cards received from player 1 for this battle
+* Cards received from player 2 for this battle
+* The number of players who had given the dealer cards so far (0, 1, or 2)
+* The pile of cards in the middle of the table
+
+The dealer spawns the players, and then is in one of the following states.
+I'm going to anthropomorphize and use "me" to represent the dealer.
+
+Pre-battle::
+  Tell the players to send me cards. If the pile is empty, then
+  it's a normal battle; give me one card each. If the pile isn't empty, then
+  it's a war; give me three cards.
+  
+Await battle::
+  Wait to receive the cards from the players. Add one to the count every
+  time I get a player's cards. When the count reaches two, I'm ready for...
+
+Check Cards::
+  If either player has sent me an empty list for their cards, then that player
+  is out of cards, so the other player must be the winner.
++
+If I really have cards from both players, compare them. If one player
+is a winner, give that player the pile plus the cards currently in play.
+If the cards match, add the cards currently in play to the pile, and
+go back to "Pre-battle" state.
+
+Note that this is my implementation; you may find an entirely
+different and better way to write the program.
+
+Messages Are Asynchronous
+^^^^^^^^^^^^^^^^^^^^^^^^^
+Remember that the order in which a process receives messages may
+not be the same order in which they were sent. For example, if players
+Andrea and Bertram have a battle, and Andrea wins,
+you may be tempted to send these messages:
+
+1. Tell Andrea to pick up the two cards that were in the battle.
+2. Tell Andrea to send you a card for the next battle.
+3. Tell Bertram to send you a card for the next battle.
+
+This works nicely unless Andrea had just thrown her last card down
+for that battle and message two arrives _before_ message one.
+Andrea will report that she is out of cards, thus losing the game,
+even though she's really still in the game with the two cards that
+she hasn't picked up yet.
+
+Hints for Testing
+^^^^^^^^^^^^^^^^^
+Modify the +cards+ module that you wrote in <<CH07-ET06,Étude 7-6>>
+to generate a small deck with, say, only
+four cards in two suits. If you try to play with a full deck, the game could
+go on for a very, very long time.
+
+Use plenty of calls to +io:format/2+ to see what your code is really doing.
+
+<<SOLUTION08-ET01,See a suggested solution in Appendix A.>>
+

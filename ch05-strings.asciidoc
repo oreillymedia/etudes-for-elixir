@@ -1,0 +1,124 @@
+[[STRINGS]]
+Strings
+-------
+
+NOTE: You can learn more about working with strings in Chapter 2 of _Erlang Programming_, Sections 2.11 and 5.4 of _Programming Erlang_, Section 2.2.6 of _Erlang and OTP in Action_, and Chapter 1 of _Learn You Some Erlang For Great Good!_.
+
+[[CH05-ET01]]
+Étude 5-1: Validating Input
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The Erlang philosophy is "let it crash"; this makes a great deal of sense
+for a telecommunications system (which is what Erlang was first designed for).
+Hardware is going to fail. When it does, you just replace it or restart it.
+The person using the phone system is unaware of this; her phone just
+continues to work.
+
+This philosophy, however, is not the one you want to employ when you
+have (atypical for Erlang) programs that ask for user input.
+You want to those to crash infrequently and catch as many input errors as possible.
+
+In this étude, you will write a module named +ask_area+, which prompts you
+for a shape and its dimensions, and then returns the area by calling
++geom:area/3+, which you wrote in <<CH04-ET01,Étude 4-1>>.
+
+Your module will ask for the first letter of the shape (in either upper
+or lower case), then the appropriate dimensions. It should catch invalid
+letters, non-numeric input, and negative numbers as input.
+Here is some sample output.
+
+[source, erl]
+-------
+1> c(ask_area).
+{ok,ask_area}
+2> c(geom).
+{ok,geom}
+3> ask_area:area().
+R)ectangle, T)riangle, or E)llipse > r
+Enter width > 4
+Enter height > 3.7
+14.8
+4> ask_area:area().
+R)ectangle, T)riangle, or E)llipse > T
+Enter base > 3
+Enter height > 7
+10.5
+5> ask_area:area().
+R)ectangle, T)riangle, or E)llipse > x
+Unknown shape x
+ok
+6> ask_area:area().  
+R)ectangle, T)riangle, or E)llipse > r
+Enter width > -3
+Enter height > 4
+Both numbers must be greater than or equal to zero.
+ok
+7> ask_area:area().
+R)ectangle, T)riangle, or E)llipse > e
+Enter major axis > three
+Enter minor axis > 2
+Error in first number.
+----
+
+Here are the functions that I needed to write in order to make this
+program work.
+
++char_to_shape/1+::
+  Given a character parameter (+R+, +T+, or +E+ in either upper or lower case),
+  return an atom representing the specified shape (+rectangle+,
+  +triangle+, +ellipse+, or +unknown+ if some other character is entered).
+
++get_number/1+::
+  Given a string as a prompt, displays the string
+  +"Enter _prompt_ > "+ and returns the number that was input.
+  Your function should accept either integers or floats. Fun fact: 
+  +string:to_float/1+ _requires_ a decimal point; if you just enter
+  input like +"3"+, you will receive +{error,no_float}+ for your efforts.
+  That means that you should try to convert to float first,
+  and if that fails, try a conversion to integer. 
+  It was at this point that I felt like the
+  guy who is beating his head against a wall, and, when asked, "Why are you
+  doing that?" responds, "Because it feels so good when I stop."
+
++get_dimensions/2+::
+  Takes two prompts as its parameters (one for each dimension), and calls
+  +get_number/1+ twice. Returns a tuple +{_N1_, _N2_}+ with the dimensions.
+
++calculate/3+::
+  Takes a shape (as an atom) and two dimensions as its parameters.
+  If the shape is +unknown+, or the first or second dimension isn't numeric,
+  or either number is negative, the function displays an
+  appropriate error message. Otherwise, the function calls
+  +geom:area/3+ to calculate the area of the shape.
+
+<<SOLUTION05-ET01,See a suggested solution in Appendix A.>>
+
+[[CH05-ET02]]
+Étude 5-2: Using the +re+ Module
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Write a module named +dates+ that contains a function
++date_parts/1+, which takes a string in ISO date format
+(+"yyyy-mm-dd"+) and
+returns a list of integers in the form
++[yyyy, mm, dd]+. This function does not need to do any error checking.
+
+You'll use the +re:split/3+ function from Erlang's
+regular expression (+re+) module to accomplish the task.
+How, you may ask, does that function work? Ask Erlang!
+The command +erl -man re+ will give you the online documentation for 
+the +re+ module.
+
+Scroll down the resulting page until you find 
++split(Subject, RE, Options) -> SplitList+ and read the examples.
+
+When you write the +-spec+ for this function (you _have_ been
+writing documentation for your functions, haven't you?), the type
+you will use for the parameter is +string()+. 
+
+NOTE: You can see a complete
+list of the built-in types at http://www.erlang.org/doc/reference_manual/typespec.html
+
+Yes, I know this étude seems pointless, but trust me:
+I'm going somewhere with this. Stay tuned.
+
+<<SOLUTION05-ET02,See a suggested solution in Appendix A.>>
+

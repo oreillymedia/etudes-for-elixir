@@ -1,0 +1,105 @@
+[[PROCESSES]]
+Handling Errors
+---------------
+
+NOTE: You can learn more about error handling in Chapters 3 and 17 of _Erlang Programming_, Chapter 4 and Section 18.2 of _Programming Erlang_, Section 2.8 and Chapters 5 and 7 of _Erlang and OTP in Action_, and Chapters 7 and 12 of _Learn You Some Erlang For Great Good!_.
+
+[[CH09-ET01]]
+Étude 9-1: +try+ and +catch+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Update the +stats+ module that you wrote in <<CH07-ET03,Étude 7-3>>
+so that it will catch errors in the +minimum/1+, +maximum/1+,
++mean/1+ and +stdv/1+ functions.
+
+Here is some sample output.
+
+[source, erl]
+-------
+1> c(stats).
+{ok,stats}
+2> stats:minimum([]).
+{error,badarg}
+3> stats:mean([]).
+{error,badarith}
+4> stats:mean(["123", 456]).          
+{error,badarith}
+5> stats:stdv([]).
+{error,badarith}
+--------
+
+<<SOLUTION09-ET01,See a suggested solution in Appendix A.>>
+
+[[CH09-ET02]]
+Étude 9-2: Logging Errors
+~~~~~~~~~~~~~~~~~~~~~~~~~
+Write a module named +bank+ that contains a function +account/1+. The
+function takes a numeric +Balance+, which gives the current balance in
+the account in imaginary dollars.
+
+The function will repeatedly ask for a transaction (deposit, withdraw,
+balance inquiry, or quit). If a deposit or withdrawal, it asks for the amount
+to deposit or withdraw, and then does that transaction. If a deposit is
+more than $10,000, the deposit may be subject to hold.
+
+Provide output to the customer, and also use +error_logger+ to write to a
+log file (which, in this case, will go to your terminal).
+Choose any form of input prompts and feedback and logging messages that you
+deisre. Handle the following situtations:
+
+* Deposits and withdrawals cannot be negative numbers (error)
+* Deposits of $10,000 or more might be subject to hold (warning)
+* All other transactions are successful (informational)
+
+Use +get_number/1+ from <<CH05-ET01,Étude 5-1>> to allow either integer
+or float input.
+
+Here is sample output. Due to Erlang's asynchronous nature,
+the user prompts and logging are often interleaved in the most inconvenient
+places. 
+
+[source, erl]
+-----------
+1> c(bank).
+{ok,bank}
+2> bank:account(2000).
+D)eposit, W)ithdraw, B)alance, Q)uit: D
+Amount to deposit: 300
+Your new balance is 2300
+D)eposit, W)ithdraw, B)alance, Q)uit: 
+=INFO REPORT==== 26-Jan-2013::06:42:52 ===
+Successful deposit 300
+W
+Amount to withdraw: -200
+Withdrawals may not be less than zero.
+=ERROR REPORT==== 26-Jan-2013::06:42:56 ===
+Negative withdrawal amount -200
+D)eposit, W)ithdraw, B)alance, Q)uit: D
+Amount to deposit: 15000
+Your deposit of $15000 may be subject to hold.
+=ERROR REPORT==== 26-Jan-2013::06:43:05 ===
+Excessive deposit 15000
+Your new balance is 17300
+D)eposit, W)ithdraw, B)alance, Q)uit: W
+Amount to withdraw: 32767
+You cannot withdraw more than your current balance of 17300.
+
+=ERROR REPORT==== 26-Jan-2013::06:43:17 ===
+Overdraw 32767 from balance 17300
+D)eposit, W)ithdraw, B)alance, Q)uit: W
+Amount to withdraw: 150.25
+Your new balance is 17149.75
+
+=INFO REPORT==== 26-Jan-2013::06:43:29 ===
+Successful withdrawal 150.25
+D)eposit, W)ithdraw, B)alance, Q)uit: B
+D)eposit, W)ithdraw, B)alance, Q)uit: 
+=INFO REPORT==== 26-Jan-2013::06:43:35 ===
+Balance inquiry 17149.75
+X
+Unknown command X
+D)eposit, W)ithdraw, B)alance, Q)uit: Q
+true
+-----------
+
+<<SOLUTION09-ET02s,See a suggested solution in Appendix A.>>
+

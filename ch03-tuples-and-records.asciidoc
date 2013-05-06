@@ -1,0 +1,130 @@
+[[ATOMS-TUPLES-PATTERNS]]
+Atoms, Tuples, and Pattern Matching
+-----------------------------------
+
+////
+NOTE: You can learn more about working with atoms, tuples, and pattern matching in Chapter 2 of _Erlang Programming_, Chapter 2 of _Programming Erlang_, Sections 2.2 and 2.4 of _Erlang and OTP in Action_, and Chapters 1 and 3 of _Learn You Some Erlang For Great Good!_. 
+////
+
+[[CH03-ET01]]
+Étude 3-1: Pattern Matching
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Use atoms and pattern matching to make your +area+ function calculate the
+area of a rectangle, triangle, or ellipse.  If your parameters are
++shape+, +a+ and +b+, the area for the atom +:rectangle+ is +a * b+,
+where +a+ and +b+ represent the length and width. For a +:triangle+ atom,
+the area is +a * b / 2.0+, with +a+ and +b+ representing
+the base and height of the triangle. For an +:ellipse+ atom, the area is 
++:math.pi() * a * b+, where +a+ and +b+ represent the major and minor radiuses.
+
+Here is some sample output.
+
+// [source,iex]
+----
+iex(1)> c("geom.ex")
+[Geom]
+iex(2)> Geom.area(:rectangle, 3, 4)
+12
+iex(3)> Geom.area(:triangle, 3, 5)
+7.5
+iex(4)> Geom.area(:ellipse, 2, 4)
+25.132741228718345
+----
+
+<<SOLUTION03-ET01,See a suggested solution in Appendix A.>>
+
+[[CH03-ET02]]
+Étude 3-2: Guards
+~~~~~~~~~~~~~~~~~
+Even though you won't get an error message when calculating the area of a shape
+that has negative dimensions, it's still worth guarding your +area/3+ function.
+You will want two guards for each pattern to make sure that both dimensions
+are greater than or equal to zero. Since *both* have to be non-negative, use
+commas to separate your guards.
+
+Here is some sample output.
+
+// [source,iex]
+----
+iex(1)> c("geom.ex")
+/home/david/code/ch03-02/geom.ex:1: redefining module Geom
+[Geom]
+iex(2)> Geom.area(:rectangle, -3, 4)
+** (FunctionClauseError) no function clause matching: Geom.area(:rectangle, -3, 4)
+    /home/david/code/ch03-02/geom.ex:21: Geom.area(:rectangle, -3, 4)
+    erl_eval.erl:569: :erl_eval.do_apply/6
+    src/elixir.erl:133: :elixir.eval_forms/3
+    /bin/elixir/lib/iex/lib/iex/server.ex:19: IEx.Server.do_loop/1
+
+iex(2)> Geom.area(:triangle, 3, -4)
+** (FunctionClauseError) no function clause matching: Geom.area(:triangle, 3, -4)
+    /home/david/code/ch03-02/geom.ex:21: Geom.area(:triangle, 3, -4)
+    erl_eval.erl:569: :erl_eval.do_apply/6
+    src/elixir.erl:133: :elixir.eval_forms/3
+    /bin/elixir/lib/iex/lib/iex/server.ex:19: IEx.Server.do_loop/1
+
+iex(2)> Geom.area(:ellipse, -3, -4)
+** (FunctionClauseError) no function clause matching: Geom.area(:ellipse, -3, -4)
+    /home/david/code/ch03-02/geom.ex:21: Geom.area(:ellipse, -3, -4)
+    erl_eval.erl:569: :erl_eval.do_apply/6
+    src/elixir.erl:133: :elixir.eval_forms/3
+    /bin/elixir/lib/iex/lib/iex/server.ex:19: IEx.Server.do_loop/1
+iex(2)> Geom.area(:rectangle, 3, 4)
+12
+iex(3)> Geom.area(:triangle, 3, 4)
+6.0
+iex(4)> Geom.area(:ellipse, 3, 4)
+----
+
+<<SOLUTION03-ET02,See a suggested solution in Appendix A.>>
+
+[[CH03-ET03]]
+Étude 3-3: Underscores
+~~~~~~~~~~~~~~~~~~~~~~
+If you enter a shape that +area/3+ doesn't know about, or if you enter negative
+dimensions, Elixir will give you an error message. Use underscores to create a
+``catch-all'' version, so that anything at all that doesn't match a valid
+rectangle, triangle, or ellipse will return zero. This goes against
+the Elixir philosophy of ``let it fail,'' but let's look the other way
+and learn about underscores anyway.
+
+Here is some sample output.
+
+// [source,iex]
+----
+1> geom:area(:rectangle, 3, 4).
+12
+2> geom:area(:pentagon, 3, 4).
+0
+3> geom:area(:hexagon, -1, 5).
+0
+4> geom:area(:rectangle, 1, -3).
+0
+----
+
+<<SOLUTION03-ET03,See a suggested solution in Appendix A.>>
+
+[[CH03-ET04]]
+Étude 3-4: Tuples as Parameters
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Add an +area/1+ function that takes a tuple of the form
++{*shape*,*number*,*number*}+ as its parameter. Export it
+instead of +area/3+. The +area/1+ function will call the
+private +area/3+ function.
+
+Here is some sample output.
+
+// [source,iex]
+----
+1> c(geom).
+{ok,geom}
+2> geom:area({rectangle, 7, 3}).
+21
+3> geom:area({triangle, 7, 3}).
+10.5
+4> geom:area({ellipse, 7, 3}).
+65.97344572538566
+----
+
+<<SOLUTION03-ET04,See a suggested solution in Appendix A.>>
+

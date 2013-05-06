@@ -1,0 +1,172 @@
+[[LOGIC-RECURSION]]
+Logic and Recursion
+-------------------
+
+NOTE: You can learn more about working with logical flow and recursion in Chapter 3 of _Erlang Programming_, Chapter 3 of _Programming Erlang_, Sections 2.6 and 2.15 of _Erlang and OTP in Action_, and Chapters 3 and 5 of _Learn You Some Erlang For Great Good!_.
+
+[[CH04-ET01]]
+Étude 4-1: Using +case+
+~~~~~~~~~~~~~~~~~~~~~~~
+Change the +area/3+ function that you wrote in
+<<CH03-ET02,Étude 3-2>> so that it uses a +case+ instead
+of pattern matching. Use a guard on the function definition to ensure
+that the numeric arguments are both greater than zero.
+
+<<SOLUTION04-ET01,See a suggested solution in Appendix A.>>
+
+[[CH04-ET02]]
+Étude 4-2: Recursion
+~~~~~~~~~~~~~~~~~~~~
+This is a typical exercise for recursion: finding the greatest common
+divisor (GCD) of two integers. Instead of giving Euclid's method, we'll
+do this with a method devised by Edsger W. Dijkstra. The neat part about
+Dijkstra's method is that you don't need to do any division to find
+the result.  Here is the method.
+
+To find the GCD of integers M and N:
+
+* If M and N are equal, the result is M.
+* If M is greater than N, the result is the GCD of M - N and N
+* Otherwise M must be less than N, and the result is the GCD of M and N - M.
+
+Write a function +gcd/2+ in a module named +dijkstra+ that implements
+the algorithm. This program is an ideal place to use Erlang's +if+ construct. 
+Here is some sample output.
+
+[source,erl]
+----
+1> c(dijkstra).
+{ok,dijkstra}
+2> dijkstra:gcd(12, 8).
+4
+3> dijkstra:gcd(14, 21).
+7
+4> dijkstra:gcd(125, 46).
+1
+5> dijkstra:gcd(120, 36).
+12
+----
+
+<<SOLUTION04-ET02,See a suggested solution in Appendix A.>>
+
+The next two exercises involve writing code to raise a number to an integer
+power (like 2.5^3^ or 4^-2^) and finding the __n__th root of a number, such
+as the cube root of 1728 or the fifth root of 3.2. 
+
+These capabilities already exist with the +math:pow/2+ function, so you may
+wonder why I'm asking you to re-invent the wheel. The reason is not to replace
++math:pow/2+, but to experiment with recursion by writing functions that can be
+expressed quite nicely that way.
+
+[[CH04-ET03]]
+Étude 4-3: Non-Tail Recursive Functions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Create a module named +powers+ (no relation to Francis Gary Powers), and
+write a function named +raise/2+ which takes parameters +X+  and +N+ and
+returns the value of X^N^.
+
+Here's the information you need to know to write the function:
+
+* Any number to the power 0 equals 1.
+* Any number to the power 1 is that number itself -- that stops the
+  recursion.
+* When +N+ is positive, +X^N^+ is equal to +X+ times +X^(N - 1)^+ -- 
+  there's your recursion.
+* When +N+ is negative, +X^N^+ is equal to +1.0 / X^-N^+
+
+Note that this function is _not_ tail recursive.  Here is some sample output.
+
+[source, erl]
+-------
+1> c(powers).
+{ok,powers}
+2> powers:raise(5, 1).
+5
+3> powers:raise(2, 3).
+8
+4> powers:raise(1.2, 3).
+1.728
+5> powers:raise(2, 0).
+1
+6> powers:raise(2, -3).
+0.125
+------
+
+<<SOLUTION04-ET03,See a suggested solution in Appendix A.>>
+
+[[CH04-ET04]]
+Étude 4-4: Tail Recursion with an Accumulator
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Practice the "accumulator trick." 
+Rewrite the +raise/2+ function for +N+ greater than zero so that it
+calls a helper function +raise/3+  This new function has +X+, +N+, and
+an +Accumulator+ as its parameters.
+
+Your +raise/2+ function will return 1 when +N+ is equal to 0,
+and will return +1.0 / raise(X, -N)+ when N is less than zero.
+
+When +N+ is greater than zero, +raise/2+ will
+call +raise/3+ with arguments +X+, +N+, and 1 as the Accumulator.
+
+The +raise/3+ function will return the
++Accumulator+ when +N+ equals 0 (this will stop the recursion).
+
+Otherwise, recursively call +raise/3+ with +X+, +N - 1+,
+and +X+ times the +Accumulator+ as its arguments.
+
+The +raise/3+ function _is_ tail recursive.
+
+[[CH04-ET05]]
+Étude 4-5: Recursion with a Helper Function
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In this exercise, you will add a function +nth_root/2+ to the
++powers+ module. This new function finds the
+__n__th root of a number, where _n_ is an integer.
+For example, +nth_root(36, 2)+ will calculate
+the square root of 36, and +nth_root(1.728, 3)+ will return the cube
+root of 1.728.
+
+The algorithm used here is the Newton-Raphson method for calculating
+roots. (See http://en.wikipedia.org/wiki/Newton%27s_method for details).
+
+You will need a helper function +nth_root/3+, whose parameters
+are +X+, +N+, and an approximation to the result, which we
+will call +A+. +nth_root/3+ works as follows:
+
+* Calculate +F+ as +(A^N^ - X)+
+* Calculate +Fprime+ as +N * A^(N - 1)^+
+* Calculate your next approximation (call it +Next+) as +A - F / Fprime+
+* Calculate the change in value (call it +Change+) as the absolute value of +Next - A+
+* If the +Change+ is
+less than some limit (say, 1.0e-8), stop the recursion and return
++Next+; that's as close to the root as you are going to get.
+* Otherwise, call the +nth_root/3+ function again with
++X+, +N+, and +Next+ as its arguments.
+
+For your first approximation, use +X / 2.0+. Thus, your +nth_root/2+ function
+will simply be this:
+
++nth_root(X, N) -> nth_root(X, N, X / 2.0)+
+
+Use +io:format+ to show each new approximation as you
+calculate it. Here is some sample output.
+
+[source,erl]
+----
+1> c(powers).         
+{ok,powers}
+2> powers:nth_root(27, 3).  
+Current guess is 13.5
+Current guess is 9.049382716049383
+Current guess is 6.142823558176272
+Current guess is 4.333725614685509
+Current guess is 3.3683535855517652
+Current guess is 3.038813723595138
+Current guess is 3.0004936436555805
+Current guess is 3.000000081210202
+Current guess is 3.000000000000002
+3.0
+----
+
+<<SOLUTION04-ET05,See a suggested solution in Appendix A.>>
+
