@@ -90,7 +90,7 @@ import Kernel, except: [raise: 2]
 
 Here is some sample output.
 
-[source, erl]
+// [source,iex]
 -------
 iex(1)> c("powers.ex")
 [Powers]
@@ -177,13 +177,21 @@ will simply be this:
 +nth_root(x, n) -> nth_root(x, n, x / 2.0)+
 
 Use +IO.puts+ to show each new approximation as you
-calculate it. Here is some sample output.
+calculate it. If your argument name is +estimate+, you would do something like this:
+
+// [source,elixir]
+----
+IO.puts("Current guess is #{estimate}")
+----
+
+
+Here is some sample output.
 
 // [source,iex]
 ----
-1> c(powers).         
-{ok,powers}
-2> powers:nth_root(27, 3).  
+iex(1)> c("powers.ex")        
+[Powers]
+iex(2)> Powers.nth_root(27, 3)
 Current guess is 13.5
 Current guess is 9.049382716049383
 Current guess is 6.142823558176272

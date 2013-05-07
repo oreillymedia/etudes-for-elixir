@@ -20,6 +20,7 @@ defmodule Powers do
   end
   
   defp nth_root(x, n, estimate) do
+    IO.puts("Current guess is #{estimate}")
     f = raise(estimate, n) - x
     f_prime = n * raise(estimate, n - 1)
     next = estimate - f / f_prime
