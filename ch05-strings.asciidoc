@@ -2,7 +2,9 @@
 Strings
 -------
 
+////
 NOTE: You can learn more about working with strings in Chapter 2 of _Erlang Programming_, Sections 2.11 and 5.4 of _Programming Erlang_, Section 2.2.6 of _Erlang and OTP in Action_, and Chapter 1 of _Learn You Some Erlang For Great Good!_.
+////
 
 [[CH05-ET01]]
 Étude 5-1: Validating Input
@@ -28,35 +30,35 @@ Here is some sample output.
 
 [source, erl]
 -------
-1> c(ask_area).
-{ok,ask_area}
-2> c(geom).
-{ok,geom}
-3> ask_area:area().
-R)ectangle, T)riangle, or E)llipse > r
+iex(1)> c("ask_area.ex")
+[AskArea]
+iex(2)> c("geom.ex")
+[Geom]
+iex(3)> AskArea.area()
+R)ectangle, T)riangle, or E)llipse: r
 Enter width > 4
-Enter height > 3.7
-14.8
-4> ask_area:area().
-R)ectangle, T)riangle, or E)llipse > T
-Enter base > 3
+Enter height > 3
+12
+iex(4)> AskArea.area()
+R)ectangle, T)riangle, or E)llipse: T
+Enter base  > 3
 Enter height > 7
 10.5
-5> ask_area:area().
-R)ectangle, T)riangle, or E)llipse > x
-Unknown shape x
-ok
-6> ask_area:area().  
-R)ectangle, T)riangle, or E)llipse > r
+iex(5)> AskArea.area()
+R)ectangle, T)riangle, or E)llipse: w
+Unknown shape w
+:ok
+iex(6)> AskArea.area()
+R)ectangle, T)riangle, or E)llipse: r
 Enter width > -3
 Enter height > 4
 Both numbers must be greater than or equal to zero.
-ok
-7> ask_area:area().
-R)ectangle, T)riangle, or E)llipse > e
-Enter major axis > three
-Enter minor axis > 2
-Error in first number.
+:ok
+iex(7)> AskArea.area()
+R)ectangle, T)riangle, or E)llipse: e
+Enter major radius > 3
+Enter minor radius > 2
+18.84955592153876
 ----
 
 Here are the functions that I needed to write in order to make this
@@ -76,6 +78,12 @@ program work.
   * Use +String.strip/1+ to get rid of the trailing newline character
   * Use +binary_to_integer/1+ to convert the string to a number.
 
+  When you write the +-spec+ for this function (you _have_ been
+  writing documentation for your functions, haven't you?), the type
+  you will use for the parameter is +String.t()+. You can see a complete
+  list of the built-in types at
+  http://www.erlang.org/doc/reference_manual/typespec.html
+
 +get_dimensions/2+::
   Takes two prompts as its parameters (one for each dimension), and calls
   +get_number/1+ twice. Returns a tuple +{_n1_, _n2_}+ with the dimensions.
@@ -91,29 +99,56 @@ program work.
 
 
 [[CH05-ET02]]
-Étude 5-2: Using the +re+ Module
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Write a module named +dates+ that contains a function
+Étude 5-2: Better Validation with Regular Expressions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The code you wrote in the previous étude is still sensitive to bad input;
+if you enter a floating point number or a word instead of a number, you
+will get an error message.
+
+// [source,iex]
+iex(1)> AskArea.area()
+R)ectangle, T)riangle, or E)llipse: r
+Enter width > 3.5
+** (ArgumentError) argument error
+    :erlang.binary_to_integer("3.5")
+    /Users/elixir/code/ch05-01/ask_area.ex:50: AskArea.get_number/1
+    /Users/elixir/code/ch05-01/ask_area.ex:60: AskArea.get_dimensions/2
+    /Users/elixir/code/ch05-01/ask_area.ex:18: AskArea.area/0
+    erl_eval.erl:569: :erl_eval.do_apply/6
+    src/elixir.erl:133: :elixir.eval_forms/3
+    /bin/elixir/lib/iex/lib/iex/server.ex:19: IEx.Server.do_loop/1
+----
+
+In this étude, you will use _regular expressions_ to make sure that input is numeric and to distinguish integers from floating point numbers. You need to do this because +binary_to_float/1+ will not accept a string like +"1812"+ as an argument. If you aren't familiar with regular expressions, there is a short summary in
+
+The function you will use is the +Regex.match?/2+. It takes a regular expression pattern as its first argument and a string as its second argument. The function returns +true+ if the pattern matches the string, +false+ otherwise. Here are some examples in IEx.
+
+// [source,iex]
+----
+iex(1)> pattern = %r/b[aeiou]g/i
+%r"b[aeiou]g"
+iex(2)> Regex.match?(pattern, "bag")
+true
+iex(3)> Regex.match?(pattern, "bougie")
+false
+iex(4)> Regex.match?(pattern, "The Big House")   
+true
+----
+
+[[CH05-ET03]]
+Étude 5-3: Using String.split
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Write a module named +Dates+ that contains a function
 +date_parts/1+, which takes a string in ISO date format
 (+"yyyy-mm-dd"+) and
 returns a list of integers in the form
 +[yyyy, mm, dd]+. This function does not need to do any error checking.
 
-You'll use the +re:split/3+ function from Elixir's
-regular expression (+re+) module to accomplish the task.
+You'll use the +String.split/3+ function to accomplish the task
 How, you may ask, does that function work? Ask Elixir!
-The command +erl -man re+ will give you the online documentation for 
-the +re+ module.
+In IEx, type +h String.split+ and you will see the online documentation for 
+that function.
 
-Scroll down the resulting page until you find 
-+split(Subject, RE, Options) -> SplitList+ and read the examples.
-
-When you write the +-spec+ for this function (you _have_ been
-writing documentation for your functions, haven't you?), the type
-you will use for the parameter is +String.t()+. 
-
-NOTE: You can see a complete
-list of the built-in types at http://www.erlang.org/doc/reference_manual/typespec.html
 
 Yes, I know this étude seems pointless, but trust me:
 I'm going somewhere with this. Stay tuned.
