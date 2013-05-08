@@ -22,6 +22,8 @@ defmodule Geom do
     area(shape, dim1, dim2)
   end
   
+  # Individual functions to handle each shape
+
   @spec area(atom(), number(), number()) :: number()
   
   defp area(:rectangle, length, width) when length >= 0 and width >= 0 do

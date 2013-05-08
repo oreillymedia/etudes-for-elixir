@@ -137,15 +137,6 @@ Here is a suggested solution for
 include::code/ch04-04/powers.ex[]
 ----
 
-==== +powers_traced.ex+
-This code contains output that lets you see the progress
-of the recursion.
-
-// [source,elixir]
-----
-include::code/ch04-04/powers_traced.ex[]
-----
-
 [[SOLUTION04-ET05]]
 === Solution 4-5
 Here is a suggested solution for
@@ -179,10 +170,23 @@ include::code/ch05-01/ask_area.ex[]
 Here is a suggested solution for
 <<CH05-ET02,Étude 5-2>>.
 
+The +geom.ex+ file is the same as in <<CH05-ET01,Étude 5-1>>.
+
+==== +ask_area.ex+
+// [source,elixir]
+----
+include::code/ch05-01/ask_area.ex[]
+----
+
+[[SOLUTION05-ET03]]
+=== Solution 5-3
+Here is a suggested solution for
+<<CH05-ET03,Étude 5-3>>.
+
 ==== +dates.ex+
 // [source,elixir]
 ----
-include::code/ch05-02/dates.ex[]
+include::code/ch05-03/dates.ex[]
 ----
 
 [[SOLUTION06-ET01]]

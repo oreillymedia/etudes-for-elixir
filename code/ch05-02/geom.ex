@@ -14,7 +14,6 @@ defmodule Geom do
   :math.pi times the product of the arguments for an ellipse.
   Accepts only dimensions that are non-negative.
   """
-  
   @spec area(atom(), number(), number()) :: number()
   
   def area(shape, a, b) when a >= 0 and b >= 0 do

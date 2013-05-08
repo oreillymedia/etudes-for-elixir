@@ -30,6 +30,10 @@ defmodule Powers do
     raise(x, n, 1)
   end
   
+  # Helper function: counts down from n to 0,
+  # multiplying the accumulator by x each time.
+  # Returns the accumulator when n reaches zero.
+
   @spec raise(number(), number(), number()) :: number()
 
   defp raise(_x, 0, accumulator) do

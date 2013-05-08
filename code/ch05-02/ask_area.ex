@@ -1,6 +1,6 @@
 defmodule AskArea do
   @moduledoc """ 
-  Validate input.
+  Validate input using regular expressions.
   
   from *Études for Elixir*, O'Reilly Media, Inc., 2013.
   Copyright 2013 by J. David Eisenberg.
@@ -48,13 +48,20 @@ defmodule AskArea do
   
   @doc """
   Present a prompt and get a number from the
-  user. Allow integers only.
+  user. Allow either integers or floats.
   """
   @spec get_number(String.t()) :: number()
   
   def get_number(prompt) do
     input = IO.gets("Enter #{prompt} > ")
-    binary_to_integer(String.strip(list_to_binary(input)))
+    input_str = String.strip(list_to_binary(input))
+    cond do
+      Regex.match?(%r/^[+-]?\d+$/, input_str) ->
+        binary_to_integer(input_str)
+      Regex.match?(%r/^[+-]?\d+\.\d+([eE][+-]?\d+)$/, input_str) ->
+        binary_to_float(input_str)
+      true -> :error
+    end
   end
   
   @doc """
@@ -74,6 +81,14 @@ defmodule AskArea do
   Handle errors appropriately.
   """
   @spec calculate(atom(), number(), number()) :: number()
+  
+  def calculate(_shape, :error, _) do
+    IO.puts("First number is non-numeric")
+  end
+  
+  def calculate(_shape, _, :error) do
+    IO.puts("Second number is non-numeric")
+  end
   
   def calculate(shape, d1, d2) do
     cond do

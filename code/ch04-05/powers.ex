@@ -19,6 +19,11 @@ defmodule Powers do
     nth_root(x, n, x / 2.0)
   end
   
+  # Helper function; given estimate for x^n,
+  # recursively calculates next estimated root as
+  # estimate - (estimate^n - x) / (n * estimate^(n-1))
+  # until the next estimate is within a limit of previous estimate.
+  
   defp nth_root(x, n, estimate) do
     IO.puts("Current guess is #{estimate}")
     f = raise(estimate, n) - x
@@ -52,6 +57,10 @@ defmodule Powers do
   def raise(x, n) when n > 0 do
     raise(x, n, 1)
   end
+  
+  # Helper function: counts down from n to 0,
+  # multiplying the accumulator by x each time.
+  # Returns the accumulator when n reaches zero.
   
   @spec raise(number(), number(), number()) :: number()
  
