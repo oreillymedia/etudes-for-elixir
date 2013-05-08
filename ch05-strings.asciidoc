@@ -70,13 +70,11 @@ program work.
 +get_number/1+::
   Given a string as a prompt, displays the string
   +"Enter _prompt_ > "+ and returns the number that was input.
-  Your function should accept either integers or floats. This involves
-  going through a fair number of steps.
+  This involves the following steps:
   
   * Convert the character list to a binary string using +list_to_binary/1+
   * Use +String.strip/1+ to get rid of the trailing newline character
-  * Use +Regex.match?/2+ to see if the string has a dot in it (See the following section for details on this.)
-  * If there is a decimal point, use +binary_to_float/1+, otherwise use +binary_to_integer/1+ to convert it to a number.
+  * Use +binary_to_integer/1+ to convert the string to a number.
 
 +get_dimensions/2+::
   Takes two prompts as its parameters (one for each dimension), and calls
