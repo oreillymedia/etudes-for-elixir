@@ -7,19 +7,19 @@ NOTE: You can learn more about working with strings in Chapter 2 of _Erlang Prog
 [[CH05-ET01]]
 Étude 5-1: Validating Input
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The Erlang philosophy is "let it crash"; this makes a great deal of sense
-for a telecommunications system (which is what Erlang was first designed for).
+The Elixir philosophy is "let it crash"; this makes a great deal of sense
+for a telecommunications system (which is what Elixir was first designed for).
 Hardware is going to fail. When it does, you just replace it or restart it.
 The person using the phone system is unaware of this; her phone just
 continues to work.
 
 This philosophy, however, is not the one you want to employ when you
-have (atypical for Erlang) programs that ask for user input.
+have (atypical for Elixir) programs that ask for user input.
 You want to those to crash infrequently and catch as many input errors as possible.
 
 In this étude, you will write a module named +ask_area+, which prompts you
 for a shape and its dimensions, and then returns the area by calling
-+geom:area/3+, which you wrote in <<CH04-ET01,Étude 4-1>>.
++Geom.area/3+, which you wrote in <<CH04-ET01,Étude 4-1>>.
 
 Your module will ask for the first letter of the shape (in either upper
 or lower case), then the appropriate dimensions. It should catch invalid
@@ -64,33 +64,33 @@ program work.
 
 +char_to_shape/1+::
   Given a character parameter (+R+, +T+, or +E+ in either upper or lower case),
-  return an atom representing the specified shape (+rectangle+,
-  +triangle+, +ellipse+, or +unknown+ if some other character is entered).
+  return an atom representing the specified shape (+:rectangle+,
+  +:triangle+, +:ellipse+, or +:unknown+ if some other character is entered).
 
 +get_number/1+::
   Given a string as a prompt, displays the string
   +"Enter _prompt_ > "+ and returns the number that was input.
-  Your function should accept either integers or floats. Fun fact: 
-  +string:to_float/1+ _requires_ a decimal point; if you just enter
-  input like +"3"+, you will receive +{error,no_float}+ for your efforts.
-  That means that you should try to convert to float first,
-  and if that fails, try a conversion to integer. 
-  It was at this point that I felt like the
-  guy who is beating his head against a wall, and, when asked, "Why are you
-  doing that?" responds, "Because it feels so good when I stop."
+  Your function should accept either integers or floats. This involves
+  going through a fair number of steps.
+  
+  * Convert the character list to a binary string using +list_to_binary/1+
+  * Use +String.strip/1+ to get rid of the trailing newline character
+  * Use +Regex.match?/2+ to see if the string has a dot in it (See the following section for details on this.)
+  * If there is a decimal point, use +binary_to_float/1+, otherwise use +binary_to_integer/1+ to convert it to a number.
 
 +get_dimensions/2+::
   Takes two prompts as its parameters (one for each dimension), and calls
-  +get_number/1+ twice. Returns a tuple +{_N1_, _N2_}+ with the dimensions.
+  +get_number/1+ twice. Returns a tuple +{_n1_, _n2_}+ with the dimensions.
 
 +calculate/3+::
   Takes a shape (as an atom) and two dimensions as its parameters.
-  If the shape is +unknown+, or the first or second dimension isn't numeric,
+  If the shape is +:unknown+, or the first or second dimension isn't numeric,
   or either number is negative, the function displays an
   appropriate error message. Otherwise, the function calls
-  +geom:area/3+ to calculate the area of the shape.
+  +Geom.area/3+ to calculate the area of the shape.
 
 <<SOLUTION05-ET01,See a suggested solution in Appendix A.>>
+
 
 [[CH05-ET02]]
 Étude 5-2: Using the +re+ Module
@@ -101,9 +101,9 @@ Write a module named +dates+ that contains a function
 returns a list of integers in the form
 +[yyyy, mm, dd]+. This function does not need to do any error checking.
 
-You'll use the +re:split/3+ function from Erlang's
+You'll use the +re:split/3+ function from Elixir's
 regular expression (+re+) module to accomplish the task.
-How, you may ask, does that function work? Ask Erlang!
+How, you may ask, does that function work? Ask Elixir!
 The command +erl -man re+ will give you the online documentation for 
 the +re+ module.
 
@@ -112,7 +112,7 @@ Scroll down the resulting page until you find
 
 When you write the +-spec+ for this function (you _have_ been
 writing documentation for your functions, haven't you?), the type
-you will use for the parameter is +string()+. 
+you will use for the parameter is +String.t()+. 
 
 NOTE: You can see a complete
 list of the built-in types at http://www.erlang.org/doc/reference_manual/typespec.html
