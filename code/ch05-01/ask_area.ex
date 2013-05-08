@@ -5,7 +5,8 @@ defmodule AskArea do
   numbers for its dimensions, and calculates shape's area.
   The characters are R for rectangle, T for triangle,
   and E for ellipse. Input is allowed in either upper
-  or lower case.
+  or lower case. For unknown shapes, the first "dimension" will
+  be the unknown character.
   """
 
   @spec area() :: number()
@@ -14,11 +15,10 @@ defmodule AskArea do
     input = IO.gets("R)ectangle, T)riangle, or E)llipse: ")
     shape = char_to_shape(hd(input))
     {d1, d2} = case shape do
-      :rectangle -> get_dimensions("Enter width > ", "Enter height > ")
-      :triangle -> get_dimensions("Enter base > ", "Enter height > " )
-      :ellipse -> get_dimensions("Enter major radius > ",
-        "Enter minor radius > ")
-      :unknown -> {0, 0}
+      :rectangle -> get_dimensions("width", "height")
+      :triangle -> get_dimensions("base ", "height" )
+      :ellipse -> get_dimensions("major radius", "minor radius")
+      :unknown -> {hd(input), 0}
     end
     calculate(shape, d1, d2)
   end
@@ -46,7 +46,7 @@ defmodule AskArea do
   @spec get_number(String.t()) :: number()
   
   def get_number(prompt) do
-    input = IO.gets(prompt)
+    input = IO.gets("Enter #{prompt} > ")
     binary_to_integer(String.strip(list_to_binary(input)))
   end
   
@@ -70,7 +70,7 @@ defmodule AskArea do
   
   def calculate(shape, d1, d2) do
     cond do
-      shape == :unknown -> IO.puts("Unknown shape.")
+      shape == :unknown -> IO.puts("Unknown shape " <> list_to_binary([d1]))
       d1 < 0 or d2 < 0 ->
         IO.puts("Both numbers must be greater than or equal to zero.")
       true -> Geom.area(shape, d1, d2)
