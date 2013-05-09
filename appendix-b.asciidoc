@@ -1,6 +1,6 @@
 [appendix]
 [[APPENDIXB]]
-A Quick Introduction to Regular Expressions
+A Brief Introduction to Regular Expressions
 -------------------------------------------
 
 If there's one thing that humans do well, it's pattern matching. Most people from the United States can categorize the numbers in the following list as a social security number, a phone number, a date, and a postal code.
@@ -235,8 +235,8 @@ Here it is in action:
 
 // [source,iex]
 ----
-iex(1)> pattern = %r/^\w+,?\s*[A-Z]\.?$/
-%r"^\\w+,?\\s*[A-Z]\\.?$"
+iex(1)> pattern = %r/^\w+,?\s*[A-Z]$/
+%r"^\\w+,?\\s*[A-Z]$"
 iex(2)> Regex.match?(pattern, "Smith, J")
 true
 iex(3)> Regex.match?(pattern, "Jimenez R")
@@ -266,7 +266,12 @@ true
 
 [NOTE]
 ====
-If you want to match any of the special characters in a pattern, you must preced them with a backslash. For example, if you wanted to look for an upper case letter followed by a period, you would need to say +%r/[A-Z]\./+.
+If you want to match any of the special characters in a pattern, you must preced them with a backslash. For example, if you wanted to look for an upper case letter followed by a period, you would need to write the pattern as
+
+// [source,elixir]
+----
+%r/[A-Z]\./
+----
 ====
 
 
