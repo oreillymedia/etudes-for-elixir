@@ -215,32 +215,68 @@ All of these classes match only one character. What if you want to match three d
 
 This lets you rewrite the social security number pattern match as +%r/\d\{3\}-\d\{2\}-\d\{4\}/+.
 
-There are three repetitions that are so common that Elixir has special symbols for them: +*+ means "zero or more," +++ means "one or more," and +?+ means "zero or one". Thus, if you want to look for lines consisting of last names followed by a first initial, you could use this pattern:
+There are three repetitions that are so common that Elixir has special symbols for them: +*+ means "zero or more," +++ means "one or more," and +?+ means "zero or one". Thus, if you want to look for lines consisting of last names followed by a first initial, you could use the following pattern:
 
 // [source,elixir]
 ----
 %r/^\w+,?\s*[A-Z]$/
 ----
 
+This matches:
 
-This matches, starting at the beginning of the line, a word of one or more characters followed by an optional comma, zero or more spaces, and a single capital letter, which must be at the end of the line.
-Grouping
+ * starting at the beginning of the string (+^+)
+ * a word of one or more characters (+\w++)
+ * followed by zero or one commas -- that is, an optional comma (+,?+)
+ * zero or more whitespace characters (+\s*+),
+ * and a single capital letter (+[A-Z]+),
+ * which must be at the end of the string (+$+)
 
-So far so good, but what if we want to scan for a last name, followed by an optional comma-whitespace-initial; thus matching only a last name like "Smith" or a full "Smith, J"? We need to put the comma, whitespace, and initial into a unit with parentheses:
+Here it is in action:
 
-/^\w+(,\s*[A-Z])?$/
+// [source,iex]
+----
+iex(1)> pattern = %r/^\w+,?\s*[A-Z]\.?$/
+%r"^\\w+,?\\s*[A-Z]\\.?$"
+iex(2)> Regex.match?(pattern, "Smith, J")
+true
+iex(3)> Regex.match?(pattern, "Jimenez R")
+true
+iex(4)> Regex.match?(pattern, "Nguyen,H")
+true
+----
 
-Input:
-Found /^\w+(,\s*[A-Z])?$/ at position
+So far so good, but what if we want to scan for a last name, followed by an optional comma-whitespace-initial; thus matching people who are known only by a single name like "Michelangelo" or a full "Smith, J"? We need to put the comma, whitespace, and initial into a unit with parentheses and then follow that with a +?+ to make the entire group optional.
 
-Note: If you want to match a parenthesis, you have to precede it with a backslash to make it non-special.
-Modifiers
+// [source,elixir]
+----
+%r/^\w+(,\s*[A-Z])?$/
+----
 
-If you want a pattern match to be case-insenstive, follow the closing slash of the pattern by a lowercase letter i. The following example shows a pattern that will match any Canadian postal code in upper or lower case:
+And here it is in action:
 
-/^[A-Z]\d[A-Z]\s+\d[A-Z]\d$/i
+// [source, iex]
+----
+iex(1)> pattern2 = %r/^\w+(,\s*[A-Z])?$/
+%r"^\\w+(,\\s*[A-Z])?$"
+iex(2)> Regex.match?(pattern2, "Michelangelo")
+true
+iex(3)> Regex.match?(pattern2, "Buonarotti, M")
+true
+----
 
-Input:
-Found postal code at position
+[NOTE]
+====
+If you want to match any of the special characters in a pattern, you must preced them with a backslash. For example, if you wanted to look for an upper case letter followed by a period, you would need to say +%r/[A-Z]\./+.
+====
 
-At this point, you know everything you need to test whether a string matches a particular pattern. 
+
+If you want a pattern match to be case-insenstive, follow the closing delimiter of the pattern by a lowercase letter i. The following example shows a pattern that will match any Canadian postal code in upper or lower case:
+
+// [source,elixir]
+----
+%r/^[A-Z]\d[A-Z]\s+\d[A-Z]\d$/i
+----
+
+This necessarily brief introduction to regular expressions has only touched the surface of their power. Nonetheless, you now enough to do most simple and even some fairly sophisticated pattern matching. If you want to learn more about regular expressions, read http://shop.oreilly.com/product/0636920012337.do[Introducing Regular Expressions].
+
+
