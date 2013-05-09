@@ -2,7 +2,11 @@
 Handling Errors
 ---------------
 
+////
 NOTE: You can learn more about error handling in Chapters 3 and 17 of _Erlang Programming_, Chapter 4 and Section 18.2 of _Programming Erlang_, Section 2.8 and Chapters 5 and 7 of _Erlang and OTP in Action_, and Chapters 7 and 12 of _Learn You Some Erlang For Great Good!_.
+////
+
+Not yet converted to Elixir.
 
 [[CH09-ET01]]
 Étude 9-1: +try+ and +catch+

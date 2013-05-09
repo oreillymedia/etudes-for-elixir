@@ -1,8 +1,11 @@
 [[LISTS]]
 Lists
 -----
+////
 NOTE: You can learn more about working with lists in Chapter 2 of _Erlang Programming_, Sections 2.10 and 3.5 of _Programming Erlang_, Section 2.2.5 of _Erlang and OTP in Action_, and Chapter 1 of _Learn You Some Erlang For Great Good!_.
+////
 
+Not yet converted to Elixir.
 
 [[CH06-ET01]]
 Étude 6-1: Recursive Iteration through a List

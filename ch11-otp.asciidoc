@@ -1,6 +1,8 @@
 [[OTP]]
 Getting Started with OTP
 ------------------------
+Not yet converted to Elixir.
+
 In order to help me understand how the +gen_server+ behavior works,
 I drew the diagram shown in <<FIG1101>>.
 
@@ -24,7 +26,9 @@ the client is you, using the shell. The module that handles the
 client's call is contained within the same module as the +gen_server+
 framework, but, as the preceding diagram shows, it does not have to be.
 
+////
 NOTE: You can learn more about working with OTP basics in Chapters 11 and 12 of _Erlang Programming_, Chapters 16 and 18 of _Programming Erlang_, Chapter 4 of _Erlang and OTP in Action_, and Chapters 14 through 20 of _Learn You Some Erlang For Great Good!_.
+////
 
 [[CH11-ET01]]
 Étude 11-1: Get the Weather

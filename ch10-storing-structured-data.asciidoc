@@ -2,7 +2,11 @@
 Storing Structured Data
 -----------------------
 
+////
 NOTE: You can learn more about working with records in Chapter 7 of _Erlang Programming_, Section 3.9 of _Programming Erlang_, Section 2.11 of _Erlang and OTP in Action_, and Chapter 9 of _Learn You Some Erlang For Great Good!_.  ETS and DETS are in Chapter 10 of _Erlang Programming_, Chapter 15 of _Programming Erlang_, Section 2.14 and Chapter 6 of _Erlang and OTP in Action_, and Chapter 25 of _Learn You Some Erlang For Great Good!_.  Mnesia is covered in Chapter 13 of _Erlang Programming_, Chapter 17 of _Programming Erlang_, Section 2.7 of _Erlang and OTP in Action_, and Chapter 29 of _Learn You Some Erlang For Great Good!_.
+////
+
+Not yet converted to Elixir.
 
 [[CH10-ET01]]
 Étude 10-1: Using ETS

@@ -2,7 +2,11 @@
 Processes
 ---------
 
+////
 NOTE: You can learn more about working with simple processes in Chapter 4 of _Erlang Programming_, Chapter 8 of _Programming Erlang_, Section 2.13 of _Erlang and OTP in Action_, and Chapters 10 and 11 of _Learn You Some Erlang For Great Good!_.
+////
+
+Not yet converted to Elixir.
 
 [[CH08-ET01]]
 Étude 8-1: Using Processes to Simulate a Card Game
