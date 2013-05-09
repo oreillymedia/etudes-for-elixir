@@ -3,14 +3,16 @@
 A Quick Introduction to Regular Expressions
 -------------------------------------------
 
-If there’s one thing that humans do well, it’s pattern matching. Most people from the United States can categorize the numbers in the following list as a social security number, a phone number, a date, and a postal code.
+If there's one thing that humans do well, it's pattern matching. Most people from the United States can categorize the numbers in the following list as a social security number, a phone number, a date, and a postal code.
 
+----
 321-40-0909
 302-555-8754
 3-15-66
 95124-0448
+----
 
-You can tell at a glance which of the following words can’t possibly be valid English words by the pattern of consonants and vowels:
+You can tell at a glance which of the following words can't possibly be valid English words by the pattern of consonants and vowels:
 
 grunion vortenal pskov trebular elibm talus
 
@@ -39,6 +41,20 @@ false
 
 A pattern match will find the pattern if it exists anywhere within the string; you will find out how to change that behavior later on.
 
+[NOTE]
+=====
+If your pattern contains many slashes, you can use another character
+as the delimiter, or you may use +{+ and +}+.
+
+// [source, iex]
+----
+iex(1)> Regex.match?(%r!e!, "hello")
+true
+iex(2)> Regex.match?(%r{u}, "hello")
+false
+----
+=====
+
 Of course, you can put more than one letter in your pattern. You can look for the word eat anywhere in a word:
 
 ----
@@ -46,7 +62,7 @@ Regex.match?(%r/eat/, "some string")
 ----
 
 
-This will return +true+ for the strings +"eat"+, +"heater"+, and +"treat"+, but won’t match +"easy"+, +"metal"+, or +"hat"+. (Try it in IEx and find out for yourself if you don't believe me!)
+This will return +true+ for the strings +"eat"+, +"heater"+, and +"treat"+, but won't match +"easy"+, +"metal"+, or +"hat"+. (Try it in IEx and find out for yourself if you don't believe me!)
 
 Matching Sets of Characters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -104,51 +120,108 @@ false
 ----
 
 There are some character classes that are so useful that Elixir provides quick and easy abbrevations:
-Abbreviation	Means	Same as
-\d	a digit	[0-9]
-\w 	a "word" character; uppercase letter, lowercase letter, digit, or underscore. This is actually more like a variable name character, but let’s not quibble. 	[A-Za-z0-9_]
-\s 	a "whitespace" character (blank, newline, tab, and others) 	[ \r\t\n\f]
-And their complements...
-\D	a non-digit	[^0-9]
-\W 	a non-word character 	[^A-Za-z0-9_]
-\S 	a non-whitespace character 	[^ \r\t\n\f]
 
-Thus, this pattern matches a Social Security number; again, we’ll see a shorter way later on.
+.Character Class Abbreviations
+[options="header",cols="<15%,<15%,<70%"]
+|=======================
+|Abbreviation|Same as|Means
+|+\d+|+[0-9]+|digit
+|+\w+|+[A-Za-z0-9_]+|"word" character: upper case letter, lower case letter, digit, or underscore
+|+\s+|+[ \r\t\n\f]+|whitespace (blank, newline, tab, and others)
+|=======================
 
-str.search(/\d\d\d-\d\d-\d\d\d\d/)
+The +\w+ class actually is more like a variable name character, but we can live with it.
 
-Input:
-Found /\d\d\d-\d\d-\d\d\d\d/ at position
+Each of these abbreviations has a complement:
+
+.Complementary Character Class Abbreviations
+[options="header",cols="<15%,<15%,<70%"]
+|=======================
+|Abbreviation|Same as|Means
+|+\D+|+[^0-9]+|non-digit
+|+\W+|+[^A-Za-z0-9_]+|non-"word" character: upper case letter, lower case letter, digit, or underscore
+|+\S+|+[^ \r\t\n\f]+|non-whitespace (blank, newline, tab, and others)
+|=======================
+
+Thus, the following pattern matches a U.S. Social Security number; again, we'll see a shorter way later on.
+
+// [source, elixir]
+----
+%r/\d\d\d-\d\d-\d\d\d\d/
+----
+
+Finally, there is one more special character: +.+, which matches any character at all; letter, number, punctuation mark, whitespace--anything.
+
 Anchors
+~~~~~~~
 
-All the patterns we’ve seen so far will find a match anywhere within a string, which is usually - but not always - what we want. For example, we might insist on a capital letter, but only as the very first character in the string. Or, we might say that an employee ID number has to end with a digit. Or, we might want to find the word go only if it is at the beginning of a word, so that we will find it in You met another, and pfft you was gone., but we won’t mistakenly find it in I forgot my umbrella. This is the purpose of an anchor; to make sure that we are at a certain boundary before we continue the match. Unlike character classes, which match individual characters in a string, these anchors do not match any character; they simply establish that we are on the correct boundaries.
+All the patterns you've seen so far will find a match anywhere within a string, which is usually--but not always--what you want. For example, you might insist on a capital letter, but only as the very first character in the string. Or, you might say that an employee ID number has to end with a digit. Or, you might want to find the word +go+ only if it is at the beginning of a word, so that you will find it in +You met another, and pfft you was gone+, but you won't mistakenly find it in +I forgot my umbrella+. This is the purpose of an _anchor_; to make sure that you are at a certain boundary before continuing the match. Unlike character classes, which match individual characters in a string, these anchors do not match any character; they simply establish that you are on the correct boundaries.
 
-The up-arrow ^ matches the beginning of a line, and the dollar sign $ matches the end of a line. Thus, ^[A-Z] matches a capital letter at the beginning of the line. Note that if we put the ^ inside the square brackets, that would mean something entirely different! A pattern \d$ matches a digit at the end of a line. These are the boundaries you will use most often; sometimes you can have a string with multiple lines in it (since it will contain \n newlines). In that case, you may want to use \A and \Z to indicate that the next characters must be at the beginning or end of the entire string.
+The up-arrow +^+ matches the beginning of a string, and the dollar sign +$+ matches the end of a line. Thus, +^[A-Z]+ matches a capital letter at the beginning of the line. Note that if you put the +^+ inside the square brackets, that would mean something entirely different! A pattern +\d$+ matches a digit at the end of a line. These are the boundaries you will use most often.
 
-The other two anchors are \b and \B, which stand for a "word boundary" and "non-word boundary". For example, if we want to find the word met at the beginning of a word, we write the pattern /\bmet/, which will match The metal plate and The metropolitan lifestyle, but not Wear your bike helmet. The pattern /ing\b/ will match Hiking is fun and Reading, writing, and arithmetic, but not Gold ingots are heavy. Finally,the pattern /\bhat\b/ matches only the The hat is red but not That is the question or she hates anchovies or the shattered glass.
-Input:
-Found /\bmet/ at position
-Found /ing\b/ at position
-Found /\bhat\b/ at position
+The other two anchors are +\b+ and +\B+, which stand for a "word boundary" and "non-word boundary." For example, if you want to find the word +met+ at the beginning of a word, use the pattern +%r/\bmet/+:
 
-While \b is used to find the breakpoint between words and non-words, \B finds pairs of letters or nonletters; /\Bmet/ and /ing\b/ match the opposite examples of the preceding paragraph; /\Bhat\B/ matches only the shattered glass.
+// [source,iex]
+----
+iex(1)> Regex.match?(%r/\bmet/, "The metal plate")
+true
+iex(2)> Regex.match?(%r/\bmet/, "Our metropolitan life")
+true
+iex(3)> Regex.match?(%r/\bmet/, "Wear your helmet when bicycling")
+false
+----
+
+The pattern +%r/ing\b/+ matches +ing+ at the end of a word:
+
+// [source,iex]
+----
+iex(1)> Regex.match?(%r/ing\b/, "Hiking is fun")
+true
+iex(2)> Regex.match?(%r/ing\b/, "Reading, writing, and math")
+true
+iex(3)> Regex.match?(%r/ing\b/, "Gold ingots are heavy")
+false
+----
+
+Finally,the pattern +%r/\bhat\b/+ matches only +hat+, but not +that+
+or +hats+:
+
+// [source,iex]
+----
+iex(1)> Regex.match?(%r/\bhat\b/, "The hat is red")
+true
+iex(2)> Regex.match?(%r/\bhat\b/, "I saw that coming")
+false
+iex(3)> Regex.match?(%r/\bhat\b/, "The hats are red")
+false
+----
+
+While +\b+ is used to find the breakpoint between words and non-words (defined as a transition from a +\w+ character to a +\W+ character), \B finds pairs of letters or nonletters. The patterns +%r/\Bmet/+, +%r/ing\B/+; and +/\Bhat\B/+ will give the opposite results of the preceding examples.
+
 Repetition
+~~~~~~~~~~~
 
-All of these classes match only one character; what if we want to match three digits in a row, or an arbitrary number of vowels? You can follow any class or character by a repetition count:
-Pattern	Matches
-/b[aeiou]{2}t/ 	b followed by two vowels, followed by t
-/A\d{3,}/ 	The letter A followed by 3 or more digits
-/[A-Z]{,5}/ 	Zero to five capital letters
-/\w{3,7}/ 	Three to seven word characters
+All of these classes match only one character. What if you want to match three digits in a row, or an arbitrary number of vowels? You can follow any class or character by a repetition count:
 
-This lets us rewrite our social security number pattern match as /\d{3}-\d{2}-\d{4}/.
+.Examples of repetition counts
+[options="header",cols="<15%,<85%"]
+|=============================
+|Pattern|Matches
+|+%r/b[aeiou]\{2\}t/+|+b+ followed by two vowels, followed by +t+
+|+%r/A\d{3,}/+|The letter +A+ followed by 3 or more digits
+|+%r/[A-Z]{,5}/+|Zero to five capital letters
+|+%r/\w{3,7}/+|Three to seven word characters
+|=============================
 
-There are three repetitions that are so common that Elixir has special symbols for them: * means "zero or more," + means "one or more," and ? means "zero or one". Thus, if you want to look for lines consisting of last names followed by a first initial, you could use this pattern:
+This lets you rewrite the social security number pattern match as +%r/\d\{3\}-\d\{2\}-\d\{4\}/+.
 
-/^\w+,?\s*[A-Z]$/
+There are three repetitions that are so common that Elixir has special symbols for them: +*+ means "zero or more," +++ means "one or more," and +?+ means "zero or one". Thus, if you want to look for lines consisting of last names followed by a first initial, you could use this pattern:
 
-Input:
-Found /^\w+,?\s*[A-Z]$/ at position
+// [source,elixir]
+----
+%r/^\w+,?\s*[A-Z]$/
+----
+
 
 This matches, starting at the beginning of the line, a word of one or more characters followed by an optional comma, zero or more spaces, and a single capital letter, which must be at the end of the line.
 Grouping
