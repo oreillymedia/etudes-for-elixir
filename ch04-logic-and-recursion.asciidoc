@@ -84,16 +84,17 @@ Note that this algorithm is _not_ tail recursive.
 The Elixir kernel already has a +raise/2+ function, so your function will cause a conflict unless you add this after the +defmodule+:
 
 // [source, elixir]
----
+----
 import Kernel, except: [raise: 2]
 ----
+=====
 
 Here is some sample output.
 
 // [source,iex]
 -------
 iex(1)> c("powers.ex")
-[Powers]
+\[Powers\]
 iex(2)> Powers.raise(5,1)
 5
 iex(3)> Powers.raise(2,3) 
@@ -190,7 +191,7 @@ Here is some sample output.
 // [source,iex]
 ----
 iex(1)> c("powers.ex")        
-[Powers]
+\[Powers\]
 iex(2)> Powers.nth_root(27, 3)
 Current guess is 13.5
 Current guess is 9.049382716049383

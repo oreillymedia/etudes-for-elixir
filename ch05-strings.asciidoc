@@ -28,7 +28,7 @@ or lower case), then the appropriate dimensions. It should catch invalid
 letters, non-numeric input, and negative numbers as input.
 Here is some sample output.
 
-[source, erl]
+// [source,iex]
 -------
 iex(1)> c("ask_area.ex")
 [AskArea]
@@ -106,6 +106,7 @@ if you enter a floating point number or a word instead of a number, you
 will get an error message.
 
 // [source,iex]
+----
 iex(1)> AskArea.area()
 R)ectangle, T)riangle, or E)llipse: r
 Enter width > 3.5
