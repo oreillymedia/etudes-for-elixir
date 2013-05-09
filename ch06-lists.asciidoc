@@ -2,7 +2,7 @@
 Lists
 -----
 ////
-NOTE: You can learn more about working with lists in Chapter 2 of _Erlang Programming_, Sections 2.10 and 3.5 of _Programming Erlang_, Section 2.2.5 of _Erlang and OTP in Action_, and Chapter 1 of _Learn You Some Erlang For Great Good!_.
+NOTE: You can learn more about working with lists in Chapter 2 of _Elixir Programming_, Sections 2.10 and 3.5 of _Programming Elixir_, Section 2.2.5 of _Elixir and OTP in Action_, and Chapter 1 of _Learn You Some Elixir For Great Good!_.
 ////
 
 Not yet converted to Elixir.
@@ -10,10 +10,8 @@ Not yet converted to Elixir.
 [[CH06-ET01]]
 Étude 6-1: Recursive Iteration through a List
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In a module named +stats+, write a function named +minimum/1+. It takes
-a list of numbers as its argument and returns the smallest value. This
-function already exists in the +lists+ module (+lists:min/1+), but it's
-a good exercise in learning about recursion.
+In a module named +Stats+, write a function named +minimum/1+. It takes
+a list of numbers as its argument and returns the smallest value.
 
 Here's the pseudocode for +minimum/1+.
 
@@ -38,24 +36,21 @@ the list is less than the current candidate.
   as the second argument.
 
 Unlike most examples in 
-http://shop.oreilly.com/product/0636920025818.do[Introducing Erlang],
+http://shop.oreilly.com/product/0000000000000.do[Introducing Elixir],
 passing an empty list to this 
 function will make it crash. That's a reasonable thing to do, as an empty
 list can't really be said to have a minimum value.
 
-[source, erl]
+// [source,iex]
 -----
-1> c(stats).
-{ok,stats}
-2> N = [4, 1, 7, -17, 8, 2, 5].
+iex(1)> c("stats.ex")              
+[Stats]
+iex(2)> n = [4, 1, 7, -17, 8, 2, 5]
 [4,1,7,-17,8,2,5]
-3> stats:minimum(N).
+iex(3)> Stats.minimum(n)
 -17
-4> stats:minimum([]).
-** exception error: no match of right hand side value []
-     in function  stats:minimum/1 (stats.erl, line 15)
-5> stats:minimum([52.46]).
-52.46
+iex(4)> Stats.minimum([52, 46])
+46
 -----
 
 <<SOLUTION06-ET01,See a suggested solution in Appendix A.>>
@@ -63,25 +58,25 @@ list can't really be said to have a minimum value.
 [[CH06-ET02]]
 Étude 6-2: Iteration through Lists (More Practice)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Add two more functions to the +stats+ module:
+Add two more functions to the +Stats+ module:
 
 +maximum/1+, which is just
 the same as +minimum/1+, but don't forget--as I did--to reverse the direction
-of your test for "smaller" to become a test for "larger." (This function
-also already exists as +lists:max/1+.)
+of your test for "smaller" to become a test for "larger."
 
 +range/1+, which takes a list of numbers as its argument and returns a
 list of two numbers: the minimum and maximum entries in the list.
 
-[source,erl]
+// [source,iex]
 ------
-1> c(stats).
-{ok,stats}
-2> N = [4, 1, 7, -17, 8, 2, 5].
+iex(1)> c("stats.ex")
+/Users/elixir/code/ch06-02/stats.ex:1: redefining module Stats
+[Stats]
+iex(2)> n = [4, 1, 7, -17, 8, 2, 5]
 [4,1,7,-17,8,2,5]
-3> stats:maximum(N).
+iex(3)> Stats.maximum(n)
 8
-4> stats:range(N).
+iex(4)> Stats.range(n)
 [-17,8]
 ------
 
@@ -96,7 +91,7 @@ returns the Julian date: the day of the year.
 
 Here is some sample output.
 
-[source, erl]
+// [source,iex]
 ----
 1> c(dates).            
 {ok,dates}
@@ -116,6 +111,7 @@ Here is some sample output.
 1
 ----
 
+This is the approach I used when solving the problem.
 The +julian/1+ function defines a 12-item list called +DaysPerMonth+ that
 contains the number of days in each month, splits the date into 
 the year, month, and day (using the +date_parts/1+ function you wrote in
@@ -153,7 +149,7 @@ the last call to +julian/5+ adds the number of days in the target month.
 For leap years, the function must add the number of days in the
 target month plus one--but only if the month is after February.
 
-If you want to do the work in +julian/5+, use a +case+ to assign either
+If you want to do the work in +julian/1+, use a +case+ to assign either
 +28+ or +29+ to a variable named +DaysInFeb+ (depending on whether the
 year is a leap year), and then use that variable instead of 28 when you
 construct your original days per month list.
@@ -161,11 +157,12 @@ construct your original days per month list.
 I'll give you the code for the +is_leap_year/1+ function for free; it returns
 +true+ if the given year is a leap year, +false+ otherwise.
 
-[source, erlang]
+// [source,elixir]
 ------
-is_leap_year(Year) ->
-  (Year rem 4 == 0 andalso Year rem 100 /= 0)
-  orelse (Year rem 400 == 0).
+defp is_leap_year(year) do
+  (rem(year,4) == 0 and rem(year,100) != 0)
+  or (rem(year, 400) == 0)
+end
 ------
 
 <<SOLUTION06-ET03,See suggested solutions in Appendix A.>>
@@ -181,7 +178,7 @@ I decided to do a simple task: take a list of numbers and return a list
 consisting of the squares of the numbers. I tried adding new items to the end
 of the list with this code:
 
-[source, erlang]
+// [source,elixir]
 ------
 -module(bad_code).
 -export([squares/1]).
@@ -195,7 +192,7 @@ squares([H | T], Result) -> squares(T, [Result | H * H ]).
 
 The resulting list was in the correct order, but it was an improper list.
 
-[source, erl]
+// [source,iex]
 ----
 1> c(bad_code).                           
 {ok,bad_code}
@@ -219,7 +216,7 @@ squares2([H | T], Result) -> squares2(T, [Result | [H * H] ]).
 
 There. That should do the trick.
 
-[source, erl]
+// [source,iex]
 ----
 6> c(bad_code).                           
 {ok,bad_code}
@@ -231,7 +228,7 @@ The result was better, but only slightly better. I didn't have an improper list
 any more, but now I had a list of list of list of lists.
 I could fix the problem by changing one line to flatten the final result.
 
-[source, erlang]
+// [source,elixir]
 ------
 squares2([], Result) -> lists:flatten(Result);
 ----
@@ -247,7 +244,7 @@ that +lists:flatten+ is a very expensive operation.
 In light of all of this, I decided to use +lists:reverse/1+ and write
 the code to generate a proper, non-nested list.
 
-[source, erlang]
+// [source,elixir]
 ------
 -module(good_code).
 -export([correct_squares/1]).
@@ -260,7 +257,7 @@ correct_squares([H | T], Result) ->
   correct_squares(T, [H * H | Result]).
 ----
 
-[source,erl]
+// [source,iex]
 -----
 1> c(good_code).
 {ok,good_code}
@@ -298,7 +295,7 @@ must be in ascending order.
 Here's a set of pocket depths for a person who has had her
 upper wisdom teeth, numbers 1 and 16, removed. Just copy and paste it.
 
-  PocketDepths = [[0], [2,2,1,2,2,1], [3,1,2,3,2,3],
+  pocket_depths = [[0], [2,2,1,2,2,1], [3,1,2,3,2,3],
   [3,1,3,2,1,2], [3,2,3,2,2,1], [2,3,1,2,1,1],
   [3,1,3,2,3,2], [3,3,2,1,3,1], [4,3,3,2,3,3],
   [3,1,1,3,2,2], [4,3,4,3,2,3], [2,3,1,3,2,2],
@@ -312,7 +309,7 @@ upper wisdom teeth, numbers 1 and 16, removed. Just copy and paste it.
 
 And here's the output:
 
-[source, erl]
+// [source,iex]
 ----
 1> c(teeth).  
 {ok,teeth}
@@ -327,15 +324,15 @@ And here's the output:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 How do you think I got the numbers for the teeth in the preceding étude?
 Do you really think I made up and typed all 180 of them? No, of course not.
-Instead, I wrote an Erlang program to create the list of lists for me,
+Instead, I wrote an Elixir program to create the list of lists for me,
 and that's what you'll do in this étude.
 
 In order to create the data for the teeth,
-I had to generate random numbers with Erlang's
+I had to generate random numbers with Elixir's
 +random+ module. Try generating a random number uniformly
 distributed between 0 and 1.0 by typing this in +erl+:
 
-[source,erl]
+// [source,iex]
 -----
 1> random:uniform().
 0.4435846174457203
@@ -348,7 +345,7 @@ way to get a different seed every time you run the program is to use the
 +now/0+ built-in function, which returns a different three-tuple every time
 you call it.
 
-[source,erl]
+// [source,iex]
 -----
 1> now().
 {1356,887000,432535}
@@ -360,10 +357,10 @@ you call it.
 
 Exit +erl+, restart, it and try these commands. Do this a couple of times to
 convince yourself that you really get different random numbers. Don't worry
-about the +undefined+; that's just Erlang's way of telling you that the
+about the +undefined+; that's just Elixir's way of telling you that the
 random number generator wasn't seeded before.
 
-[source, erl]
+// [source,iex]
 ------
 1> random:seed(now()).
 undefined
@@ -385,7 +382,7 @@ In this étude, create a module named +non_fp+, and write a function
 +generate_teeth/3+. This function has a string consisting of the characters
 +T+ and +F+ for its first argument.
 A +T+ in the string indicates that the tooth is present, and a
-+F+ indicates a missing tooth. In Erlang, a string is a list of characters,
++F+ indicates a missing tooth. In Elixir, a string is a list of characters,
 so you can treat this string just as you would any other list. Remember to
 refer to individual characters as +$T+ and +$F+.
 
