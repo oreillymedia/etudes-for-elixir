@@ -150,14 +150,14 @@ Thus, the following pattern matches a U.S. Social Security number; again, we'll 
 %r/\d\d\d-\d\d-\d\d\d\d/
 ----
 
-Finally, there is one more special character: +.+, which matches any character at all; letter, number, punctuation mark, whitespace--anything.
+Finally, there is one more special character: +.+ (a period), which matches any single character at all; letter, number, punctuation mark, whitespace--anything.
 
 Anchors
 ~~~~~~~
 
 All the patterns you've seen so far will find a match anywhere within a string, which is usually--but not always--what you want. For example, you might insist on a capital letter, but only as the very first character in the string. Or, you might say that an employee ID number has to end with a digit. Or, you might want to find the word +go+ only if it is at the beginning of a word, so that you will find it in +You met another, and pfft you was gone+, but you won't mistakenly find it in +I forgot my umbrella+. This is the purpose of an _anchor_; to make sure that you are at a certain boundary before continuing the match. Unlike character classes, which match individual characters in a string, these anchors do not match any character; they simply establish that you are on the correct boundaries.
 
-The up-arrow +^+ matches the beginning of a string, and the dollar sign +$+ matches the end of a line. Thus, +^[A-Z]+ matches a capital letter at the beginning of the line. Note that if you put the +^+ inside the square brackets, that would mean something entirely different! A pattern +\d$+ matches a digit at the end of a line. These are the boundaries you will use most often.
+The up-arrow +\^+ matches the beginning of a string, and the dollar sign +$+ matches the end of a line. Thus, +^[A-Z]+ matches a capital letter at the beginning of the line. Note that if you put the +^+ inside the square brackets, that would mean something entirely different! A pattern +\d$+ matches a digit at the end of a line. These are the boundaries you will use most often.
 
 The other two anchors are +\b+ and +\B+, which stand for a "word boundary" and "non-word boundary." For example, if you want to find the word +met+ at the beginning of a word, use the pattern +%r/\bmet/+:
 
