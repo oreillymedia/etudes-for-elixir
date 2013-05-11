@@ -10,8 +10,11 @@ Not yet converted to Elixir.
 [[CH06-ET01]]
 Étude 6-1: Recursive Iteration through a List
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In a module named +Stats+, write a function named +minimum/1+. It takes
-a list of numbers as its argument and returns the smallest value.
+In a module named +Stats+, write these functions:
+
+* +minimum/1+, which takes a list of numbers as its argument and returns the smallest value.
+* +maximum/1+, which takes a list of numbers as its argument and returns the largest value.
+* +range/1+, which takes a list of numbers as its argument and returns a list containing the maximum and minimum values in the list.
 
 Here's the pseudocode for +minimum/1+.
 
@@ -35,6 +38,8 @@ the list is less than the current candidate.
   and the current candidate (still the "smallest number")
   as the second argument.
 
+Of course, the code for +maximum/1+ is indentical to that of +minimum/1+ except that it tests for greater than rather than less than. The +range/1+ function will call both +minimum/1+ and +maximum/1+.
+
 Unlike most examples in 
 http://shop.oreilly.com/product/0000000000000.do[Introducing Elixir],
 passing an empty list to this 
@@ -45,48 +50,25 @@ list can't really be said to have a minimum value.
 -----
 iex(1)> c("stats.ex")              
 [Stats]
-iex(2)> n = [4, 1, 7, -17, 8, 2, 5]
+iex(2)> data = [4, 1, 7, -17, 8, 2, 5]
 [4,1,7,-17,8,2,5]
-iex(3)> Stats.minimum(n)
+iex(3)> Stats.minimum(data)
 -17
 iex(4)> Stats.minimum([52, 46])
 46
+iex(5)> Stats.maximum(data)
+8
+iex(6)> Stats.range(data)
+[-17,8]
 -----
 
 <<SOLUTION06-ET01,See a suggested solution in Appendix A.>>
 
 [[CH06-ET02]]
-Étude 6-2: Iteration through Lists (More Practice)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Add two more functions to the +Stats+ module:
-
-+maximum/1+, which is just
-the same as +minimum/1+, but don't forget--as I did--to reverse the direction
-of your test for "smaller" to become a test for "larger."
-
-+range/1+, which takes a list of numbers as its argument and returns a
-list of two numbers: the minimum and maximum entries in the list.
-
-// [source,iex]
-------
-iex(1)> c("stats.ex")
-/Users/elixir/code/ch06-02/stats.ex:1: redefining module Stats
-[Stats]
-iex(2)> n = [4, 1, 7, -17, 8, 2, 5]
-[4,1,7,-17,8,2,5]
-iex(3)> Stats.maximum(n)
-8
-iex(4)> Stats.range(n)
-[-17,8]
-------
-
-<<SOLUTION06-ET02,See a suggested solution in Appendix A.>>
-
-[[CH06-ET03]]
-Étude 6-3: Accumulating the Sum of a List
+Étude 6-2: Accumulating the Sum of a List
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Add a function +julian/1+ to the +dates+ module that you wrote in
-<<CH05-ET02, Étude 5-2>>. Given a string in ISO format (+"yyyy-mm-dd"+), it
+<<CH05-ET03, Étude 5-3>>. Given a string in ISO format (+"yyyy-mm-dd"+), it
 returns the Julian date: the day of the year.
 
 Here is some sample output.
@@ -112,47 +94,25 @@ Here is some sample output.
 ----
 
 This is the approach I used when solving the problem.
-The +julian/1+ function defines a 12-item list called +DaysPerMonth+ that
-contains the number of days in each month, splits the date into 
-the year, month, and day (using the +date_parts/1+ function you wrote in
-<<CH05-ET02,Étude 5-2>>, and then calls helper function +julian/5+ (yes, 
-five arguments).
+The +julian/1+ function starts out by using the +date_parts/1+ function you wrote in <<CH05-ET02,Étude 5-2>> to split the date into the year, month, and day. It then defines a 12-item list called +days_per_month+ that contains the number of days in each month.
 
-The +julian/5+ function does all of the work. Its arguments are the year,
-month, day, the list of days per month, and an accumulated total, which
-starts at zero. +julian/5+ takes the head of the days per month list and
-adds it to the accumulator, and then calls +julian/5+ again with the
-tail of the days per month list and the accumulator value as its last two
-arguments.
++julian/1+ then calls a helper function named +month_total/3+ to add up the total number of days in all the months preceding the one given in the date.
+Its arguments are the month, the list of days per month, and an accumulated total, which starts at zero. +month_total/3+ takes the head of the days per month list and adds it to the accumulator. It then calls +month_total/3+ again with the month decreased by one, the tail of the days per month list, and the 
+accumulator value as its arguments.
 
 Let's take, as an example, the sequence of calls for April 18, 2013:
 
-   julian(2013, 4, 18, [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31], 0).
-   julian(2013, 4, 18, [28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31], 31).
-   julian(2013, 4, 18, [31, 30, 31, 30, 31, 31, 30, 31, 30, 31], 59).
-   julian(2013, 4, 18, [30, 31, 30, 31, 31, 30, 31, 30, 31], 90).
+   month_total(4, [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31], 0)
+   month_total(3, 18, [28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31], 31)
+   month_total(2, 18, [31, 30, 31, 30, 31, 31, 30, 31, 30, 31], 59)
+   month_total(1, 18, [30, 31, 30, 31, 31, 30, 31, 30, 31], 90)
 
-At this point, the accumulator has all the days up through the beginning of
-April, so the last call to +julian/5+ just adds the 18 remaining days
-and yields 108 as its result.
+When the month number hits 1 (hint: use a clause with 1 for the month), the accumulator returns the total number of days up through the beginning of April. This number (90) is returned to the caller, +julian/1+, which adds the 18 remaining days to get a result of day number 108.
 
-You know you are doing the last call when you have "used up"
-the first _month-1_ items in
-the list of days per month. That happens +when+ the month number is greater
-than +(13 - length(_days_per_month_list_))+. Hint: use a guard.
+Of course, there's still the problem of leap years. You need to add one to the
+result if it's a leap year--but only if the month is after February.
 
-Of course, there's still the problem of leap years. You can handle it in
-either +julian/5+ or +julian/1+. 
-
-If you want to do the work in +julian/5+, then for non-leap years,
-the last call to +julian/5+ adds the number of days in the target month.
-For leap years, the function must add the number of days in the
-target month plus one--but only if the month is after February.
-
-If you want to do the work in +julian/1+, use a +case+ to assign either
-+28+ or +29+ to a variable named +DaysInFeb+ (depending on whether the
-year is a leap year), and then use that variable instead of 28 when you
-construct your original days per month list.
+You could also use a +cond+ to assign either +28+ or +29+ to a variable named +days_in_feb+ (depending on whether the year is a leap year), and then use that variable instead of 28 when you construct your original days per month list.
 
 I'll give you the code for the +is_leap_year/1+ function for free; it returns
 +true+ if the given year is a leap year, +false+ otherwise.
@@ -165,13 +125,13 @@ defp is_leap_year(year) do
 end
 ------
 
-<<SOLUTION06-ET03,See suggested solutions in Appendix A.>>
+<<SOLUTION06-ET02,See suggested solutions in Appendix A.>>
 
 [[CH06-INTERLUDE]]
 Interlude: "Mistakes were made."
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 As I was writing the next two études, I tried, despite the examples in the
-book, to avoid using +lists:reverse/1+. I thought, "Why _can't_ I add items
+book, to avoid using +Enum.reverse/1+. I thought, "Why _can't_ I add items
 to the end of a list using the cons (vertical bar; +|+) notation?" Here's why.
 
 I decided to do a simple task: take a list of numbers and return a list
@@ -180,23 +140,22 @@ of the list with this code:
 
 // [source,elixir]
 ------
--module(bad_code).
--export([squares/1]).
-
-squares(Numbers) -> squares(Numbers, []).
-
-squares([], Result) -> Result;
-
-squares([H | T], Result) -> squares(T, [Result | H * H ]).
+defmodule BadCode do
+  def squares(numbers), do: squares(numbers, [])
+  
+  def squares([], result), do: result
+  
+  def squares([h | t], result), do: squares(t, [result | h * h])
+end
 ----
 
 The resulting list was in the correct order, but it was an improper list.
 
 // [source,iex]
 ----
-1> c(bad_code).                           
-{ok,bad_code}
-2> bad_code:squares([9, 4.22, 5]).
+iex(1)> c("bad_code.ex")
+[BadCode]
+iex(2)> BadCode.squares([9, 4.22, 5])
 [[[[]|81]|17.8084]|25]
 ----
 
@@ -205,22 +164,23 @@ cons (+|+) operator should be a list. "OK, you want a list?" I thought.
 "I've got your list right here." (See the last
 line of the code, where I wrap the new item in square brackets.)
 
-[source,erlang]
+// [source,elixir]
 ------
-squares2(Numbers) -> squares2(Numbers, []).
+def squares2(numbers), do: squares2(numbers, [])
 
-squares2([], Result) -> Result;
-
-squares2([H | T], Result) -> squares2(T, [Result | [H * H] ]).
+def squares2([], result), do: result
+  
+def squares2([h | t], result), do: squares2(t, [result | [h * h]])
 ------
 
 There. That should do the trick.
 
 // [source,iex]
 ----
-6> c(bad_code).                           
-{ok,bad_code}
-7> bad_code:squares2([9, 4.22, 5]).
+iex(3)> c("bad_code.ex")    
+/Users/elixir/code/ch06-interlude/bad_code.ex:1: redefining module BadCode
+[BadCode]
+iex(4)> BadCode.squares2([9, 4.22, 5])
 [[[[],81],17.8084],25]
 ----
 
@@ -230,38 +190,36 @@ I could fix the problem by changing one line to flatten the final result.
 
 // [source,elixir]
 ------
-squares2([], Result) -> lists:flatten(Result);
+def squares2([], result), do: List.flatten(result)
 ----
 
 That worked, but it wasn't a satisfying solution.
 
 * The longer the original list, the more deeply nested the final list
 would be, 
-* I still had to call a function from the +lists+ module, and
-* A look at http://www.erlang.org/doc/efficiency_guide/listHandling.html showed
-that +lists:flatten+ is a very expensive operation.
+* I still had to call a function from the +List+ module, and
+* +List.flatten+ calls Erlang's +:list.flatten+ function, and a look at http://www.erlang.org/doc/efficiency_guide/listHandling.html showed
+that this is a very expensive operation.
 
-In light of all of this, I decided to use +lists:reverse/1+ and write
+In light of all of this, I decided to use +Enum.reverse/1+ and write
 the code to generate a proper, non-nested list.
 
 // [source,elixir]
 ------
--module(good_code).
--export([correct_squares/1]).
+defmodule GoodCode do
+  def squares(numbers), do: squares(numbers, [])
+  
+  def squares([], result), do: Enum.reverse(result)
 
-correct_squares(Numbers) -> correct_squares(Numbers, []).
-
-correct_squares([], Result) -> lists:reverse(Result);
-
-correct_squares([H | T], Result) ->
-  correct_squares(T, [H * H | Result]).
+  def squares([h | t], result), do: squares(t, [h * h | result])
+end
 ----
 
 // [source,iex]
 -----
-1> c(good_code).
-{ok,good_code}
-2> good_code:correct_squares([9, 4.22, 5]).
+iex(5)> c("good_code.ex")
+[GoodCode]
+iex(6)> GoodCode.squares([9, 4.22, 5])
 [81,17.8084,25]
 ----
 
@@ -276,8 +234,8 @@ to do so, and you certainly won't be the last.
 
 OK. Back to work.
 
-[[CH06-ET04]]
-Étude 6-4: Lists of Lists
+[[CH06-ET03]]
+Étude 6-3: Lists of Lists
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 Dentists check the health of your gums by checking the depth of the "pockets"
 at six different locations around each of your 32 teeth.
@@ -285,17 +243,19 @@ The depth is measured in millimeters. If any of the depths is greater
 than or equal to four millimeters, that tooth needs attention. (Thanks to
 Dr. Patricia Lee, DDS, for explaining this to me.)
 
-Your task is to write a module named +teeth+ and a function named
+Your task is to write a module named +Teeth+ and a function named
 +alert/1+. The function takes a list of 32 lists of six numbers as its
 input. If a tooth isn't present, it is represented by the list
 +[0]+ instead of a list of six numbers. The function produces
 a list of the tooth numbers that require attention.  The numbers
 must be in ascending order.
 
-Here's a set of pocket depths for a person who has had her
-upper wisdom teeth, numbers 1 and 16, removed. Just copy and paste it.
+Here's a function that returns a set of pocket depths for a person who has had her upper wisdom teeth, numbers 1 and 16, removed. Just copy and paste it into your module.
 
-  pocket_depths = [[0], [2,2,1,2,2,1], [3,1,2,3,2,3],
+// [source,elixir]
+----
+def pocket_depths do
+  [[0], [2,2,1,2,2,1], [3,1,2,3,2,3],
   [3,1,3,2,1,2], [3,2,3,2,2,1], [2,3,1,2,1,1],
   [3,1,3,2,3,2], [3,3,2,1,3,1], [4,3,3,2,3,3],
   [3,1,1,3,2,2], [4,3,4,3,2,3], [2,3,1,3,2,2],
@@ -305,22 +265,26 @@ upper wisdom teeth, numbers 1 and 16, removed. Just copy and paste it.
   [1,2,2,3,3,3], [2,2,3,2,3,3], [2,2,2,4,3,4],
   [3,4,3,3,3,4], [1,1,2,3,1,2], [2,2,3,2,1,3],
   [3,4,2,4,4,3], [3,3,2,1,2,3], [2,2,2,2,3,3],
-  [3,2,3,2,3,2]].
+  [3,2,3,2,3,2]]
+end
+----
 
 And here's the output:
 
 // [source,iex]
 ----
-1> c(teeth).  
-{ok,teeth}
-2> teeth:alert(PocketDepths).
+iex(1)> c("teeth.ex")
+[Teeth]
+iex(2)> Teeth.alert(Teeth.pocket_depths())
 [9,11,25,26,29]
 ----
 
-<<SOLUTION06-ET04,See a suggested solution in Appendix A.>>
+Hint: use the +Stats.maximum+ function you wrote in  <<CH06-ET01>> to see if a tooth needs attention.
 
-[[CH06-ET05]]
-Étude 6-5: Random Numbers; Generating Lists of Lists
+<<SOLUTION06-ET03,See a suggested solution in Appendix A.>>
+
+[[CH06-ET04]]
+Étude 6-4: Random Numbers; Generating Lists of Lists
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 How do you think I got the numbers for the teeth in the preceding étude?
 Do you really think I made up and typed all 180 of them? No, of course not.
@@ -328,72 +292,69 @@ Instead, I wrote an Elixir program to create the list of lists for me,
 and that's what you'll do in this étude.
 
 In order to create the data for the teeth,
-I had to generate random numbers with Elixir's
-+random+ module. Try generating a random number uniformly
-distributed between 0 and 1.0 by typing this in +erl+:
+I had to generate random numbers with Erlang's
++:random+ module. Try generating a random number uniformly
+distributed between 0 and 1.0 by typing this in +iex+:
 
 // [source,iex]
 -----
-1> random:uniform().
+iex(1)> :random.uniform()
 0.4435846174457203
 ------
 
-Now, exit +erl+, restart, and type the same command again. You'll get the
-same number. In order to ensure that you get different sets of random numbers,
-you have to _seed_ the random number generator with a three-tuple. The easiest
-way to get a different seed every time you run the program is to use the
-+now/0+ built-in function, which returns a different three-tuple every time
-you call it.
+Now, exit +iex+, restart, and type the same command again. You'll get the same number. In order to ensure that you get different sets of random numbers, you have to _seed_ the random number generator with a three-tuple. The easiest way to get a different seed every time you run the program is to use the +:erlang.now/0+ built-in function, which returns a different three-tuple every time you call it.
 
 // [source,iex]
 -----
-1> now().
-{1356,887000,432535}
-2> now().
-{1356,887002,15527}
-3> now().
-{1356,887003,831752}
+iex(1)> :erlang.now()
+{1368,203897,899678}
+iex(2)> :erlang.now()
+{1368,203904,416818}
+iex(3)> :erlang.now()
+{1368,203909,179152}
 -----
 
-Exit +erl+, restart, it and try these commands. Do this a couple of times to
+Exit +iex+, restart, it and try these commands. Do this a couple of times to
 convince yourself that you really get different random numbers. Don't worry
-about the +undefined+; that's just Elixir's way of telling you that the
+about the +:undefined+; that's just Erlang's way of telling you that the
 random number generator wasn't seeded before.
 
 // [source,iex]
 ------
-1> random:seed(now()).
-undefined
-2> random:uniform().
-0.27846009966109264
+iex(1)> :random.seed(:erlang.now())
+:undefined
+iex(2)> :random.uniform()
+0.4102329513116634
 -----
 
 If you want to generate a random integer between 1 and +N+, use
-+uniform/1+; thus +random:uniform(10)+ will generate a
++uniform/1+; thus +:random.uniform(10)+ will generate a
 random integer from 1 to 10.
 
-Functions that use random numbers have side effects; unlike the +sin+ or
-+sqrt+ function, which always gives you the same numbers for the same input,
+Functions that use random numbers have side effects; unlike the +:math.sin+ or
++:math.sqrt+ functions, which always give you the same numbers for the same input,
 functions that use random numbers should always give you different numbers
 for the same input. Since these functions aren't "pure," it's best to isolate
 them in a module of their own.
 
-In this étude, create a module named +non_fp+, and write a function 
-+generate_teeth/3+. This function has a string consisting of the characters
+In this étude, create a module named +NonFP+, and write a function 
++generate_pockets/2+. This function has a character list consisting of
 +T+ and +F+ for its first argument.
-A +T+ in the string indicates that the tooth is present, and a
-+F+ indicates a missing tooth. In Elixir, a string is a list of characters,
-so you can treat this string just as you would any other list. Remember to
-refer to individual characters as +$T+ and +$F+.
+A +T+ in the list indicates that the tooth is present, and a
++F+ indicates a missing tooth. This will be a single quoted character list,
+so you can treat it just as you would any other list. Remember to
+refer to individual characters as +?T+ and +?F+.
 
 The second argument is a floating point
 number between 0 and 1.0 that indicates the probability that a tooth will be
 a good tooth.
 
+The result is a list of lists, one list per tooth. If a tooth is present, the sublist has six entries; if a tooth is absent, the sublist is +[0]+. 
+
 These are the helper functions I needed:
 
-+generate_teeth/3+::
-  The first two arguments are the same as for +generate_teeth/2+; the
++generate_pockets/3+::
+  The first two arguments are the same as for +generate_pockets/2+; the
   third argument is the accumulated list. When the first argument is
   an empty list, the function yields the reverse of the accumulated list.
 +
@@ -403,7 +364,8 @@ that is present, create a list of six numbers by calling +generate_tooth/1+
 with the probability of a good tooth as its argument.
 
 +generate_tooth/1+::
-  This generates the list of numbers for a single tooth. It generates a
+  This function takes the probability of a good tooth as its argument and
+  generates the list of numbers for a single tooth. It generates a
   random number between 0 and 1. If that number is less than the probability
   of a good tooth, it sets the "base depth" to 2, otherwise it sets the base depth to 3.
 +
@@ -417,6 +379,54 @@ number 6, and an empty list as its arguments.
   adds a random integer between -1 and 1 to the base depth,
   adds it to the accumulated list, and does a recursive call with
   one less item.
+
+<<SOLUTION06-ET04,See a suggested solution in Appendix A.>>
+
+[[CH06-ET05]]
+Étude 6-5: Creating a HashDict from a File
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Your local college has given you a text file that contains data about which courses are taught in which rooms. Here is part of the file. The first column is the course ID number. The second column is the course name, and the third column is the room number.
+
+----
+64850,ENGL 033,RF141
+64851,ENGL 080,SC103
+64853,ENGL 102,C101B
+----
+
+Your job in this étude is to read the file and create a +HashDict+ whose key is the room number and whose value is a list of all the courses taught in that room.
+
+Opening Files
+^^^^^^^^^^^^^
+To open file _test.csv_, which you will find in the example download area at _URL goes here_, use +File.open/2+, which takes the path to a file as its first argument and a list of options as its second argument. Here is a shell session that opens the file, reads one line, and then closes the file.
+
+// [source,iex]
+----
+iex(1)> {result, device} = File.open("courses.csv", [:read, :utf8])
+{:ok,#PID<0.39.0>}
+iex(2)> data = IO.readline(device)
+"64850,ENGL 033,RF141\n"
+iex(3)> File.close(device)
+:ok
+----
+
+If you successfully open the file, +result+ will be +:ok+, and the +device+ will be the variable you when reading or closing the file. If there is some error, +result+ will be +:error+, and the +device+ variable will contain the reason that the file open failed.
+
++IO.readline/1+ reads a line from the file (including the ending +\n+ character) unless there is no more data, in which case you will get the atom +:eof+.
+
+[NOTE]
+====
+If you do not use the +:utf8+ option, the file will open in binary mode, and you will only be able to use the most basic input and output operations on the file.
+====
+
+Here is a portion of the output, edited to save space.
+
+// [source,iex]
+----
+iex(1)> c("college.ex")
+[College]
+iex(2)> College.make_room_list("courses.csv")
+#HashDict<[{"RF241",["CIT 050","CIT 042","CIT 020","PSYCH 018"]},{"RE311",["PSYCH 092","HIST 010A"]},{"AD211",["MATH 061","CHEM 030B","CHEM 030A","CHEM 001B","CHEM 001A"]},{"RF234",["COMSC 076","CIT 010","BIS 107","ACCTG 030"]},{"RE301",["BUS 009","LA 050","ESL 346"]},{"C104",["MATH 311"]},...}
+----
 
 <<SOLUTION06-ET05,See a suggested solution in Appendix A.>>
 

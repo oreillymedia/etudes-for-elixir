@@ -205,33 +205,21 @@ include::code/ch06-01/stats.ex[]
 Here is a suggested solution for
 <<CH06-ET02,Étude 6-2>>.
 
-==== +stats.ex+
+==== +dates.ex+
 // [source,elixir]
 ----
-include::code/ch06-02/stats.ex[]
+include::code/ch06-02/dates.ex[]
 ----
 
-[[SOLUTION06-ET03]]
-=== Solution 6-3
 Here is a suggested solution for
-<<CH06-ET03,Étude 6-3>> with leap years handled in the
-+julian/5+ function.
+<<CH06-ET03,Étude 6-3>> with leap years handled in a different way.
 
 ==== +dates.ex+
 // [source,elixir]
 ----
-include::code/ch06-03/dates.ex[]
+include::code/ch06-02b/dates.ex[]
 ----
 
-Here is a suggested solution for
-<<CH06-ET03,Étude 6-3>> with leap years handled in the
-+julian/1+ function.
-
-==== +dates.ex+
-// [source,elixir]
-----
-include::code/ch06-03b/dates.ex[]
-----
 ////
 [[SOLUTION06-ETinterlude]]
 === Solution 6-interlude
@@ -251,21 +239,32 @@ include::code/ch06-interlude/good_code.ex[]
 ----
 ////
 
-[[SOLUTION06-ET04]]
-=== Solution 6-4
+[[SOLUTION06-ET03]]
+=== Solution 6-3
 Here is a suggested solution for
-<<CH06-ET04,Étude 6-4>>.
+<<CH06-ET03,Étude 6-3>>.
 
 ==== +teeth.ex+
 // [source,elixir]
 ----
-include::code/ch06-04/teeth.ex[]
+include::code/ch06-03/teeth.ex[]
 ----
 
 ==== +stats.ex+
 // [source,elixir]
 ----
-include::code/ch06-04/stats.ex[]
+include::code/ch06-03/stats.ex[]
+----
+
+[[SOLUTION06-ET04]]
+=== Solution 6-4
+Here is a suggested solution for
+<<CH06-ET04,Étude 6-4>>.
+
+==== +non_fp.ex+
+// [source,elixir]
+----
+include::code/ch06-04/non_fp.ex[]
 ----
 
 [[SOLUTION06-ET05]]
@@ -273,10 +272,10 @@ include::code/ch06-04/stats.ex[]
 Here is a suggested solution for
 <<CH06-ET05,Étude 6-5>>.
 
-==== +non_fp.ex+
+==== +college.ex+
 // [source,elixir]
 ----
-include::code/ch06-05/non_fp.ex[]
+include::code/ch06-05/college.ex[]
 ----
 
 [[SOLUTION07-ET01]]
@@ -295,10 +294,10 @@ include::code/ch07-01/calculus.ex[]
 Here is a suggested solution for
 <<CH07-ET02,Étude 7-2>>.
 
-==== +patmatch.ex+
+==== +list_comp.ex+
 // [source,elixir]
 ----
-include::code/ch07-02/patmatch.ex[]
+include::code/ch07-02/list_comp.ex[]
 ----
 
 [[SOLUTION07-ET03]]
