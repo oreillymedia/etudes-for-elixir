@@ -6,29 +6,27 @@ Handling Errors
 NOTE: You can learn more about error handling in Chapters 3 and 17 of _Erlang Programming_, Chapter 4 and Section 18.2 of _Programming Erlang_, Section 2.8 and Chapters 5 and 7 of _Erlang and OTP in Action_, and Chapters 7 and 12 of _Learn You Some Erlang For Great Good!_.
 ////
 
-Not yet converted to Elixir.
-
 [[CH09-ET01]]
-Étude 9-1: +try+ and +catch+
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Étude 9-1: +try+ and +rescue+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Update the +stats+ module that you wrote in <<CH07-ET03,Étude 7-3>>
 so that it will catch errors in the +minimum/1+, +maximum/1+,
 +mean/1+ and +stdv/1+ functions.
 
 Here is some sample output.
 
-[source, erl]
+// [source,iex]
 -------
-1> c(stats).
-{ok,stats}
-2> stats:minimum([]).
-{error,badarg}
-3> stats:mean([]).
-{error,badarith}
-4> stats:mean(["123", 456]).          
-{error,badarith}
-5> stats:stdv([]).
-{error,badarith}
+iex(1)> c("stats.ex")
+[Stats]
+iex(2)> Stats.minimum([])
+MatchError[actual: []]
+iex(3)> Stats.mean([])
+ArithmeticError[message: "bad argument in arithmetic expression"]
+iex(4)> Stats.mean([:one, :two])
+ArithmeticError[message: "bad argument in arithmetic expression"]
+iex(5)> Stats.stdv([1])
+ArithmeticError[message: "bad argument in arithmetic expression"]
 --------
 
 <<SOLUTION09-ET01,See a suggested solution in Appendix A.>>
@@ -36,32 +34,31 @@ Here is some sample output.
 [[CH09-ET02]]
 Étude 9-2: Logging Errors
 ~~~~~~~~~~~~~~~~~~~~~~~~~
-Write a module named +bank+ that contains a function +account/1+. The
-function takes a numeric +Balance+, which gives the current balance in
+Write a module named +Bank+ that contains a function +account/1+. The
+function takes a numeric +balance+, which gives the current balance in
 the account in imaginary dollars.
 
 The function will repeatedly ask for a transaction (deposit, withdraw,
-balance inquiry, or quit). If a deposit or withdrawal, it asks for the amount
-to deposit or withdraw, and then does that transaction. If a deposit is
-more than $10,000, the deposit may be subject to hold.
+balance inquiry, or quit). If a deposit or withdrawal, it asks for
+the amount to deposit or withdraw, and then does that transaction.
+If a deposit is more than $10,000, the deposit may be subject to hold.
 
-Provide output to the customer, and also use +error_logger+ to write to a
-log file (which, in this case, will go to your terminal).
-Choose any form of input prompts and feedback and logging messages that you
-deisre. Handle the following situtations:
+Provide output to the customer, and also use +error_logger+ to
+write to a log file (which, in this case, will go to your terminal).
+Choose any form of input prompts and feedback and logging messages
+that you desire. Handle the following situtations:
 
 * Deposits and withdrawals cannot be negative numbers (error)
 * Deposits of $10,000 or more might be subject to hold (warning)
 * All other transactions are successful (informational)
 
-Use +get_number/1+ from <<CH05-ET01,Étude 5-1>> to allow either integer
-or float input.
+Use +get_number/1+ from <<CH05-ET01,Étude 5-1>> to allow either integer or float input; you may want to modify it to take the entire prompt as its argument.
 
-Here is sample output. Due to Erlang's asynchronous nature,
-the user prompts and logging are often interleaved in the most inconvenient
-places. 
+Here is sample output. Due to Elixir's asynchronous nature,
+the user prompts and logging are often interleaved in the most
+inconvenient places. 
 
-[source, erl]
+// [source,iex]
 -----------
 1> c(bank).
 {ok,bank}
