@@ -139,19 +139,19 @@ be a list or a tuple.
 [[CH07-ET04]]
 Étude 7-4: Using +lists:split/2+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Use +erl -man lists+ to see how the +lists:split/2+ function works, or try
+Use +h Enum.split+ to see how the +Enum.split/2+ function works, or try
 the following example and see if you can figure it out. Experiment to see
 what happens if the first argument is zero.
 
-[source,erl]
+// [source,iex]
 ----
-1> lists:split(4, [110, 220, 330, 440, 550, 660]).
-{[110,220,330,440],[550,660]}
+iex(1)> Enum.split([110, 220, 330, 440, 550, 600], 4)
+{[110,220,330,440],[550,600]}
 ----
 
-Use +lists:split/2+ and +lists:foldl/3+ to rewrite the
-+dates:julian/1+ function from 
-<<CH06-03,Étude 6-3>>. Hint: you'll use those functions when
+Use +Enum.split/2+ and +List.foldl/3+ to rewrite the
++Dates.julian/1+ function from 
+<<CH06-02,Étude 6-2>>. Hint: you'll use those functions when
 calculating the total number of days up to (but not including)
 the month in question.
 
@@ -165,11 +165,11 @@ comprehension. Try this in +erl+:
 
 // [source,iex]
 ----
-1> [X * Y || X <- [3, 5, 7], Y <- [2, 4, 6]].
+iex(1)> lc x inlist [3, 5, 7], y inlist [2, 4, 6], do: x * y
 [6,12,18,10,20,30,14,28,42]
 ----
 
-Using what you've learned from this example, write a module named +cards+
+Using what you've learned from this example, write a module named +Cards+
 that contains a function +make_deck/0+. The function will generate a deck
 of cards as a list 52 tuples in this form:
 
@@ -188,27 +188,7 @@ of cards as a list 52 tuples in this form:
  {"K", "Diamonds"},
  {"K", "Hearts"},
  {"K", "Spades"}]
- 
-[NOTE]
-===========
-When you run this function, your output will not show the entire list; it will
-show something that ends like this. Don't freak out.
 
-[literal]
-
-{7,"Clubs"},
-{7,"Diamonds"},
-{7,[...]},
-{7,...},
-{...}|...]
-
-If you want to see the full list, use this function.
-
-// [source,iex]
-show_deck(Deck) ->
-  lists:foreach(fun(Item) -> io:format("~p~n", [Item]) end, Deck).
-
-===========
 
 <<SOLUTION07-ET05,See a suggested solution in Appendix A.>>
 
@@ -216,22 +196,31 @@ show_deck(Deck) ->
 Étude 7-6: Explaining an Algorithm
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 You need a way to shuffle the deck of cards. This is the code for
-doing a shuffle, taken from the Literate Programs Wiki.
+doing a shuffle, adapted from the Erlang solution at
+the Literate Programs Wiki.
 
-[source, erlang]
+// [source,elixir]
 -----
-shuffle(List) -> shuffle(List, []).
-shuffle([], Acc) -> Acc;
-shuffle(List, Acc) ->
-  {Leading, [H | T]} = lists:split(random:uniform(length(List)) - 1, List),
-  shuffle(Leading ++ T, [H | Acc]).
+def shuffle(list) do
+  shuffle(list, [])
+end
+
+def shuffle([], acc) do
+  acc
+end
+
+def shuffle(list, acc) do
+  {leading, [h | t]} =
+    Enum.split(list, :random.uniform(Enum.count(list)) - 1)
+    shuffle(leading ++ t, [h | acc])
+end
 ----
 
 Wait a moment. If I've just given you the code, what's the purpose
 of this étude? I want you to understand the code. The object of this
 étude is to write the documentation for the algorithm.
 If you aren't sure what the code does, try adding some
-+io:format+ statements to see what is happening. If you're totally
-stuck, http://en.literateprograms.org/Fisher-YatesShuffle_%28Erlang%29[see the explanation from Literate Programs site].
++IO.puts+ statements to see what is happening. If you're totally
+stuck, http://en.literateprograms.org/Fisher-YatesShuffle_%28Erlang%29[see the explanation of the Erlang version at the Literate Programs site].
 
 <<SOLUTION07-ET06,See a suggested solution in Appendix A.>>
