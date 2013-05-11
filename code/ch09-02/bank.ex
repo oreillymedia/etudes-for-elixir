@@ -60,6 +60,9 @@ defmodule Bank do
         :error_logger.info_msg("Balance inquiry $#{balance}\n")
         IO.puts("Your current balance is $#{balance}")
         new_balance = balance
+      _ ->
+        IO.puts("Unknown command #{action}")
+        new_balance = balance
     end
     new_balance
   end        
@@ -76,7 +79,7 @@ defmodule Bank do
     cond do
       Regex.match?(%r/^[+-]?\d+$/, input_str) ->
         binary_to_integer(input_str)
-      Regex.match?(%r/^[+-]?\d+\.\d+([eE][+-]?\d+)$/, input_str) ->
+      Regex.match?(%r/^[+-]?\d+\.\d+([eE][+-]?\d+)?$/, input_str) ->
         binary_to_float(input_str)
       true -> :error
     end
