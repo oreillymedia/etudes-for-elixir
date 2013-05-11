@@ -50,11 +50,10 @@ defmodule Cards do
   Create a deck of 52 tuples in the form [{"A", "Clubs"},
   {"A", "Diamonds"}...]
   """
-  @spec make_deck() :: list(tuple)
+  @spec make_deck(list, list) :: list(tuple)
   
-  def make_deck() do
-    lc value inlist ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"],
-      suit inlist ["Clubs", "Diamonds", "Hearts", "Spades"], do:
+  def make_deck(values, suits) do
+    lc value inlist values, suit inlist suits, do:
       {value, suit}
   end
   

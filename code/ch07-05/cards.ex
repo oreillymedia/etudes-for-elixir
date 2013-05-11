@@ -14,7 +14,7 @@ defmodule Cards do
   @spec make_deck() :: list(tuple)
   
   def make_deck() do
-    lc value inlist ["A", 2, 3, 4, 5, 6, 7, 8, 9, "J", "Q", "K"],
+    lc value inlist ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"],
       suit inlist ["Clubs", "Diamonds", "Hearts", "Spades"], do:
       {value, suit}
   end

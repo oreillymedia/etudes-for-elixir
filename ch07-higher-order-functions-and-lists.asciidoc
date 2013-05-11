@@ -158,8 +158,7 @@ the month in question.
 [[CH07-ET05]]
 Étude 7-5: Multiple Generators in List Comprehensions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Back to list comprehensions. You can have more than one generator in a list
-comprehension. Try this in +iex+:
+Back to list comprehensions. You can have more than one generator in a list comprehension. Try this in +iex+:
 
 // [source,iex]
 ----
@@ -167,9 +166,7 @@ iex(1)> lc x inlist [3, 5, 7], y inlist [2, 4, 6], do: x * y
 [6,12,18,10,20,30,14,28,42]
 ----
 
-Using what you've learned from this example, write a module named +Cards+
-that contains a function +make_deck/0+. The function will generate a deck
-of cards as a list 52 tuples in this form:
+Using what you've learned from this example, write a module named +Cards+ that contains a function +make_deck/0+. The function will use a list comprehension with two generators to create a deck of cards as a list 52 tuples in this form:
 
 [literal]
 
@@ -200,6 +197,7 @@ the Literate Programs Wiki.
 // [source,elixir]
 -----
 def shuffle(list) do
+  :random.seed(:erlang.now())
   shuffle(list, [])
 end
 
