@@ -6,8 +6,6 @@ Higher Order Functions and List Comprehensions
 NOTE: You can learn more about working with higher order functions in Chapter 9 of _Erlang Programming_, Section 3.4 of _Programming Erlang_, Section 2.7 of _Erlang and OTP in Action_, and Chapter 6 of _Learn You Some Erlang For Great Good!_.  List comprehensions are in Chapter 9 of _Erlang Programming_, Section 3.6 of _Programming Erlang_, Section 2.9 of _Erlang and OTP in Action_, and Chapter 1 of _Learn You Some Erlang For Great Good!_.
 ////
 
-Not yet converted to Elixir.
-
 [[CH07-ET01]]
 Étude 7-1: Simple Higher Order Functions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -161,7 +159,7 @@ the month in question.
 Étude 7-5: Multiple Generators in List Comprehensions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Back to list comprehensions. You can have more than one generator in a list
-comprehension. Try this in +erl+:
+comprehension. Try this in +iex+:
 
 // [source,iex]
 ----
