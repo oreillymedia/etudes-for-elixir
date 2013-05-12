@@ -388,17 +388,13 @@ include::code/ch09-02/bank.ex[]
 Here is a suggested solution for
 <<CH10-ET01,Étude 10-1>>.
 
-==== +phone_records.hrl+
-// [source,elixir]
-----
-include::code/ch10-01/phone_records.hrl[]
-----
-
 ==== +phone_ets.ex+
 // [source,elixir]
 ----
 include::code/ch10-01/phone_ets.ex[]
 ----
+
+This is the program I used to generate the list of phone calls.
 
 ==== +generate_calls.ex+
 // [source,elixir]
@@ -406,7 +402,7 @@ include::code/ch10-01/phone_ets.ex[]
 include::code/ch10-01/generate_calls.ex[]
 ----
 
-
+////
 [[SOLUTION10-ET02]]
 === Solution 10-2
 Here is a suggested solution for
@@ -435,6 +431,7 @@ include::code/ch10-02/pet_records.hrl[]
 ----
 include::code/ch10-02/pet_mnesia.ex[]
 ----
+////
 
 
 [[SOLUTION11-ET01]]
