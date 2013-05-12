@@ -20,12 +20,12 @@ defmodule AskArea do
   
   def area() do
     input = IO.gets("R)ectangle, T)riangle, or E)llipse: ")
-    shape = char_to_shape(hd(input))
+    shape = char_to_shape(String.first(input))
     {d1, d2} = case shape do
       :rectangle -> get_dimensions("width", "height")
       :triangle -> get_dimensions("base ", "height" )
       :ellipse -> get_dimensions("major radius", "minor radius")
-      :unknown -> {hd(input), 0}
+      :unknown -> {String.first(input), 0}
     end
     calculate(shape, d1, d2)
   end
@@ -39,9 +39,9 @@ defmodule AskArea do
   
   def char_to_shape(character) do
     cond do
-      character == ?r or character == ?R -> :rectangle
-      character == ?t or character == ?T -> :triangle
-      character == ?e or character == ?E -> :ellipse
+      String.upcase(character) == "R" -> :rectangle
+      String.upcase(character) == "T" -> :triangle
+      String.upcase(character) == "E" -> :ellipse
       true -> :unknown
     end
   end
@@ -54,11 +54,11 @@ defmodule AskArea do
   
   def get_number(prompt) do
     input = IO.gets("Enter #{prompt} > ")
-    input_str = String.strip(list_to_binary(input))
+    input_str = String.strip(input)
     cond do
       Regex.match?(%r/^[+-]?\d+$/, input_str) ->
         binary_to_integer(input_str)
-      Regex.match?(%r/^[+-]?\d+\.\d+([eE][+-]?\d+)$/, input_str) ->
+      Regex.match?(%r/^[+-]?\d+\.\d+([eE][+-]?\d+)?$/, input_str) ->
         binary_to_float(input_str)
       true -> :error
     end

@@ -67,20 +67,22 @@ program work.
 +char_to_shape/1+::
   Given a character parameter (+R+, +T+, or +E+ in either upper or lower case),
   return an atom representing the specified shape (+:rectangle+,
-  +:triangle+, +:ellipse+, or +:unknown+ if some other character is entered).
+  +:triangle+, +:ellipse+, or +:unknown+ if some other character is entered). Hint: use +String.first/1+ to get the first character of
+  the user input, and use +String.upcase/1+ to make it upper case.
 
 +get_number/1+::
   Given a string as a prompt, displays the string
   +"Enter _prompt_ > "+ and returns the number that was input.
   This involves the following steps:
   
-  * Convert the character list to a binary string using +list_to_binary/1+
   * Use +String.strip/1+ to get rid of the trailing newline character
   * Use +binary_to_integer/1+ to convert the string to a number.
 
   When you write the +-spec+ for this function (you _have_ been
   writing documentation for your functions, haven't you?), the type
-  you will use for the parameter is +String.t()+. You can see a complete
+  you will use for the parameter is +String.t()+. You cannot use
+  +string()+, because that is a built-in type for Erlang, and there
+  would be a conflict. You can see a complete
   list of the built-in types at
   http://www.erlang.org/doc/reference_manual/typespec.html
 
