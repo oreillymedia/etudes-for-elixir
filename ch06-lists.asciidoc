@@ -5,8 +5,6 @@ Lists
 NOTE: You can learn more about working with lists in Chapter 2 of _Elixir Programming_, Sections 2.10 and 3.5 of _Programming Elixir_, Section 2.2.5 of _Elixir and OTP in Action_, and Chapter 1 of _Learn You Some Elixir For Great Good!_.
 ////
 
-Not yet converted to Elixir.
-
 [[CH06-ET01]]
 Étude 6-1: Recursive Iteration through a List
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -425,7 +423,13 @@ Here is a portion of the output, edited to save space.
 iex(1)> c("college.ex")
 [College]
 iex(2)> College.make_room_list("courses.csv")
-#HashDict<[{"RF241",["CIT 050","CIT 042","CIT 020","PSYCH 018"]},{"RE311",["PSYCH 092","HIST 010A"]},{"AD211",["MATH 061","CHEM 030B","CHEM 030A","CHEM 001B","CHEM 001A"]},{"RF234",["COMSC 076","CIT 010","BIS 107","ACCTG 030"]},{"RE301",["BUS 009","LA 050","ESL 346"]},{"C104",["MATH 311"]},...}
+#HashDict<[{"RF241",["CIT 050","CIT 042","CIT 020","PSYCH 018"]},
+{"RE311",["PSYCH 092","HIST 010A"]},
+{"AD211",["MATH 061","CHEM 030B","CHEM 030A","CHEM 001B",
+"CHEM 001A"]},
+{"RF234",["COMSC 076","CIT 010","BIS 107","ACCTG 030"]},
+{"RE301",["BUS 009","LA 050","ESL 346"]},
+{"C104",["MATH 311"]},...}
 ----
 
 <<SOLUTION06-ET05,See a suggested solution in Appendix A.>>

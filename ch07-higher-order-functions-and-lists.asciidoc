@@ -135,7 +135,7 @@ be a list or a tuple.
 <<SOLUTION07-ET03,See a suggested solution in Appendix A.>>
 
 [[CH07-ET04]]
-Étude 7-4: Using +lists:split/2+
+Étude 7-4: Using +Enum.split/2+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Use +h Enum.split+ to see how the +Enum.split/2+ function works, or try
 the following example and see if you can figure it out. Experiment to see

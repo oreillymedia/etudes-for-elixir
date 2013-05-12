@@ -47,25 +47,25 @@ Here is some sample output.
 // [source,iex]
 ----
 iex(1)> c("geom.ex")
-/home/david/code/ch03-02/geom.ex:1: redefining module Geom
+/Users/elixir/code/ch03-02/geom.ex:1: redefining module Geom
 [Geom]
 iex(2)> Geom.area(:rectangle, -3, 4)
 ** (FunctionClauseError) no function clause matching: Geom.area(:rectangle, -3, 4)
-    /home/david/code/ch03-02/geom.ex:21: Geom.area(:rectangle, -3, 4)
+    /Users/elixir/code/ch03-02/geom.ex:21: Geom.area(:rectangle, -3, 4)
     erl_eval.erl:569: :erl_eval.do_apply/6
     src/elixir.erl:133: :elixir.eval_forms/3
     /bin/elixir/lib/iex/lib/iex/server.ex:19: IEx.Server.do_loop/1
 
 iex(2)> Geom.area(:triangle, 3, -4)
 ** (FunctionClauseError) no function clause matching: Geom.area(:triangle, 3, -4)
-    /home/david/code/ch03-02/geom.ex:21: Geom.area(:triangle, 3, -4)
+    /Users/elixir/code/ch03-02/geom.ex:21: Geom.area(:triangle, 3, -4)
     erl_eval.erl:569: :erl_eval.do_apply/6
     src/elixir.erl:133: :elixir.eval_forms/3
     /bin/elixir/lib/iex/lib/iex/server.ex:19: IEx.Server.do_loop/1
 
 iex(2)> Geom.area(:ellipse, -3, -4)
 ** (FunctionClauseError) no function clause matching: Geom.area(:ellipse, -3, -4)
-    /home/david/code/ch03-02/geom.ex:21: Geom.area(:ellipse, -3, -4)
+    /Users/elixir/code/ch03-02/geom.ex:21: Geom.area(:ellipse, -3, -4)
     erl_eval.erl:569: :erl_eval.do_apply/6
     src/elixir.erl:133: :elixir.eval_forms/3
     /bin/elixir/lib/iex/lib/iex/server.ex:19: IEx.Server.do_loop/1
