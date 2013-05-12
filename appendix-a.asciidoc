@@ -361,6 +361,12 @@ include::code/ch08-01/cards.ex[]
 include::code/ch08-01/game.ex[]
 ----
 
+==== +player.ex+
+// [source,elixir]
+----
+include::code/ch08-01/player.ex[]
+----
+
 [[SOLUTION09-ET01]]
 === Solution 9-1
 Here is a suggested solution for
@@ -394,9 +400,11 @@ Here is a suggested solution for
 include::code/ch10-01/phone_ets.ex[]
 ----
 
-This is the program I used to generate the list of phone calls.
 
 ==== +generate_calls.ex+
+
+This is the program I used to generate the list of phone calls.
+
 // [source,elixir]
 ----
 include::code/ch10-01/generate_calls.ex[]
