@@ -7,7 +7,7 @@ I drew the diagram shown in <<FIG1101>>.
 
 [[FIG1101]]
 .Processing a call in +GenServerr+ 
-image::images/eter_1101.png[float="true"]
+image::images/etel_1101.png[float="true"]
 
 The client does a +GenServer.call(server, request)+. The server will
 then call the +handle_call/3+ function that you have provided in the
@@ -466,132 +466,128 @@ didn't do any processing of its own. In this étude, you will create a
 
 [[FIG1102]]
 .Server with multiple clients
-image:images/eter_1102.png[float="true"]
+image:images/etel_1102.png[float="true"]
 
 The interesting part of this program is that the client will _also_ be
-a +gen_server+, as shown in <<FIG1103>>.
+a +GenServer+, as shown in <<FIG1103>>.
 
 [[FIG1103]]
-.Client as a +gen_server+
-image:images/eter_1103.png[float="true"]
+.Client as a +GenServer+
+image:images/etel_1103.png[float="true"]
 
 Up until now, you have been using a module name as the first argument to
-+gen_server:call/2+, and in the previous étude, you used
-+net_adm:ping/1+ to connect to a server.
++:gen_server.call/2+, and in the previous étude, you used
++:net_adm.ping/1+ to connect to a server.
 
-In this étude, you won't need +net_adm:ping/1+. Instead,
+In this étude, you won't need +:net_adm.ping/1+. Instead,
 you will use a tuple of the form
-+{Module, Node}+ to directly connect to the node you want. So, for
-example, if you want to make a call to a module named +chatroom+ on
++{module, node}+ to directly connect to the node you want. So, for
+example, if you want to make a call to a module named +Chatroom+ on
 a node named +lobby@localhost+, you would do something like this:
 
-+gen_server:call({chatroom, lobby@localhost}, Request)+
-
-This means
-you won't need to connect with +net_adm:ping/1+. 
++gen_server:call({:Chatroom, :lobby@localhost}, request)+
 
 Here is my design for the solution. You, of course, may come up
 with an entirely different and better design.
 
-My solution has two modules, both of which use the +gen_server+ behavior.
+My solution has two modules, both of which use the +GenServer+ behavior.
 
-The +chatroom+ Module
+The +Chatroom+ Module
 ^^^^^^^^^^^^^^^^^^^^^
-The first module, +chatroom+, will keep as its state a list of tuples, one
-tuple for each person in the chat. Each tuple has the format
-+{{UserName, UserServer}, Pid}+. The Pid is the one that +gen_server:call+
-receives in the +From+ parameter; it's guaranteed to be unique for each
-person in chat.
+The first module, +Chatroom+, will keep as its state a list of tuples, 
+one tuple for each person in the chat. Each tuple has the format
++{{_userName_, _userServer_}, _pid_}+. The pid is the one that
++:gen_server.call+ receives in the +from+ parameter; it's guaranteed to 
+be unique for each person in chat.
 
 The +handle_call/3+ function will accept the following requests.
 
-+{login, UserName, ServerName}+::
-Adds the user name, server name, and Pid (which is in the +From+ parameter)
-to the server's state. Don't allow a duplicate user name from the same server.
++{:login, user_name, server_name}+::
+Adds the user name, server name, and pid (which is in the +from+ parameter) to the server's state. Don't allow a duplicate user name from the same server. You can use +Enum.find/3+ for this.
 
-+logout+::
++:logout+::
 Removes the user from the state list.
 
-+{say, Text}+::
-Sends the given Text to all the other users in the chat room. Use
-+gen_server:cast/2+ to send the message.
++{:say, text}+::
+Sends the given text to all the other users in the chat room. Use
++:gen_server.cast/2+ to send the message to each user. You may use
+a process id as the first argument to +:gen_server.cast/2+.
 
-+users+::
++:users+::
 Returns the list of names and servers for all people currently in the
 chat room.
 
-+{who, Person, ServerName}+::
++{:who, person, server_name}+::
 Return the profile of the given person/server. (This is "extra credit";
-see the following details about the +person+ module). It works by
-calling the +person+ module at +ServerName+ and giving it a
-+get_profile+ request.
+see the following details about the +Person+ module). It works by
+calling the +Person+ module at +server_name+ and giving it a
++:get_profile+ request.
 
-The +person+ Module
+The +Person+ Module
 ^^^^^^^^^^^^^^^^^^^
-The other module, +person+, has a +start_link/1+ function; the argument
+The other module, +Person+, has a +start_link/1+ function; the argument
 is the node name of the chat room server. This will be passed on to the
-+init/1+ function. This is stored in the server's state. I did this because
-many other calls need to know the chat room server's name, and keeping it in the
-person's state seemed a reasonable choice.
++init/1+ function. This is stored in the server's state. I did this 
+because many other calls need to know the chat room server's name, and
+keeping it in the person's state seemed a reasonable choice.
 
-For extra credit, the state will also include the person's profile, which
-is a list of +{Key, Value}+ tuples.
+For extra credit, the state will also include the person's profile,
+which is a list of +{key, value}+ tuples.
 
-The +handle_call/3+ takes care of these requests:
+The +:handle_call/3+ manages these requests:
 
-+get_chat_node+::
-Returns the chat node name that's stored in the server's state. (Almost all of
-the wrapper functions to be described in the following section will need
-the chat node name.)
++:get_chat_node+::
+Returns the chat node name that's stored in the server's state. (Almost 
+all of the wrapper functions to be described in the following section
+will need the chat node name.)
 
-+get_profile+::
++:get_profile+::
 Returns the profile that's stored in the server's state (extra credit)
 
-+{profile, Key, Value}+::
-If the profile already contains the key, replace it with the given value.
-Otherwise, add the key and value to the profile. Hint: use 
-+lists:keymember/3+ and +lists:keyreplace/4+. (extra credit)
++{:profile, key, value}+::
+If the profile already contains the key, replace it with the given value. Otherwise, add the key and value to the profile. You can use
++List:keymember?+ and +List:keyreplace+. (extra credit)
 
-Because the chat room server uses +gen_server:cast/2+ to send messages
+Because the chat room server uses +:gen_server.cast/2+ to send messages
 to the people in the room, your +handle_cast/3+ function will receive messages sent from other users in this form:
 
-+{message, {FromUser, FromServer}, Text}+
++{:message, {from_user, from_server}, text}+
 
-Wrapper Functions for the +person+ module
+Wrapper Functions for the +Person+ module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 +get_chat_node()+::
 A convenience function to get the name of the chat host node by doing
-+gen_server:call(person, get_chat_node)+
++:gen_server.call(Person, :get_chat_node)+
 
-+login(UserName)+::
-Calls the chat room server with a {login, UserName} request. If the
-user name is an atom, use +atom_to_list/1+ to convert it to a string.
++login(user_name)+::
+Calls the chat room server with a {:login, user_name} request. If the
+user name is an atom, use +atom_to_binary/1+ to convert it to a string.
 
 +logout()+::
-Calls the chat room server with a +logout+ request. As you saw in the
+Calls the chat room server with a +:logout+ request. As you saw in the
 description of +chatroom+, the server uses the process ID to figure out
 who should be logged out.
 
-+say(Text)+::
-Calls the chat server with a +{say, Text}+ request.
++say(text)+::
+Calls the chat server with a +{:say, text}+ request.
 
 +users()+::
-Calls the chat server with a +users+ request.
+Calls the chat server with a +:users+ request.
 
-+who(UserName, UserNode)+::
-Calls the chat server with a +{who, UserName, UserNode}+ request to
++who(user_name, user_node)+::
+Calls the chat server with a +{:who, user_name, user_node}+ request to
 see the profile of the given person. (extra credit)
 
-+profile(Key, Value)+::
++profile(key, value)+::
 A convenience method that calls the +person+ module with a
-+{profile, Key, Value}+ request. (extra credit)
++{:profile, key, value}+ request. (extra credit)
 
 Putting it All Together
 ^^^^^^^^^^^^^^^^^^^^^^^
 Here is what the chat room server looks like. The lines beginning with
-+Recipient list:+ are debug output. I have gotten rid of the startup lines
-from the +erl+ command.
++Recipient list:+ are debug output. I have gotten rid of the startup
+lines from the +iex+ command.
 
 // [source,iex]
 -------
