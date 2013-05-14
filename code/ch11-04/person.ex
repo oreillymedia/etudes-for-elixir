@@ -11,12 +11,11 @@ defmodule Person do
   
   # callbacks for GenServer.Behaviour
   def init([chatroom_server]) do
-    :inets.start()
     {:ok, State.new(server: {Chatroom, chatroom_server},
       profile: HashDict.new)}
   end
   
-  def handle_call(:get_chat_node, _from, state) do
+  def handle_call(:get_chat_server, _from, state) do
     {:reply, state.server, state}
   end
   
@@ -24,10 +23,15 @@ defmodule Person do
     {:reply, state.profile, state}
   end
   
-  def handle_call({:profile, key,value}, _from, state) do
-    new_profile = HashDict.put(state.profile, key, value)
-    reply = {:ok, "Added #{key}/#{value} to profile"}
-    {:reply, reply, State.new(server: state.server, profile: new_profile) }
+#  def handle_call({:profile, key,value}, _from, state) do
+#    new_profile = HashDict.put(state.profile, key, value)
+#    reply = {:ok, "Added #{key}/#{value} to profile"}
+#    {:reply, reply, State.new(server: state.server, profile: new_profile) }
+#  end
+  
+  def handle_call(item, from, state) do
+    IO.puts("Unknown message #{inspect(item)} from #{inspect(from)}")
+    {:reply, "unknown msg to person", state}
   end
   
   def handle_cast({:message, {user, server}, text}, state) do
@@ -61,7 +65,7 @@ defmodule Person do
   end
   
   def login(user_name) do
-    :gen_server.call(chat_server, {:login, user_name})
+    :gen_server.call(chat_server, {:login, user_name, node()})
   end
   
   def logout do

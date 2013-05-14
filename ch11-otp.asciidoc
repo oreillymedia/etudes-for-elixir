@@ -500,6 +500,14 @@ one tuple for each person in the chat. Each tuple has the format
 +:gen_server.call+ receives in the +from+ parameter; it's guaranteed to 
 be unique for each person in chat.
 
+[NOTE]
+====
+The +from+ parameter that your functions receive is actually a tuple
+consisting of +{pid, refnum}+ where +refnum+ is a reference number for
+the message. Store only the +pid+, which is always the same; throw away
+the reference number, which always changes.
+====
+
 The +handle_call/3+ function will accept the following requests.
 
 +{:login, user_name, server_name}+::
