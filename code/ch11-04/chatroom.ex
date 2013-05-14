@@ -17,13 +17,13 @@ defmodule Chatroom do
   
   def handle_call({:login, user, server}, from, state) do
     {pid, _reference} = from
-    key = {{user, server}, pid}
-    IO.puts("Logging in from #{inspect(pid)}")
+    key = {user, server}
+    IO.puts("#{user} #{server} logging in from #{inspect(pid)}")
     if List.keymember?(state, key, 0) do
       reply = {:error, "#{user} #{server} already logged in"}
       new_state = state
     else
-      new_state = [key | state]
+      new_state = [{key,pid} | state]
       reply = {:ok, "#{user}@#{server} logged in."}
     end
     {:reply, reply, new_state}
@@ -61,16 +61,22 @@ defmodule Chatroom do
     {from_pid, _ref} = from
     
     # get sender's name and server
-    {{from_user, from_server}, _pid} = List.keyfind(state, from_pid, 1)
+    person = List.keyfind(state, from_pid, 1)
     
-    Enum.each(state, fn(item) ->
-      {{_user, _server}, pid} = item
-      if pid != from_pid do
-        :gen_server.cast(pid, {:message,
-          {from_user, from_server}, text})
-      end
-    end)
-    {:reply, "Message sent.", state}
+    case person do
+      {{from_user, from_server}, _pid} ->
+        Enum.each(state, fn(item) ->
+          {{_user, _server}, pid} = item
+          if pid != from_pid do
+            :gen_server.cast(pid, {:message,
+              {from_user, from_server}, text})
+          end
+        end)
+        reply = "Message sent."
+      nil ->
+        reply = "Unknown sender pid #{inspect(from_pid)}"
+    end
+    {:reply, reply, state}
   end
   
   # Return a list of all the users and their servers
@@ -84,12 +90,12 @@ defmodule Chatroom do
   # Get the profile of a person at a given server
   
   def handle_call({:who, person, server}, _from, state) do
-    {{_u, _s}, pid} = List.keyfind(state, {person, server}, 0)
-    if is_pid(pid) do
-      IO.puts("I have a legit PID")
+    case List.keyfind(state, {person, server}, 0) do
+      {{_u, _s}, pid}  ->
+        reply = :gen_server.call(pid, :get_profile)
+      nil ->
+        reply = "Cannot find #{person} #{server}"
     end
-    IO.puts("About to send get profile to #{inspect(pid)}")
-    reply = :gen_server.call(pid, :get_profile)
     {:reply, reply, state}
   end
   

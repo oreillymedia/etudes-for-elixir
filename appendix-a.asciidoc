@@ -471,16 +471,13 @@ and the added functions.
 
 // [source,elixir]
 ----
--export([report/1, recent/0]). % wrapper functions
-
-%% Wrapper to hide internal details when getting a weather report
-report(Station) ->
-  gen_server:call(?SERVER, Station).
-
-%% Wrapper to hide internal details when getting a list of recently used
-%% stations.
-recent() ->
-  gen_server:cast(?SERVER, "").
+def report(station) do
+  :gen_server.call(Weather, station)
+end
+  
+def recent() do
+  :gen_server.cast(__MODULE__, "")
+end
 ----
 
 [[SOLUTION11-ET03]]
@@ -492,41 +489,30 @@ the only code shown here is the added and revised code.
 
 // [source,elixir]
 ----
-%% @doc Connect to a named server
-connect(ServerName) ->
-  Result = net_adm:ping(ServerName),
-  case Result of
-    pong -> io:format("Connected to server.~n");
-    pang -> io:format("Cannot connect to ~p.~n", [ServerName])
-  end.
+# convenience method for startup
+def start_link do
+  :gen_server.start_link({:global, __MODULE__}, __MODULE__, [], [])
+end
 
-%% Wrapper to hide internal details when getting a weather report
-report(Station) ->
-  gen_server:call({global, weather}, Station).
+def connect(other_node) do
+  case :net_adm.ping(other_node) do
+    :pong ->
+      IO.puts("Connected to server.")
+      :ok
+    :pang ->
+      IO.puts("Could not connect.")
+      :error
+  end
+end
 
-%% Wrapper to hide internal details when getting a list of recently used
-%% stations.
-recent() ->
-  gen_server:call({global,weather}, recent).
+def report(station) do
+  :gen_server.call({:global, __MODULE__}, station)
+end
 
-%%% convenience method for startup
-start_link() ->
-  gen_server:start_link({global, ?SERVER}, ?MODULE, [], []).
-
-%%% gen_server callbacks
-init([]) ->
-  inets:start(),
-  {ok, []}.
-
-handle_call(recent, _From, State) ->
-  {reply, State, State};
-handle_call(Request, _From, State) ->
-  {Reply, NewState} = get_weather(Request, State),
-  {reply, Reply, NewState}.
-
-handle_cast(_Message, State) ->
-  io:format("Most recent requests: ~p\n", [State]),
-  {noreply, State}.
+def recent() do
+  result = :gen_server.call({:global, __MODULE__}, :recent)
+  IO.puts("Recently visited: #{inspect(result)}")
+end
 ----
 
 [[SOLUTION11-ET04]]

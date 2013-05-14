@@ -511,7 +511,7 @@ the reference number, which always changes.
 The +handle_call/3+ function will accept the following requests.
 
 +{:login, user_name, server_name}+::
-Adds the user name, server name, and pid (which is in the +from+ parameter) to the server's state. Don't allow a duplicate user name from the same server. You can use +Enum.find/3+ for this.
+Adds the user name, server name, and pid (which is in the +from+ parameter) to the server's state. Don't allow a duplicate user name from the same server. You can use +List.keymember?/3+ for this.
 
 +:logout+::
 Removes the user from the state list.
@@ -525,10 +525,10 @@ a process id as the first argument to +:gen_server.cast/2+.
 Returns the list of names and servers for all people currently in the
 chat room.
 
-+{:who, person, server_name}+::
++{:profile, person, server_name}+::
 Return the profile of the given person/server. (This is "extra credit";
 see the following details about the +Person+ module). It works by
-calling the +Person+ module at +server_name+ and giving it a
+finding the pid of +person+ at node +server_name+ and sending it a
 +:get_profile+ request.
 
 The +Person+ Module
@@ -549,10 +549,20 @@ Returns the chat node name that's stored in the server's state. (Almost
 all of the wrapper functions to be described in the following section
 will need the chat node name.)
 
++{:login, user_name}+::
+Forward this request to the chat room server along with the person's
+server node name.
+
++:logout+::
+Forward this request to the chat room server.
+
++{:say, text}+::
+Forward this request to the chat room server.
+
 +:get_profile+::
 Returns the profile that's stored in the server's state (extra credit)
 
-+{:profile, key, value}+::
++{:set_profile, key, value}+::
 If the profile already contains the key, replace it with the given value. Otherwise, add the key and value to the profile. You can use
 +List:keymember?+ and +List:keyreplace+. (extra credit)
 
@@ -569,16 +579,16 @@ A convenience function to get the name of the chat host node by doing
 +:gen_server.call(Person, :get_chat_node)+
 
 +login(user_name)+::
-Calls the chat room server with a {:login, user_name} request. If the
+Calls the Person server with a {:login, user_name} request. If the
 user name is an atom, use +atom_to_binary/1+ to convert it to a string.
 
 +logout()+::
-Calls the chat room server with a +:logout+ request. As you saw in the
+Calls the Person server with a +:logout+ request. As you saw in the
 description of +chatroom+, the server uses the process ID to figure out
 who should be logged out.
 
 +say(text)+::
-Calls the chat server with a +{:say, text}+ request.
+Calls the Person server with a +{:say, text}+ request.
 
 +users()+::
 Calls the chat server with a +:users+ request.
@@ -587,28 +597,39 @@ Calls the chat server with a +:users+ request.
 Calls the chat server with a +{:who, user_name, user_node}+ request to
 see the profile of the given person. (extra credit)
 
-+profile(key, value)+::
-A convenience method that calls the +person+ module with a
-+{:profile, key, value}+ request. (extra credit)
++set_profile(key, value)+::
+A convenience method that calls the +Person+ server with a
++{:set_profile, key, value}+ request. (extra credit)
+
+[NOTE]
+====
+The +login/2+, +logout/0+, and +say/2+ wrapper functions do _not_ call
+the chat server directly. Instead, these
+functions will use +gen_server.call(Person, _data_)+; your +handle_call+
+function will do the +gen_server.call+ to the chat room. That way, the
+chat room server sees the request coming from the +Person+ server.
+====
 
 Putting it All Together
 ^^^^^^^^^^^^^^^^^^^^^^^
-Here is what the chat room server looks like. The lines beginning with
-+Recipient list:+ are debug output. I have gotten rid of the startup
+Here is what the chat room server looks like. Most of the output you
+will see is debugging output. I have gotten rid of the startup
 lines from the +iex+ command.
 
 // [source,iex]
 -------
-erl -sname lobby
+iex --sname lobby
 
-(lobby@localhost)1> chatroom:start_link().
-{ok,<0.39.0>}
-Recipient list: [{"Steve",sales@localhost},{"Michele",marketing@localhost}] 
-Recipient list: [{"David",engineering@localhost},
-                 {"Michele",marketing@localhost}]
-Recipient list: [{"David",engineering@localhost},{"Steve",sales@localhost}] 
-Recipient list: [{"David",engineering@localhost},
-                 {"Michele",marketing@localhost}]
+iex(lobby@localhost)1> c("chatroom.ex")
+[Chatroom]
+iex(lobby@localhost)2> c("person.ex")
+[Person,Person.State]
+iex(lobby@localhost)3> Chatroom.start_link
+{:ok,#PID<0.56.0>}
+Steve sales@localhost logging in from #PID<10982.46.0>
+David engineering@localhost logging in from #PID<10983.46.0>
+Michele marketing@localhost logging in from #PID<10984.46.0>
+iex(lobby@localhost)4> 
 -----
 
 And here are three other servers talking to one another and setting
@@ -616,68 +637,63 @@ profile information.
 
 // [source,iex]
 -------    
-erl -sname sales
+iex --sname sales
 
-(sales@localhost)1> person:start_link(lobby@localhost).
-Chat node is: lobby@localhost
-{ok,<0.39.0>}
-(sales@localhost)2> person:login("Steve").
-{ok,"Logged in."}
-(sales@localhost)3> person:profile(city, "Chicago").
-{ok,[{city,"Chicago"}]}
-David (engineering@localhost) says: "Hi, everyone."
-(sales@localhost)4> person:say("How's things in Toronto, David?").
-ok
-Michele (marketing@localhost) says: "New product launch is next week."
-(sales@localhost)5> person:say("oops, gotta run.").
-ok
-(sales@localhost)6> person:logout().
-ok
+iex(sales@localhost)1> Person.start_link(:lobby@localhost)   
+{:ok,#PID<0.46.0>}
+iex(sales@localhost)2> Person.login("Steve")
+"Sent login request"
+iex(sales@localhost)3> Person.set_profile(:city, "Chicago")
+{:ok,"Added city/Chicago to profile"}
+David (engineering@localhost) says: Hi, everyone.
+iex(sales@localhost)4> Person.say("How's things in Toronto, David?")
+"Message sent."
+Michele (marketing@localhost) says: Product launch is next week.
+iex(sales@localhost)5> Person.say("Have to leave. Bye, everyone.")
+"Message sent."
+iex(sales@localhost)6> Person.logout
+{:ok,"Steve@sales@localhost logged out."}
 ------
 
 // [source,iex]
 -------
 erl -sname engineering
 
-(engineering@localhost)1> person:start_link(lobby@localhost).
-Chat node is: lobby@localhost
-{ok,<0.39.0>}
-(engineering@localhost)2> person:login("David").
-{ok,"Logged in."}
-(engineering@localhost)3> person:profile(city, "Toronto").
-{ok,[{city,"Toronto"}]}
-(engineering@localhost)4> person:profile(department, "New Products").
-{ok,[{department,"New Products"},{city,"Toronto"}]}
-(engineering@localhost)5> person:say("Hi, everyone.").  
-ok
-Steve (sales@localhost) says: "How's things in Toronto, David?"
-Michele (marketing@localhost) says: "New product launch is next week."
-(engineering@localhost)6> person:users().
-[{"David",engineering@localhost},
- {"Steve",sales@localhost},
- {"Michele",marketing@localhost}]
-Steve (sales@localhost) says: "oops, gotta run."
+iex(engineering@localhost)1> Person.start_link(:lobby@localhost)
+{:ok,#PID<0.46.0>}
+iex(engineering@localhost)2> Person.login("David")
+"Sent login request"
+iex(engineering@localhost)3> Person.set_profile(:city, "Toronto")
+{:ok,"Added city/Toronto to profile"}
+iex(engineering@localhost)4> Person.say("Hi, everyone.")
+"Message sent."
+Steve (sales@localhost) says: How's things in Toronto, David?
+Michele (marketing@localhost) says: Product launch is next week.
+Steve (sales@localhost) says: Have to leave. Bye, everyone.
+iex(engineering@localhost)5> Person.users
+[{"Michele",:"marketing@localhost"},{"David",:"engineering@localhost"}]
 ------
 
 // [source,iex]
 ------
-erl -sname marketing
+iex --sname marketing
 
-(marketing@localhost)1> person:start_link(lobby@localhost).
-Chat node is: lobby@localhost
-{ok,<0.39.0>}
-(marketing@localhost)2> person:login("Michele").
-{ok,"Logged in."}
-(marketing@localhost)3> person:profile(city, "San Jose").
-{ok,[{city,"San Jose"}]}
-David (engineering@localhost) says: "Hi, everyone."
-Steve (sales@localhost) says: "How's things in Toronto, David?"
-(marketing@localhost)4> person:say("New product launch is next week.").
-ok
-Steve (sales@localhost) says: "oops, gotta run."
-(marketing@localhost)5> person:users().
-[{"David",engineering@localhost},
- {"Michele",marketing@localhost}]
+iex(marketing@localhost)1> Person.start_link(:lobby@localhost)
+{:ok,#PID<0.46.0>}
+iex(marketing@localhost)2> Person.login("Michele")
+"Sent login request"
+iex(marketing@localhost)3> Person.set_profile(:city, "San Jose")
+{:ok,"Added city/San Jose to profile"}
+David (engineering@localhost) says: Hi, everyone.
+Steve (sales@localhost) says: How's things in Toronto, David?
+iex(marketing@localhost)4> Person.say("Product launch is next week.")
+"Message sent."
+iex(marketing@localhost)5> Person.users
+[{"Michele",:"marketing@localhost"},{"David",:"engineering@localhost"},
+{"Steve",:"sales@localhost"}]
+iex(marketing@localhost)6> Person.who("Steve", :sales@localhost)
+#HashDict<[city: "Chicago"]>
+Steve (sales@localhost) says: Have to leave. Bye, everyone.
 ----
 
 <<SOLUTION11-ET04,See a suggested solution in Appendix A.>>
