@@ -45,7 +45,7 @@ Elixir is still in the process of development; as of this writing its stable ver
 
 Many thanks to Simon St. Laurent, who wrote _Introducing Erlang_ and _Introducing Elixir_. His book not only got me to begin to understand functional programming, but also made me realize that it was a lot of fun. Simon also felt that the exercises I was writing for myself could be useful to others, and he encouraged me to continue developing them.
 
-Special thanks to devinus, josevalim, meh`, true_droid, yrashk_, and the other people in the IRC +#elixir-lang+ channel who helped answer my multitude of questions. 
+Special thanks to devinus, josevalim, meh`, true_droid, yrashk_, and the other people in the IRC +#elixir-lang+ channel who patiently answered my multitude of questions. 
 
 [[suggested_topic]]
 [role="shoutout"]

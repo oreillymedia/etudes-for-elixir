@@ -604,9 +604,10 @@ A convenience method that calls the +Person+ server with a
 [NOTE]
 ====
 The +login/2+, +logout/0+, and +say/2+ wrapper functions do _not_ call
-the chat server directly. Instead, these
-functions will use +gen_server.call(Person, _data_)+; your +handle_call+
-function will do the +gen_server.call+ to the chat room. That way, the
+the chat server directly, because the +from+ pid would be the shell,
+not the person server. Instead, these functions will make a 
++gen_server.call+ to the +Person+ server. Its +handle_call+
+function will forward the +gen_server.call+ to the chat room. That way, the
 chat room server sees the request coming from the +Person+ server.
 ====
 
