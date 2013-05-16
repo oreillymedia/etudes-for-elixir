@@ -15,6 +15,14 @@ defmodule Person do
       profile: HashDict.new)}
   end
   
+  # The server is asked to either:
+  # a) return the chat host name from the state,
+  # b) return the user profile
+  # c) update the user profile
+  # d) log a user in
+  # e) send a message to all people in chat room
+  # f) log a user out
+
   def handle_call(:get_chat_server, _from, state) do
     {:reply, state.server, state}
   end
@@ -23,6 +31,12 @@ defmodule Person do
     {:reply, state.profile, state}
   end
 
+  def handle_call({:set_profile, key,value}, _from, state) do
+    new_profile = HashDict.put(state.profile, key, value)
+    reply = {:ok, "Added #{key}/#{value} to profile"}
+    {:reply, reply, State.new(server: state.server, profile: new_profile) }
+  end
+  
   def handle_call({:login, user_name}, _from, state) do
     :gen_server.call(state.server, {:login, user_name, node()})
     {:reply, "Sent login request", state}
@@ -36,12 +50,6 @@ defmodule Person do
   def handle_call(:logout, _from, state) do
     reply = :gen_server.call(state.server, :logout)
     {:reply, reply, state}
-  end
-  
-  def handle_call({:set_profile, key,value}, _from, state) do
-    new_profile = HashDict.put(state.profile, key, value)
-    reply = {:ok, "Added #{key}/#{value} to profile"}
-    {:reply, reply, State.new(server: state.server, profile: new_profile) }
   end
   
   def handle_call(item, from, state) do
