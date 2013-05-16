@@ -532,3 +532,20 @@ include::code/ch11-04/chatroom.ex[]
 include::code/ch11-04/person.ex[]
 ----
 
+[[SOLUTION12-ET01]]
+=== Solution 12-1
+Here is a suggested solution for
+<<CH12-ET01,Étude 12-1>>.
+
+==== +atomic_maker.ex+
+// [source,elixir]
+----
+include::code/ch12-01/atomic_maker.ex[]
+----
+
+==== +atomic.ex+
+// [source,elixir]
+----
+include::code/ch12-01/atomic.ex[]
+----
+
