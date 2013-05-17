@@ -549,3 +549,26 @@ include::code/ch12-01/atomic_maker.ex[]
 include::code/ch12-01/atomic.ex[]
 ----
 
+[[SOLUTION12-ET02]]
+=== Solution 12-2
+Here is a suggested solution for
+<<CH12-ET02,Étude 12-2>>.
+
+===== +duration.ex+
+// [source, elixir]
+----
+include::code/ch12-02/duration.ex[]
+----
+
+[[SOLUTION12-ET03]]
+=== Solution 12-3
+Here is a suggested solution for
+<<CH12-ET03,Étude 12-3>>.
+
+===== +duration.ex+
+// [source, elixir]
+----
+include::code/ch12-03/duration.ex[]
+----
+
+
