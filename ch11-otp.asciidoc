@@ -397,7 +397,7 @@ iex(serverNode@localhost)1> Weather.start_link
 {:ok,#PID<0.45.0>}
 ----
 
-And here's another user in a different shell, calling upon the server.
+And here's another user in a different shell, calling upon the server. The output has been split across lines for ease of reading.
 
 // [source,iex]
 ----
@@ -409,9 +409,13 @@ iex(clientNode@localhost)1> Weather.connect(:serverNode@localhost)
 Connected to server.
 :ok
 iex(clientNode@localhost)2> Weather.report("KSJC")
-{:ok,[location: "San Jose International Airport, CA", observation_time_rfc822: "Sun, 12 May 2013 18:53:00 -0700", weather: "Fair", temperature_string: "71.0 F (21.7 C)"]}
+{:ok,[location: "San Jose International Airport, CA", observation_time_rfc822:
+"Sun, 12 May 2013 18:53:00 -0700",weather: "Fair",
+temperature_string: "71.0 F (21.7 C)"]}
 iex(clientNode@localhost)3> Weather.report("KITH")
-{:ok,[location: "Ithaca / Tompkins County, NY", observation_time_rfc822: "Sun, 12 May 2013 21:56:00 -0400", weather: "Mostly Cloudy", temperature_string: "41.0 F (5.0 C)"]}
+{:ok,[location: "Ithaca / Tompkins County, NY", observation_time_rfc822:
+"Sun, 12 May 2013 21:56:00 -0400", weather: "Mostly Cloudy",
+temperature_string: "41.0 F (5.0 C)"]}
 iex(clientNode@localhost)4> Weather.recent()
 :ok
 ----
