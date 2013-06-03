@@ -38,7 +38,7 @@ naïve code that an expert at functional programming would never write.
 Elixir is a Young Language
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Elixir is still in the process of development; as of this writing its stable version number is 0.8.2.
+Elixir is still in the process of development; as of this writing its stable version number is 0.9.1.
 
 
 === Acknowledgments
