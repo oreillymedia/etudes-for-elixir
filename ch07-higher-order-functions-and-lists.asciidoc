@@ -139,7 +139,8 @@ be a list or a tuple.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Use +h Enum.split+ to see how the +Enum.split/2+ function works, or try
 the following example and see if you can figure it out. Experiment to see
-what happens if the first argument is zero.
+what happens if the second argument is zero or greater than the length
+of the original list.
 
 // [source,iex]
 ----
