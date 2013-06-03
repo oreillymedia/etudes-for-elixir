@@ -78,13 +78,14 @@ program work.
   * Use +String.strip/1+ to get rid of the trailing newline character
   * Use +binary_to_integer/1+ to convert the string to a number.
 
-  When you write the +-spec+ for this function (you _have_ been
-  writing documentation for your functions, haven't you?), the type
-  you will use for the parameter is +String.t()+. You cannot use
-  +string()+, because that is a built-in type for Erlang, and there
-  would be a conflict. You can see a complete
-  list of the built-in types at
-  http://www.erlang.org/doc/reference_manual/typespec.html
++
+When you write the +-spec+ for this function (you _have_ been
+writing documentation for your functions, haven't you?), the type
+you will use for the parameter is +String.t()+. You cannot use
++string()+, because that is a built-in type for Erlang, and there
+would be a conflict. You can see a complete
+list of the built-in types at
+http://www.erlang.org/doc/reference_manual/typespec.html
 
 +get_dimensions/2+::
   Takes two prompts as its parameters (one for each dimension), and calls
