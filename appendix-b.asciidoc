@@ -3,7 +3,7 @@
 A Brief Introduction to Regular Expressions
 -------------------------------------------
 
-If there's one thing that humans do well, it's pattern matching. Most people from the United States can categorize the numbers in the following list as a social security number, a phone number, a date, and a postal code.
+If there's one thing that humans do well, it's recognizing patterns. Most people from the United States can categorize the numbers in the following list as a social security number, a phone number, a date, and a postal code.
 
 ----
 321-40-0909
@@ -14,7 +14,9 @@ If there's one thing that humans do well, it's pattern matching. Most people fro
 
 You can tell at a glance which of the following words can't possibly be valid English words by the pattern of consonants and vowels:
 
+----
 grunion vortenal pskov trebular elibm talus
+----
 
 Regular expressions are Elixir's method of letting your program look for patterns; for example,
 
@@ -83,12 +85,7 @@ iex(5)> Regex.match?(pattern, "beagle")
 false
 ----
 
-Line 1 shows that you can put a pattern into a variable. Line 5 doesn't match because there are two vowels between the +b+ and +g+. You'll find out how to check for multiple vowels later.
-
-[NOTE]
-====
-A set of characters in square brackets means "match any *one* of these characters."
-====
+Line 1 shows that you can put a pattern into a variable. Line 5 doesn't match because there are two vowels between the +b+ and +g+, and a set of characters in square brackets means "match any *one* of these characters. You'll find out how to check for multiple vowels later.
 
 There are abbreviations for specifying a series of letters: +[a-f+] is the same as +[abcdef]+; +[A-Gm-p]+ is the same as +[ABCDEFGmnop]+; +[0-9]+ matches a single digit (same as +[0123456789]+).
 
@@ -130,7 +127,7 @@ There are some character classes that are so useful that Elixir provides quick a
 |+\s+|+[ \r\t\n\f]+|whitespace (blank, newline, tab, and others)
 |=======================
 
-The +\w+ class actually is more like a variable name character, but we can live with it.
+The +\w+ class is better described as a set of characters that can be part of a variable name, not just a "word," but we can live with that.
 
 Each of these abbreviations has a complement:
 
@@ -155,9 +152,9 @@ Finally, there is one more special character: +.+ (a period), which matches any 
 Anchors
 ~~~~~~~
 
-All the patterns you've seen so far will find a match anywhere within a string, which is usually--but not always--what you want. For example, you might insist on a capital letter, but only as the very first character in the string. Or, you might say that an employee ID number has to end with a digit. Or, you might want to find the word +go+ only if it is at the beginning of a word, so that you will find it in +You met another, and pfft you was gone+, but you won't mistakenly find it in +I forgot my umbrella+. This is the purpose of an _anchor_; to make sure that you are at a certain boundary before continuing the match. Unlike character classes, which match individual characters in a string, these anchors do not match any character; they simply establish that you are on the correct boundaries.
+All the patterns you've seen so far will find a match anywhere within a string, which is usually--but not always--what you want. For example, you might insist on a capital letter, but only as the very first character in the string. Or, you might say that an employee ID number has to end with a digit. Or, you might want to find the word +go+ only if it is at the beginning of a word, so that you will find it in +To boldly go+, but you won't mistakenly find it in +Long ago and far away+. This is the purpose of an _anchor_; to make sure that you are at a certain boundary before continuing the match. Unlike character classes, which match individual characters in a string, these anchors do not match any character; they simply establish that you are on the correct boundaries.
 
-The up-arrow +\^+ matches the beginning of a string, and the dollar sign +$+ matches the end of a line. Thus, +\^[A-Z]+ matches a capital letter at the beginning of the line. Note that if you put the +\^+ inside the square brackets, that would mean something entirely different! A pattern +\d$+ matches a digit at the end of a line. These are the boundaries you will use most often.
+The up-arrow +\^+ matches the beginning of a string, and the dollar sign +$+ matches the end of a string. Thus, +\^[A-Z]+ matches a capital letter at the beginning of the string. Note that if you put the +\^+ inside the square brackets, that would mean something entirely different! A pattern +\d$+ matches a digit at the end of a line. These are the boundaries you will use most often.
 
 The other two anchors are +\b+ and +\B+, which stand for a "word boundary" and "non-word boundary." For example, if you want to find the word +met+ at the beginning of a word, use the pattern +%r/\bmet/+:
 
