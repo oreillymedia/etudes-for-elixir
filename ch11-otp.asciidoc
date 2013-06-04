@@ -582,7 +582,7 @@ A convenience function to get the name of the chat host node by doing
 +:gen_server.call(Person, :get_chat_node)+
 
 +login(user_name)+::
-Calls the Person server with a {:login, user_name} request. If the
+Calls the Person server with a +{:login, user_name}+ request. If the
 user name is an atom, use +atom_to_binary/1+ to convert it to a string.
 
 +logout()+::
