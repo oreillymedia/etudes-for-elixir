@@ -250,8 +250,7 @@ In this étude, then, you will provide two wrapper functions
 +report/1+ and +recent/0+. The +report/1+ function will take a station name
 as its argument and do the appropriate +gen_server:call+; the
 +recent/0+ function will do an appropriate +gen_server:cast+. Everything
-else in your code will remain unchanged. You will, of course, have to add
-+report/1+ and +recent/0+ to the +-export+ list.
+else in your code will remain unchanged.
 
 Here's some sample output.
 
