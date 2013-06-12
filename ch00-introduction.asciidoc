@@ -13,7 +13,7 @@ and each one has been designed to provide practice material for a particular
 Erlang programming concept. Unlike musical études, these programs have not been
 designed to be of considerable difficulty, though they may ask you to
 stretch a bit beyond the immediate material and examples that you find
-in the book http://shop.oreilly.com/product/0000000000000.do[Introducing Elixir].
+in the book http://shop.oreilly.com/product/0636920030584.do[Introducing Elixir].
 
 How This Book was Written
 ~~~~~~~~~~~~~~~~~~~~~~~~~

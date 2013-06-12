@@ -1,7 +1,7 @@
 [preface]
 == Études for Elixir
 
-Welcome to _Études for Elixir_.  In this book, you will find descriptions of programs that you can write in Elixir. The programs will usually be short, and each one has been designed to provide practice material for a particular Elixir programming concept. These programs have not been designed to be of considerable difficulty, though they may ask you to stretch a bit beyond the immediate material and examples that you find in the book http://shop.oreilly.com/product/0000000000000.do[Introducing Elixir].
+Welcome to _Études for Elixir_.  In this book, you will find descriptions of programs that you can write in Elixir. The programs will usually be short, and each one has been designed to provide practice material for a particular Elixir programming concept. These programs have not been designed to be of considerable difficulty, though they may ask you to stretch a bit beyond the immediate material and examples that you find in the book http://shop.oreilly.com/product/0636920030584.do[Introducing Elixir].
 
 This book is open source, so if you'd like to contribute, make a correction, or otherwise participate in the project, check out https://github.com/oreillymedia/etudes-for-elixir[oreillymedia/etudes-for-elixir] on GitHub for details. If we accept your work, we'll add you to the contributors chapter.
 

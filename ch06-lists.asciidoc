@@ -39,7 +39,7 @@ the list is less than the current candidate.
 Of course, the code for +maximum/1+ is indentical to that of +minimum/1+ except that it tests for greater than rather than less than. The +range/1+ function will call both +minimum/1+ and +maximum/1+.
 
 Unlike most examples in 
-http://shop.oreilly.com/product/0000000000000.do[Introducing Elixir],
+http://shop.oreilly.com/product/0636920030584.do[Introducing Elixir],
 passing an empty list to this 
 function will make it crash. That's a reasonable thing to do, as an empty
 list can't really be said to have a minimum value.
