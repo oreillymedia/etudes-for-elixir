@@ -106,6 +106,18 @@ Here is a suggested solution for
 include::code/ch04-02/dijkstra.ex[]
 ----
 
+[[SOLUTION04-ET02B]]
+=== Solution 4-2
+Here is another solution for
+<<CH04-ET02,Étude 4-2>>. This solution uses multiple clauses
+with guards instead of +cond+.
+
+==== +dijkstra.ex+
+// [source, elixir]
+----
+include::code/ch04-02b/dijkstra.ex[]
+----
+
 [[SOLUTION04-ET03]]
 === Solution 4-3
 Here is a suggested solution for

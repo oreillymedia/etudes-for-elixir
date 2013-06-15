@@ -39,7 +39,7 @@ Here is some sample output.
 ----
 iex(1)> c("dijkstra.ex")
 [Dijkstra]
-iex(2)> Dijkstra.gcd(2,8)
+iex(2)> Dijkstra.gcd(2, 8)
 2
 iex(3)> Dijkstra.gcd(14, 21)
 7
@@ -47,10 +47,10 @@ iex(4)> Dijkstra.gcd(125, 46)
 1
 iex(5)> Dijkstra.gcd(120, 36)
 12
-
 ----
 
 <<SOLUTION04-ET02,See a suggested solution in Appendix A.>>
+You can also use guards with multiple clauses to solve this étude; <<SOLUTION04-ET02B,the solution for that approach is in Appendix A.>> In general, use of multiple clauses is considered more in the spirit of Elixir.
 
 The next two exercises involve writing code to raise a number to an integer
 power (like 2.5^3^ or 4^-2^) and finding the __n__th root of a number, such
