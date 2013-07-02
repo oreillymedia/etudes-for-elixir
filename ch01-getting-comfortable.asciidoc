@@ -10,7 +10,7 @@ NOTE: You can learn more about working with +erl+ in Chapter 2 of _Erlang Progra
 Étude 1-1: Experimenting with Errors
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The first chapter of
-http://shop.oreilly.com/product/0000000000000.do[Introducing Elixir]
+http://shop.oreilly.com/product/0636920030584.do[Introducing Elixir]
 encourages you to play around with the interactive +iex+ system.
 In this étude, keep using +iex+, but purposely make errors.
 
