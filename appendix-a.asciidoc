@@ -4,8 +4,7 @@ Solutions to Études
 -------------------
 
 Here are the solutions that I came up with for the études in
-this book. Since I was learning Elixir as I wrote them, you
-may expect some of the code to be naïve in the extreme.
+this book.
 
 [[SOLUTION02-ET01]]
 === Solution 2-1

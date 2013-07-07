@@ -10,7 +10,7 @@ What are Études for Elixir?
 In this book, you will find descriptions of programs that you
 can compose (write) in Elixir. The programs will usually be short,
 and each one has been designed to provide practice material for a particular
-Erlang programming concept. Unlike musical études, these programs have not been
+Elixir programming concept. Unlike musical études, these programs have not been
 designed to be of considerable difficulty, though they may ask you to
 stretch a bit beyond the immediate material and examples that you find
 in the book http://shop.oreilly.com/product/0636920030584.do[Introducing Elixir].
