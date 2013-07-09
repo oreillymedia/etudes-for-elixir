@@ -73,21 +73,21 @@ Here is some sample output.
 
 // [source,iex]
 ----
-1> c(dates).            
-{ok,dates}
-2> dates:julian("2012-12-31").
-366
-3> dates:julian("2013-12-31").
+iex(1)> c("dates.ex")
+[Dates]
+iex(2)> Dates.julian("2013-12-31")
 365
-4> dates:julian("2012-02-05").
-36
-5> dates:julian("2013-02-05").
-36
-6> dates:julian("1900-03-01").
+iex(3)> Dates.julian("2012-12-31")
+366
+iex(4)> Dates.julian("2012-02-05")
+34
+iex(5)> Dates.julian("2013-02-05")
+33
+iex(6)> Dates.julian("1900-03-01")
 60
-7> dates:julian("2000-03-01").
+iex(7)> Dates.julian("2000-03-01")
 61
-126> dates:julian("2013-01-01").
+iex(8)> Dates.julian("2013-01-01")
 1
 ----
 
