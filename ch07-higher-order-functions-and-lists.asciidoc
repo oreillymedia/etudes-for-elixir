@@ -211,13 +211,13 @@ def shuffle(list, acc) do
     Enum.split(list, :random.uniform(Enum.count(list)) - 1)
     shuffle(leading ++ t, [h | acc])
 end
-----
+-----
 
 Wait a moment. If I've just given you the code, what's the purpose
 of this étude? I want you to understand the code. The object of this
 étude is to write the documentation for the algorithm.
 If you aren't sure what the code does, try adding some
 +IO.puts+ statements to see what is happening. If you're totally
-stuck, http://en.literateprograms.org/Fisher-YatesShuffle_%28Erlang%29[see the explanation of the Erlang version at the Literate Programs site].
+stuck, http://en.literateprograms.org/Fisher-Yates_shuffle_%28Erlang%29[see the explanation of the Erlang version at the Literate Programs site].
 
 <<SOLUTION07-ET06,See a suggested solution in Appendix A.>>
