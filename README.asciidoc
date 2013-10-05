@@ -11,6 +11,9 @@ The online version of the book is at http://chimera.labs.oreilly.com/books/12340
 
 If you're considering making a contribution, here are some guidelines to keep in mind: 
 
+You agree to the O'Reilly Contributor License Agreement ("CLA").::
+   You must register in to the http://contributor-agreements.oreilly.com/[O'Reilly Contributor License Agreement ("CLA")] system in order for us to accept your contribution.  The CLA is a nonexclusive license from you of the rights needed for O'Reilly use, publish and distribute your contributed content, and confirms that you retain ownership of the copyright in your contributions.  You will receive an automated notices from the CLA when you issue a pull request.
+
 Creative Commons license.::
    All contributions made to this site are required to be made under the link::http://creativecommons.org/licenses/by-nc-nd/3.0/[Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License]. This means that by making a content contribution, you are agreeing that it is licensed to us and to others under this license. If you do not want your content to be available under this license, you should not contribute it.
 
