@@ -1,0 +1,41 @@
+{
+  "files": [
+    "ch00-introduction.asciidoc",
+    "ch01-getting-comfortable.asciidoc",
+    "ch02-functions_and_modules.asciidoc",
+    "ch03-tuples-and-records.asciidoc",
+    "ch04-logic-and-recursion.asciidoc",
+    "ch05-strings.asciidoc",
+    "ch06-lists.asciidoc",
+    "ch07-higher-order-functions-and-lists.asciidoc",
+    "ch08-processes.asciidoc",
+    "ch09-errors.asciidoc",
+    "ch10-storing-structured-data.asciidoc",
+    "ch11-otp.asciidoc",
+    "ch12-macros.asciidoc",
+    "appendix-a.asciidoc",
+    "appendix-b.asciidoc"
+  ],
+  "formats": {
+    "pdf": {
+      "version": "web",
+      "index": false,
+      "toc": false
+    },
+    "epub": {
+      "index": false,
+      "toc": false,
+      "epubcheck": false
+    },
+    "mobi": {
+      "index": false,
+      "toc": false
+    },
+    "html": {
+      "index": false,
+      "toc": false
+    }
+  },
+  "theme": false,
+  "title": "etudes for elixir"
+}
