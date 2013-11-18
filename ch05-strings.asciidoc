@@ -59,7 +59,7 @@ R)ectangle, T)riangle, or E)llipse: e
 Enter major radius > 3
 Enter minor radius > 2
 18.84955592153876
-----
+-------
 
 Here are the functions that I needed to write in order to make this
 program work.
@@ -126,6 +126,16 @@ Enter width > 3.5
 In this étude, you will use _regular expressions_ to make sure that input is numeric and to distinguish integers from floating point numbers. You need to do this because +binary_to_float/1+ will not accept a string like +"1812"+ as an argument. If you aren't familiar with regular expressions, there is a short summary in <<APPENDIXB>>.
 
 The function you will use is the +Regex.match?/2+. It takes a regular expression pattern as its first argument and a string as its second argument. The function returns +true+ if the pattern matches the string, +false+ otherwise. Here are some examples in IEx.
+
+// [source,iex]
+----
+iex(1)> Regex.match?(%r/e/, "hello")             
+true
+iex(2)> Regex.match?(%r/[0-9]/, "h3llo")
+true
+iex(3)> Regex.match?(%r/b[aeiou]g/, "beagle")
+false
+----
 
 You will need to change +get_number/1+ to test input against patterns that match integers and floating point numbers. Presume (as Elixir does) that floating point numbers must have at least one digit before and after the decimal points. Extra credit for handling exponential notation. If neither pattern matches, have the function return +:error+. You will then need to change +calculate/3+ to handle the errors. (I did this by adding clauses.)
 
