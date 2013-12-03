@@ -16,7 +16,7 @@ game of "War" against itself.
 The Art of War
 ^^^^^^^^^^^^^^
 These are the rules of the game as condensed from
-http://en.wikipedia.org/wiki/War_%28card_game%29,Wikipedia[Wikipedia], adapted
+http://en.wikipedia.org/wiki/War_%28card_game%29[Wikipedia], adapted
 to two players, and simplified further.
 
 Two players each take 26 cards from a shuffled deck. Each person
