@@ -6,7 +6,7 @@ In order to help me understand how the +GenServer+ behavior works,
 I drew the diagram shown in <<FIG1101>>.
 
 [[FIG1101]]
-.Processing a call in +GenServerr+ 
+.Processing a call in +GenServer+ 
 image::images/etel_1101.png[float="true"]
 
 The client does a +GenServer.call(server, request)+. The server will
