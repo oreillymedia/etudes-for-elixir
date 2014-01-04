@@ -11,7 +11,8 @@ defmodule Bank do
   Create an account with a given balance, and repeatedly
   ask for and perform transactions.
   """
-  
+  @spec account(number()) :: nil
+
   def account(balance) do
     input = IO.gets("D)eposit, W)ithdraw, B)alance, Q)uit: ")
     action = String.upcase(String.first(input))
@@ -20,6 +21,8 @@ defmodule Bank do
       account(new_balance)
     end
   end
+
+  @spec transaction(String.t(), number()) :: number()
 
   def transaction(action, balance) do
     case action do
