@@ -35,7 +35,7 @@ defmodule Cards do
   # That first card goes onto a new pile ([h | acc]).
   # Now put together the part above the split and the
   # part below the split (leading ++ t) and go through
-  # the process with the deck (which is now has one less card).
+  # the process with the deck (which now has one less card).
   # This keeps going until you run out of cards to shuffle;
   # at that point, all the cards will have gotten to the
   # new pile, and that's your shuffled deck.
