@@ -23,7 +23,7 @@ defmodule College do
   # the room on that line. Recursively read through end of file.
   
   defp process_line(device, room_list) do
-    data = IO.readline(device)
+    data = IO.read(device, :read)
     case data do
       :eof ->
         File.close(device)
