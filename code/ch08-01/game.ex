@@ -100,7 +100,7 @@ defmodule Game do
     v1 = card_value(hd(cards1))
     v2 = card_value(hd(cards2))
     IO.puts("Value of card 1 is #{v1}; value of card 2 is #{v2}")
-    new_pile = List.concat([pile, cards1, cards2])
+    new_pile = Enum.concat([pile, cards1, cards2])
     IO.puts("Card pile is now #{inspect(new_pile)}")
     cond do
       v1 == v2 ->
