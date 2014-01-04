@@ -92,7 +92,7 @@ defmodule AskArea do
   
   def calculate(shape, d1, d2) do
     cond do
-      shape == :unknown -> IO.puts("Unknown shape " <> list_to_binary([d1]))
+      shape == :unknown -> IO.puts("Unknown shape #{d1}")
       d1 < 0 or d2 < 0 ->
         IO.puts("Both numbers must be greater than or equal to zero.")
       true -> Geom.area(shape, d1, d2)
