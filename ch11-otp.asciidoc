@@ -293,7 +293,6 @@ clients running in other shells.
 To make a node available to other nodes, you need to name the node by using
 the +--name+ option when starting +iex+. It looks like this:
 
-// [source,iex]
 ----
 michele@localhost $ iex --name serverNode
 Erlang R16B (erts-5.10.1) [source] [smp:2:2] [async-threads:10] [hipe] [kernel-poll:false]
@@ -305,7 +304,6 @@ iex(serverNode@localhost.gateway.2wire.net)1>
 This is a _long name_. You can also set up a node with a short name by using
 the +--sname+ option:
 
-// [source,iex]
 ----
 michele@localhost $  iex --sname serverNode
 Erlang R16B (erts-5.10.1) [source] [smp:2:2] [async-threads:10] [hipe] [kernel-poll:false]
@@ -328,7 +326,6 @@ argument. If you connect succesfully, the function will return the atom
 Here is an example. First, start a shell with a (very bad) secret
 cookie:
 
-// [source,iex]
 ----
 michele@localhost $ iex --sname serverNode --cookie chocolateChip
 Erlang R16B (erts-5.10.1) [source] [smp:2:2] [async-threads:10] [hipe] [kernel-poll:false]
@@ -341,7 +338,6 @@ Now, open another terminal window, start a shell with a different
 cookie, and try to connect to the server node. I have purposely used
 a different user name to show that this works too.
 
-// [source,iex]
 ----
 [steve@localhost ~]$ iex --sname clientNode --cookie oatmealRaisin
 Erlang R16B (erts-5.10.1) [source] [smp:2:2] [async-threads:10] [hipe] [kernel-poll:false]
@@ -634,7 +630,7 @@ Steve sales@localhost logging in from #PID<10982.46.0>
 David engineering@localhost logging in from #PID<10983.46.0>
 Michele marketing@localhost logging in from #PID<10984.46.0>
 iex(lobby@localhost)4> 
------
+-------
 
 And here are three other servers talking to one another and setting
 profile information.
@@ -657,11 +653,11 @@ iex(sales@localhost)5> Person.say("Have to leave. Bye, everyone.")
 "Message sent."
 iex(sales@localhost)6> Person.logout
 {:ok,"Steve@sales@localhost logged out."}
-------
+-------
 
 // [source,iex]
 -------
-erl -sname engineering
+iex -sname engineering
 
 iex(engineering@localhost)1> Person.start_link(:lobby@localhost)
 {:ok,#PID<0.46.0>}
@@ -676,7 +672,7 @@ Michele (marketing@localhost) says: Product launch is next week.
 Steve (sales@localhost) says: Have to leave. Bye, everyone.
 iex(engineering@localhost)5> Person.users
 [{"Michele",:"marketing@localhost"},{"David",:"engineering@localhost"}]
-------
+-------
 
 // [source,iex]
 ------
@@ -698,7 +694,7 @@ iex(marketing@localhost)5> Person.users
 iex(marketing@localhost)6> Person.who("Steve", :sales@localhost)
 #HashDict<[city: "Chicago"]>
 Steve (sales@localhost) says: Have to leave. Bye, everyone.
-----
+------
 
 <<SOLUTION11-ET04,See a suggested solution in Appendix A.>>
 
