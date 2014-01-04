@@ -39,7 +39,7 @@ defmodule PhoneEts do
   @spec add_rows(IO.device) :: atom
   
   defp add_rows(input_file) do
-    data = IO.readline(input_file)
+    data = IO.read(input_file, :line)
     cond do
       data != :eof ->
         [number, sdate, stime, edate, etime] =
