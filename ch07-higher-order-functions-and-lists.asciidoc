@@ -218,6 +218,7 @@ of this étude? I want you to understand the code. The object of this
 étude is to write the documentation for the algorithm.
 If you aren't sure what the code does, try adding some
 +IO.puts+ statements to see what is happening. If you're totally
-stuck, http://en.literateprograms.org/Fisher-YatesShuffle_%28Erlang%29[see the explanation of the Erlang version at the Literate Programs site].
+stuck, 
+http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#Fisher_and_Yates.27_original_method[see the original explanation of the method at Wikipedia].
 
 <<SOLUTION07-ET06,See a suggested solution in Appendix A.>>
