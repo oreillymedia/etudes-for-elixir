@@ -107,6 +107,9 @@ iex(6)> Powers.raise(2, -3)
 0.125
 -------
 
+If you try raising 0 to a negative power, you will get an error message. For now,
+just let the error occur. You will learn more about error handling in <<ERRORS>>.
+
 <<SOLUTION04-ET03,See a suggested solution in Appendix A.>>
 
 [[CH04-ET04]]
