@@ -26,7 +26,7 @@ defmodule PhoneEts do
     end
 
     :ets.new(:call_table, [:named_table, :bag,
-      {:keypos, Phone.__index__(:number) + 1}])
+      {:keypos, Phone.__record__(:index, :number) + 1}])
     {result, input_file} = File.open(file_name)
     if result == :ok do
       add_rows(input_file)
@@ -97,7 +97,7 @@ defmodule PhoneEts do
   
   defp calculate(phone_number) do
     calls = :ets.lookup(:call_table, phone_number)
-    total = List.foldl(calls, 0, call_minutes(&1, &2))
+    total = List.foldl(calls, 0, &call_minutes/2)
     {phone_number, total}
   end
   
