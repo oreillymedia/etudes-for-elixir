@@ -43,14 +43,14 @@ iex(4)> Calculus.derivative(f1, 3)
 6.00000049644222599454
 iex(5)> Calculus.derivative(fn(x) -> 3 * x * x + 2 * x + 1 end, 5)
 32.00000264769187197089
-iex(6)> Calculus.derivative(:math.sin(&1), 0) 
+iex(6)> Calculus.derivative(&:math.sin/1, 0) 
 1.0
 -----
 
 * Line 3 is a test to see if the +f1+ function works.
 * Line 5 shows that you don't have to assign a function to a variable;
 you can define the function in line.
-* Line 6 shows how to refer to a function in another module. You give its name and use +&1+ to indicate its arity.
+* Line 6 shows how to refer to a function in another module. You give its name, preceded by an ampersand, and use +/1+ to indicate its arity.
 
 <<SOLUTION07-ET01,See a suggested solution in Appendix A.>>
 
