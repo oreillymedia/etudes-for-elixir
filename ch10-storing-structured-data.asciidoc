@@ -267,7 +267,7 @@ get_info() ->
 
 To avoid duplicating the list and guards for the person table, you can make a 
 query list handle for that query and use it again in the animal search. Note
-that you don't have to be in a transacation to create a query handle,
+that you don't have to be in a transaction to create a query handle,
 but you must be in a transaction to process it.
 
 // [source,iex]
