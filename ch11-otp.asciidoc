@@ -11,7 +11,7 @@ image::images/etel_1101.png[float="true"]
 
 The client does a +GenServer.call(server, request)+. The server will
 then call the +handle_call/3+ function that you have provided in the
-+Module+ that you told +GenServerr+ to use. +GenServer+ will send your
++Module+ that you told +GenServer+ to use. +GenServer+ will send your
 module the client's +request+, an identifier telling who the request is
 +from+, and the server's current +state+.
 
