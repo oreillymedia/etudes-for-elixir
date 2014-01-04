@@ -100,10 +100,13 @@ accumulator value as its arguments.
 
 Let's take, as an example, the sequence of calls for April 18, 2013:
 
+// [source,elixir]
+------
    month_total(4, [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31], 0)
    month_total(3, 18, [28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31], 31)
    month_total(2, 18, [31, 30, 31, 30, 31, 31, 30, 31, 30, 31], 59)
    month_total(1, 18, [30, 31, 30, 31, 31, 30, 31, 30, 31], 90)
+------   
 
 When the month number hits 1 (hint: use a clause with 1 for the month), the accumulator returns the total number of days up through the beginning of April. This number (90) is returned to the caller, +julian/1+, which adds the 18 remaining days to get a result of day number 108.
 
@@ -145,7 +148,7 @@ defmodule BadCode do
   
   def squares([h | t], result), do: squares(t, [result | h * h])
 end
-----
+------
 
 The resulting list was in the correct order, but it was an improper list.
 
@@ -189,7 +192,7 @@ I could fix the problem by changing one line to flatten the final result.
 // [source,elixir]
 ------
 def squares2([], result), do: List.flatten(result)
-----
+------
 
 That worked, but it wasn't a satisfying solution.
 
@@ -211,7 +214,7 @@ defmodule GoodCode do
 
   def squares([h | t], result), do: squares(t, [h * h | result])
 end
-----
+------
 
 // [source,iex]
 -----
@@ -219,7 +222,7 @@ iex(5)> c("good_code.ex")
 [GoodCode]
 iex(6)> GoodCode.squares([9, 4.22, 5])
 [81,17.8084,25]
-----
+-----
 
 Success at last!  The moral of the story?
 
@@ -298,7 +301,7 @@ distributed between 0 and 1.0 by typing this in +iex+:
 -----
 iex(1)> :random.uniform()
 0.4435846174457203
-------
+-----
 
 Now, exit +iex+, restart, and type the same command again. You'll get the same number. In order to ensure that you get different sets of random numbers, you have to _seed_ the random number generator with a three-tuple. The easiest way to get a different seed every time you run the program is to use the +:erlang.now/0+ built-in function, which returns a different three-tuple every time you call it.
 
@@ -323,7 +326,7 @@ iex(1)> :random.seed(:erlang.now())
 :undefined
 iex(2)> :random.uniform()
 0.4102329513116634
------
+------
 
 If you want to generate a random integer between 1 and +N+, use
 +uniform/1+; thus +:random.uniform(10)+ will generate a
