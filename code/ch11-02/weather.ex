@@ -63,7 +63,7 @@ defmodule Weather do
   def get_weather(station, state) do
     url = "http://w1.weather.gov/xml/current_obs/" <> station
       <> ".xml"
-    {status, data} = :httpc.request(binary_to_list(url))
+    {status, data} = :httpc.request(to_char_list(url))
     case status do
       :error -> 
         reply = {status, data}
@@ -72,11 +72,11 @@ defmodule Weather do
         {{_http, code, _message}, _attrs, xml_as_chars} = data
         case code do
           200 ->
-            xml = list_to_binary(xml_as_chars)
+            xml = to_string(xml_as_chars)
             reply = {:ok,
-              lc item inlist [:location, :observation_time_rfc822,
+              (lc item inlist [:location, :observation_time_rfc822,
               :weather, :temperature_string], do:
-                get_content(item, xml)}
+                get_content(item, xml))}
             # remember only the last 10 stations
             new_state = [station | Enum.take(state, 9)]
           _ ->
