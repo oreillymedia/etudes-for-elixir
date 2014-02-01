@@ -12,12 +12,12 @@ defmodule Player do
     receive do
       {:give, n, dealer} ->
         {to_send, to_keep} = Enum.split(hand, n)
-        dealer <- {:take, to_send, self()}
+        send(dealer, {:take, to_send, self()})
         play(to_keep)
       {:pick_up, cards, dealer} ->
         new_hand = hand ++ cards
         IO.puts("Player #{inspect(self)} has #{inspect(new_hand)}")
-        dealer <- {:got_cards, self()}
+        send(dealer, {:got_cards, self()})
         play(new_hand)
       :game_over -> IO.puts("Player #{inspect(self)} leaves.")
     end

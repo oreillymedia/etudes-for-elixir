@@ -55,7 +55,7 @@ iex(4)> Geom.area()
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Document the +Geom+ module and +area+ function that you wrote in
 <<CH02-ET02,Étude 2-2>>.
-<<SOLUTION02-ET04,See a suggested solution in Appendix A.>>
+<<SOLUTION02-ET03,See a suggested solution in Appendix A.>>
 
 
 [[CH02-ET04]]
@@ -66,7 +66,7 @@ What happens if you have default values that aren't the last ones in the functio
 // [source,elixir]
 ----
 defmodule Test do
-  def sum( a // 3, b, c // 7) do
+  def sum( a \\ 3, b, c \\ 7) do
     a + b + c
   end
 end

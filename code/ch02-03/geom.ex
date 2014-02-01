@@ -15,7 +15,7 @@ defmodule Geom do
   
   @spec area(number(), number()) :: number()
   
-  def area(length // 1, width // 1) do
+  def area(length \\ 1, width \\ 1) do
     length * width
   end
 end

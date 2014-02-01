@@ -108,12 +108,12 @@ defmodule Game do
         new_pile  # it's a war
       v1 > v2 ->
         IO.puts("Telling player 1 to pick up the cards")
-        player1 <- {:pick_up, new_pile, self()}
+        send(player1, {:pick_up, new_pile, self()})
         wait_for_pickup()
         []
       v2 > v1 ->
         IO.puts("Telling player 2 to pick up the cards")
-        player2 <- {:pick_up, new_pile, self()}
+        send(player2, {:pick_up, new_pile, self()})
         wait_for_pickup()
         []
     end
@@ -133,15 +133,15 @@ defmodule Game do
   @spec request_cards(list, integer) :: nil
   
   defp request_cards([p1, p2], n) do
-    p1 <- {:give, n, self()}
-    p2 <- {:give, n, self()}
+    send(p1, {:give, n, self()})
+    send(p2, {:give, n, self()})
   end
   
   # Send message to all players to exit their receive loop.
   @spec endgame(list) :: nil
   
   defp endgame(players) do
-    Enum.each(players, fn(x) -> x <- :game_over end)
+    Enum.each(players, fn(x) -> send(x, :game_over) end)
   end
   
   # Return the value of a card; Aces are high.
