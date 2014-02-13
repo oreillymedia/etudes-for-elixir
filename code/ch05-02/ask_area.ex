@@ -56,9 +56,9 @@ defmodule AskArea do
     input = IO.gets("Enter #{prompt} > ")
     input_str = String.strip(input)
     cond do
-      Regex.match?(%r/^[+-]?\d+$/, input_str) ->
+      Regex.match?(~r/^[+-]?\d+$/, input_str) ->
         binary_to_integer(input_str)
-      Regex.match?(%r/^[+-]?\d+\.\d+([eE][+-]?\d+)?$/, input_str) ->
+      Regex.match?(~r/^[+-]?\d+\.\d+([eE][+-]?\d+)?$/, input_str) ->
         binary_to_float(input_str)
       true -> :error
     end

@@ -43,7 +43,7 @@ defmodule Dates do
   @spec date_parts(list) :: list
 
   def date_parts(date_str) do
-    [y_str, m_str, d_str] = String.split(date_str, %r/-/)
+    [y_str, m_str, d_str] = String.split(date_str, ~r/-/)
     [binary_to_integer(y_str), binary_to_integer(m_str),
       binary_to_integer(d_str)]
   end

@@ -129,11 +129,11 @@ The function you will use is the +Regex.match?/2+. It takes a regular expression
 
 // [source,iex]
 ----
-iex(1)> Regex.match?(%r/e/, "hello")             
+iex(1)> Regex.match?(~r/e/, "hello")             
 true
-iex(2)> Regex.match?(%r/[0-9]/, "h3llo")
+iex(2)> Regex.match?(~r/[0-9]/, "h3llo")
 true
-iex(3)> Regex.match?(%r/b[aeiou]g/, "beagle")
+iex(3)> Regex.match?(~r/b[aeiou]g/, "beagle")
 false
 ----
 
