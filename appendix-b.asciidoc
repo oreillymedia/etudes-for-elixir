@@ -281,4 +281,3 @@ If you want a pattern match to be case-insenstive, follow the closing delimiter 
 
 This necessarily brief introduction to regular expressions has only touched the surface of their power. Nonetheless, you now enough to do most simple and even some fairly sophisticated pattern matching. If you want to learn more about regular expressions, read http://shop.oreilly.com/product/0636920012337.do[Introducing Regular Expressions].
 
-
