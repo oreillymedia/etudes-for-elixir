@@ -193,7 +193,7 @@ iex(3)> Regex.match?(~r/\bhat\b/, "The hats are red")
 false
 ----
 
-While +\b+ is used to find the breakpoint between words and non-words (defined as a transition from a +\w+ character to a +\W+ character), +\B+ finds pairs of letters or nonletters. The patterns +\~r/\Bmet/+, +\~r/ing\B/+; and +/\Bhat\B/+ will give the opposite results of the preceding examples.
+While +\b+ is used to find the breakpoint between words and non-words (defined as a transition from a +\w+ character to a +\W+ character), +\B+ finds pairs of letters or nonletters. The patterns +/\Bmet/+, +/ing\B/+; and +/\Bhat\B/+ will give the opposite results of the preceding examples.
 
 Repetition
 ~~~~~~~~~~~
