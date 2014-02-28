@@ -80,9 +80,9 @@ iex(2)> Dates.julian("2013-12-31")
 iex(3)> Dates.julian("2012-12-31")
 366
 iex(4)> Dates.julian("2012-02-05")
-34
+36
 iex(5)> Dates.julian("2013-02-05")
-33
+36
 iex(6)> Dates.julian("1900-03-01")
 60
 iex(7)> Dates.julian("2000-03-01")
