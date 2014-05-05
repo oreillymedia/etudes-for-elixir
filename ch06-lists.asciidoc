@@ -412,7 +412,7 @@ iex(3)> File.close(device)
 
 If you successfully open the file, +result+ will be +:ok+, and the +device+ will be the variable you when reading or closing the file. If there is some error, +result+ will be +:error+, and the +device+ variable will contain the reason that the file open failed.
 
-+IO.readline/1+ reads a line from the file (including the ending +\n+ character) unless there is no more data, in which case you will get the atom +:eof+.
++IO.read/2+ reads a line from the file (including the ending +\n+ character) unless there is no more data, in which case you will get the atom +:eof+.
 
 [NOTE]
 ====
