@@ -404,7 +404,7 @@ To open file _test.csv_, which you will find in the example download area at _UR
 ----
 iex(1)> {result, device} = File.open("courses.csv", [:read, :utf8])
 {:ok,#PID<0.39.0>}
-iex(2)> data = IO.readline(device)
+iex(2)> data = IO.read(device, :line)
 "64850,ENGL 033,RF141\n"
 iex(3)> File.close(device)
 :ok
