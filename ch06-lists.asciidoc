@@ -404,15 +404,15 @@ To open file _test.csv_, which you will find in the example download area at _UR
 ----
 iex(1)> {result, device} = File.open("courses.csv", [:read, :utf8])
 {:ok,#PID<0.39.0>}
-iex(2)> data = IO.readline(device)
+iex(2)> data = IO.read(device, :line)
 "64850,ENGL 033,RF141\n"
 iex(3)> File.close(device)
 :ok
 ----
 
-If you successfully open the file, +result+ will be +:ok+, and the +device+ will be the variable you when reading or closing the file. If there is some error, +result+ will be +:error+, and the +device+ variable will contain the reason that the file open failed.
+If you successfully open the file, +result+ will be +:ok+, and the +device+ will be the variable you use when reading or closing the file. If there is some error, +result+ will be +:error+, and the +device+ variable will contain the reason that the file open failed.
 
-+IO.readline/1+ reads a line from the file (including the ending +\n+ character) unless there is no more data, in which case you will get the atom +:eof+.
++IO.read/2+ reads a line from the file (including the ending +\n+ character) unless there is no more data, in which case you will get the atom +:eof+.
 
 [NOTE]
 ====
