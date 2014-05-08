@@ -163,7 +163,7 @@ Back to list comprehensions. You can have more than one generator in a list comp
 
 // [source,iex]
 ----
-iex(1)> lc x inlist [3, 5, 7], y inlist [2, 4, 6], do: x * y
+iex(1)> for x <- [3, 5, 7], y <- [2, 4, 6], do: x * y
 [6,12,18,10,20,30,14,28,42]
 ----
 
