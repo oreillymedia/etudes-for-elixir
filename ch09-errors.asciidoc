@@ -27,7 +27,7 @@ iex(4)> Stats.mean([:one, :two])
 ArithmeticError[message: "bad argument in arithmetic expression"]
 iex(5)> Stats.stdv([1])
 ArithmeticError[message: "bad argument in arithmetic expression"]
---------
+-------
 
 <<SOLUTION09-ET01,See a suggested solution in Appendix A.>>
 
