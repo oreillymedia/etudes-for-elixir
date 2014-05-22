@@ -313,7 +313,7 @@ iex(serverNode@localhost)1>
 ----
 
 WARNING: If you set up a node in this way, _any_ other node can connect
-to it and do any shell commands at all. In order to prevent this,
+to it and any shell commands can be performed on it. In order to prevent this,
 you may use the +-setcookie _Cookie_+ when starting +erl+. Then,
 only nodes that have the same _Cookie_ (which is an atom) can
 connect to your node.
