@@ -54,7 +54,7 @@ defmodule AskArea do
   
   def get_number(prompt) do
     input = IO.gets("Enter #{prompt} > ")
-    binary_to_integer(String.strip(input))
+    String.to_integer(String.strip(input))
   end
   
   @doc """
