@@ -16,8 +16,7 @@ defmodule ListComp do
   @spec older_males() :: list(tuple())
   
   def older_males() do
-    lc {person, gender, age} inlist get_people(), age > 40, gender == "M" do
-      {person, gender, age}
+      for {name, gender, age} <- get_people(), age > 40, gender == "M", do: {name, gender, age}
     end
   end
   
@@ -27,9 +26,7 @@ defmodule ListComp do
   """
   @spec older_or_male() :: list
   def older_or_male() do
-    lc {person, gender, age} inlist get_people(), age > 40 or gender == "M" do
-      {person, gender, age}
-    end
+    for {name, gender, age} <- get_people(), age > 40, gender == "M", do: {name, gender, age}
   end
 end
 
