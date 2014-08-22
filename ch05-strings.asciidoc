@@ -76,7 +76,7 @@ program work.
   This involves the following steps:
   
   * Use +String.strip/1+ to get rid of the trailing newline character
-  * Use +binary_to_integer/1+ to convert the string to a number.
+  * Use +String.to_integer/1+ to convert the string to a number.
 
 +
 When you write the +-spec+ for this function (you _have_ been
