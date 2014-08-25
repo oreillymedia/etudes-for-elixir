@@ -1,0 +1,693 @@
+[[OTP]]
+Getting Started with OTP
+------------------------
+
+In order to help me understand how the +GenServer+ behavior works,
+I drew the diagram shown in <<FIG1101>>.
+
+[[FIG1201]]
+.Processing a call in +GenServer+ 
+image::images/etel_1201.png[float="true"]
+
+The client does a +GenServer.call(server, request)+. The server will
+then call the +handle_call/3+ function that you have provided in the
++Module+ that you told +GenServer+ to use. +GenServer+ will send your
+module the client's +request+, an identifier telling who the request is
++from+, and the server's current +state+.
+
+Your +handle_call/3+ function will fulfill the client's +request+ and
+send a +{:reply, reply, new_state}+ tuple back to the server.
+It, in turn, will send the +reply+ back to the client, and use the
++new_state+ to update its state.
+
+In _Introducing Elixir_ and in the next two études,
+the client is you, using the shell. The module that handles the
+client's call is contained within the same module as the +GenServer+
+framework, but, as the preceding diagram shows, it does not have to be.
+
+////
+NOTE: You can learn more about working with OTP basics in Chapters 11 and 12 of _Erlang Programming_, Chapters 16 and 18 of _Programming Erlang_, Chapter 4 of _Erlang and OTP in Action_, and Chapters 14 through 20 of _Learn You Some Erlang For Great Good!_.
+////
+
+[[CH12-ET01]]
+Étude 12-1: Get the Weather
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In this étude, you will create a weather server using the +GenServer+
+OTP behavior.This server will handle requests using a four-letter 
+weather station identifier and will return a brief summary of the
+weather. You may also ask the server for a list of most recently
+accessed weather stations. The name of your module will be +Weather+.
+
+Here is some sample output, with lines reformatted for ease of reading.
+
+----
+iex(1)> c("weather.ex")
+[Weather]
+iex(2)> Weather.start_link
+{:ok,#PID<0.87.0>}
+iex(3)> GenServer.call(Weather, "KSJC")
+{:ok,                                                                                                  
+ [location: "San Jose International Airport, CA",                                                      
+  observation_time_rfc822: "Sun, 06 Jul 2014 10:53:00 -0700",                                          
+  weather: "A Few Clouds", temperature_string: "69.0 F (20.6 C)"]}
+iex(4)> GenServer.call(Weather, "KITH")
+{:ok,                                                                                                  
+ [location: "Ithaca / Tompkins County, NY",                                                            
+  observation_time_rfc822: "Sun, 06 Jul 2014 13:56:00 -0400",                                          
+  weather: "A Few Clouds", temperature_string: "80.0 F (26.6 C)"]}
+iex(5)> GenServer.call(Weather, "ABCD")
+{:error,404}
+iex(6)> GenServer.cast(Weather, "")    
+Recently viewed: ["KITH","KSJC"]
+:ok
+----
+
+Obtaining Weather Data
+^^^^^^^^^^^^^^^^^^^^^^
+To retrieve a web page, you must first call Erlang's
++:inets.start/0+; you will
+want to do this in your +init/1+ code. Then, simply call
++:httpc.request(_url_)+, where +_url_+ is a string containing the URL
+you want. In this case, you will use the
+server provided by http://www.noaa.gov/[National Oceanic and Atmospheric Administration]. This server accepts four-letter
+weather station codes and returns an
+XML file summarizing the current weather at that station. You request
+this data with a URL in the form
+
++http://w1.weather.gov/xml/current_obs/_NNNN_.xml+
+
+where +_NNNN_+ is the station code.Since this is an Erlang function,
+you must use a character list enclosed in single quotes instead of an
+Elixir binary string in double quotes.
+
+If the call to +:httpc.request/1+ fails, you
+will get a tuple of the form +{:error,_information_}+.
+
+If it succeeds, you will get a tuple in the form:
+
+[subs="quotes"]
+----
+{ok,{{'HTTP/1.1',_code_,'_code message_'},
+     [{'_HTTP header attribute_','_value_'},
+      {'_Another attribute_','_another value_'}],
+     '_page contents_'}}
+----
+
+where +_code_+ is the return code (200 means the page was found,
+404 means it's missing, anything else is some sort of error).
+
+So, let's say you have successfully retrieved a station's data. You will
+then get page content that contains something like this.
+
+[source,xml]
+----
+<?xml version="1.0" encoding="ISO-8859-1"?> 
+<?xml-stylesheet href="latest_ob.xsl" type="text/xsl"?>
+<current_observation version="1.0"
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:noNamespaceSchemaLocation="http://www.weather.gov/view/current_observation.xsd">
+  <credit>NOAA's National Weather Service</credit>
+  <credit_URL>http://weather.gov/</credit_URL>
+  <image>
+    <url>http://weather.gov/images/xml_logo.gif</url>
+    <title>NOAA's National Weather Service</title>
+    <link>http://weather.gov</link>
+  </image>
+  <suggested_pickup>15 minutes after the hour</suggested_pickup>
+  <suggested_pickup_period>60</suggested_pickup_period>
+  <location>San Jose International Airport, CA</location>
+  <station_id>KSJC</station_id>
+  <latitude>37.37</latitude>
+  <longitude>-121.93</longitude>
+  <observation_time>Last Updated on Feb 18 2013, 11:53 am PST</observation_time>
+  <observation_time_rfc822>Mon, 18 Feb 2013 11:53:00 -0800</observation_time_rfc822>
+  <weather>Overcast</weather>
+  <temperature_string>50.0 F (10.0 C)</temperature_string>
+  <temp_f>50.0</temp_f>
+  <temp_c>10.0</temp_c>
+  <relative_humidity>77</relative_humidity>
+  <wind_string>Calm</wind_string>
+  <wind_dir>North</wind_dir>
+  <wind_degrees>0</wind_degrees>
+  <wind_mph>0.0</wind_mph>
+  <wind_kt>0</wind_kt>
+  <pressure_string>1017.7 mb</pressure_string>
+  <pressure_mb>1017.7</pressure_mb>
+  <pressure_in>30.05</pressure_in>
+  <dewpoint_string>43.0 F (6.1 C)</dewpoint_string>
+  <dewpoint_f>43.0</dewpoint_f>
+  <dewpoint_c>6.1</dewpoint_c>
+  <visibility_mi>10.00</visibility_mi>
+   <icon_url_base>http://forecast.weather.gov/images/wtf/small/</icon_url_base>
+  <two_day_history_url>http://www.weather.gov/data/obhistory/KSJC.html</two_day_history_url>
+  <icon_url_name>ovc.png</icon_url_name>
+  <ob_url>http://www.weather.gov/data/METAR/KSJC.1.txt</ob_url>
+  <disclaimer_url>http://weather.gov/disclaimer.html</disclaimer_url>
+  <copyright_url>http://weather.gov/disclaimer.html</copyright_url>
+  <privacy_policy_url>http://weather.gov/notice.html</privacy_policy_url>
+</current_observation>
+----
+
+This result will be an Erlang character list, so you should use
++list_to_binary+ to convert it to an Elixir string.
+
+Parsing the Data
+^^^^^^^^^^^^^^^^
+
+While it is possible to use Erlang's +xmerl_scan+ module or the 
++erlsom+ module (http://erlsom.sourceforge.net/erlsom.htm)
+to parse arbitrary XML data, the XML returned from the server is
+sufficiently simple (and sanely formatted) that you can use
+regular expressions to parse the data. The following code will
+give you the content of an XML element with the specified name, or
++nil+ if there is no such element. It works by dynamically constructing
+a pattern that looks for the opening and closing tags of the
+element name. The part of the pattern in parentheses means "one or
+more of any character that is not a less than sign"; because it is
+in parentheses, +Regex.run+ will return the matched portion as the
+second item in a list. (The first item is the part of the XML
+string matched by the entire pattern.)
+
+// [source,elixir]
+----
+defp get_content(element_name, xml) do
+  {_, pattern} = Regex.compile(
+    "<#{element_name}>([^<]+)</#{atom_to_binary(element_name)}>")
+  result = Regex.run(pattern, xml)
+  case result do
+    [_all, match] -> {element_name, match}
+    nil -> {element_name, nil}
+  end
+end
+----
+
+Set up a Supervisor
+^^^^^^^^^^^^^^^^^^^
+The way I constructed the URL (using +<>+ instead of interpolation)
+allows you to easily crash the server by handing it a number instead
+of a string for the station code.  Set up a supervisor to restart the
+server when it crashes. In the following output, the +Process.unlink+ call ensures that the shell, which is also a supervisor, does not kill any errant processes.
+
+// [source,iex]
+----
+iex(1)> c("weather_sup.ex")
+[WeatherSup]
+iex(2)> {:ok, pid} = WeatherSup.start_link
+{:ok,#PID<0.43.0>}
+iex(3)> Process.unlink(pid)
+true
+iex(4)> GenServer.call(Weather, "KGAI")
+{:ok,
+ [location: "Montgomery County Airpark, MD",
+  observation_time_rfc822: "Sun, 06 Jul 2014 13:55:00 -0400",
+  weather: "Mostly Cloudy", temperature_string: "84.0 F (29.0 C)"]}
+iex(5)> GenServer.call(Weather, 1234)
+
+
+=ERROR REPORT==== 6-Jul-2014::11:22:52 ===
+** Generic server 'Elixir.Weather' terminating 
+** Last message in was 1234
+** When Server state == [<<"KGAI">>]
+** Reason for termination == 
+** {badarg,[{erlang,byte_size,[1234],[]},
+            {'Elixir.Weather',get_weather,2,[{file,"weather.ex"},{line,46}]},
+            {'Elixir.Weather',handle_call,3,[{file,"weather.ex"},{line,16}]},
+            {gen_server,handle_msg,5,[{file,"gen_server.erl"},{line,580}]},
+            {proc_lib,init_p_do_apply,3,[{file,"proc_lib.erl"},{line,239}]}]}
+** (exit) exited in: :gen_server.call(Weather, 1234, 5000)
+    ** (EXIT) an exception was raised:
+        ** (ArgumentError) argument error
+            :erlang.byte_size(1234)
+            weather.ex:46: Weather.get_weather/2
+            weather.ex:16: Weather.handle_call/3
+            (stdlib) gen_server.erl:580: :gen_server.handle_msg/5
+            (stdlib) proc_lib.erl:239: :proc_lib.init_p_do_apply/3
+    (stdlib) gen_server.erl:190: :gen_server.call/3
+
+iex(5)> GenServer.call(Weather, "KCMI")
+{:ok,
+ [location: "Champaign / Urbana, University of Illinois-Willard, IL",
+  observation_time_rfc822: "Sun, 06 Jul 2014 12:53:00 -0500",
+  weather: "A Few Clouds", temperature_string: "83.0 F (28.3 C)"]}
+----
+
+<<SOLUTION12-ET01,See a suggested solution in Appendix A.>>
+
+[[CH12-ET02]]
+Étude 12-2: Wrapper Functions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In the previous étude, you made calls directly to +GenServer+. This is
+great for experimentation, but in a real application, you do not want
+other modules to have to know the exact format of the arguments you gave
+to +GenServer.call/2+ or +GenServer.cast/2+. Instead, you provide a
+"wrapper" function that makes the actual call. In this way, you can change
+the internal format of your server requests while the interface you present
+to other users remains unchanged.
+
+In this étude, then, you will provide two wrapper functions
++report/1+ and +recent/0+. The +report/1+ function will take a station name
+as its argument and do the appropriate +gen_server:call+; the
++recent/0+ function will do an appropriate +gen_server:cast+. Everything
+else in your code will remain unchanged.
+
+Here's some sample output.
+
+// [source,iex]
+------
+iex(1)> c("weather.ex")
+[Weather]
+iex(2)> c("weather_sup.ex")
+[WeatherSup]
+iex(3)> WeatherSup.start_link
+{:ok,#PID<0.47.0>}
+iex(4)> Weather.report("KGAI")
+{:ok,
+ [location: "Montgomery County Airpark, MD",
+  observation_time_rfc822: "Sun, 06 Jul 2014 13:55:00 -0400",
+  weather: "Mostly Cloudy", temperature_string: "84.0 F (29.0 C)"]}
+iex(5)> Weather.report("KSJC")
+{:ok,
+ [location: "San Jose International Airport, CA",
+  observation_time_rfc822: "Sun, 06 Jul 2014 10:53:00 -0700",
+  weather: "A Few Clouds", temperature_string: "69.0 F (20.6 C)"]}
+iex(6)> Weather.report("KXYZ")
+{:error,404}
+iex(7)> Weather.report("KITH")
+{:ok,
+ [location: "Ithaca / Tompkins County, NY",
+  observation_time_rfc822: "Sun, 06 Jul 2014 13:56:00 -0400",
+  weather: "A Few Clouds", temperature_string: "80.0 F (26.6 C)"]}
+iex(8)> Weather.recent
+Recently viewed: ["KITH","KSJC","KGAI"]
+:ok
+------
+
+<<SOLUTION12-ET02,See a suggested solution in Appendix A.>>
+
+[[CH12-ET03]]
+Étude 12-3: Independent Server and Client
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In the previous études, the client and server have been running in
+the same shell. In this étude, you will make the server available to
+clients running in other shells.
+
+To make a node available to other nodes, you need to name the node by using
+the +--name+ option when starting +iex+. It looks like this:
+
+----
+michele@localhost $ iex --name serverNode
+Erlang/OTP 17 [erts-6.0] [source] [64-bit] [smp:2:2] [async-threads:10] [hipe] [kernel-poll:false]
+
+Interactive Elixir (0.14.1-dev) - press Ctrl+C to exit (type h() ENTER for help)
+iex(serverNode@localhost.ispname.net)1> 
+----
+
+This is a _long name_. You can also set up a node with a short name by using
+the +--sname+ option:
+
+----
+michele@localhost $  iex --sname serverNode
+Erlang/OTP 17 [erts-6.0] [source] [64-bit] [smp:2:2] [async-threads:10] [hipe] [kernel-poll:false]
+
+Interactive Elixir (0.14.1-dev) - press Ctrl+C to exit (type h() ENTER for help)
+iex(serverNode@localhost)1> 
+----
+
+WARNING: If you set up a node in this way, _any_ other node can connect
+to it and do any shell commands at all. In order to prevent this,
+you may use the +-setcookie _Cookie_+ when starting +erl+. Then,
+only nodes that have the same _Cookie_ (which is an atom) can
+connect to your node.
+
+To connect to a node, use the +:net_adm.ping/1+ function, and give it
+the name of the server (as an atom) that you want to connect to as its
+argument. If you connect succesfully, the function will return the atom
++:pong+; otherwise, it will return +:pang+.
+
+Here is an example. First, start a shell with a (very bad) secret
+cookie:
+
+----
+michele@localhost $ iex --sname serverNode --cookie chocolateChip
+[michele@localhost ~]$ iex --sname serverNode --cookie chocolateChip
+Erlang/OTP 17 [erts-6.0] [source] [64-bit] [smp:2:2] [async-threads:10] [hipe] [kernel-poll:false]
+
+Interactive Elixir (0.14.1-dev) - press Ctrl+C to exit (type h() ENTER for help)
+iex(serverNode@localhost)1> 
+----
+
+Now, open another terminal window, start a shell with a different
+cookie, and try to connect to the server node. I have purposely used
+a different user name to show that this works too.
+
+----
+[steve@localhost ~]$ iex --sname clientNode --cookie oatmealRaisin
+Erlang/OTP 17 [erts-6.0] [source] [64-bit] [smp:2:2] [async-threads:10] [hipe] [kernel-poll:false]
+
+Interactive Elixir (0.14.1-dev) - press Ctrl+C to exit (type h() ENTER for help)
+iex(clientNode@localhost)1> :net_adm.ping(:serverNode@localhost)
+:pang
+----
+
+The server node will detect this attempt and let you know about it:
+
+// [source,iex]
+----
+=ERROR REPORT==== 6-Jul-2014::11:35:10 ===
+** Connection attempt from disallowed node clientNode@localhost ** 
+----
+
+Quit the client shell, and restart it with a matching cookie, and
+all will be well.
+
+// [source,iex]
+----
+[steve@localhost ~]$ iex --sname clientNode --cookie chocolateChip
+Erlang/OTP 17 [erts-6.0] [source] [64-bit] [smp:2:2] [async-threads:10] [hipe] [kernel-poll:false]
+
+Interactive Elixir (0.14.1-dev) - press Ctrl+C to exit (type h() ENTER for help)
+iex(clientNode@localhost)1> :net_adm.ping(:serverNode@localhost)
+:pong 
+----
+
+To make your weather report server available to other nodes, you
+need to do these things:
+
+* In the +start_link/0+ convenience method, set the last argument to
++GenServer:start_link/3+ to +[{:name, {:global,__MODULE__}}]+ instead of
++{:name, __MODULE__}+
+* In calls to +gen_server:call/2+ and +gen_server:cast/2+, replace the
+module name +Weather+ with +{:global, __MODULE__}+
+* Add a +connect/1+ function that takes the server node name as its
+argument. This function will use +net_adm:ping/1+ to attempt to contact
+the server. It provides appropriate feedback when it succeeds or fails.
+
+Here is what it looks like when one user starts the server in a shell.
+
+// [source,iex]
+----
+[michele@localhost ch12-03]$ iex --sname serverNode --cookie meteorology
+Erlang/OTP 17 [erts-6.0] [source] [64-bit] [smp:2:2] [async-threads:10] [hipe] [kernel-poll:false]
+
+Interactive Elixir (0.14.1-dev) - press Ctrl+C to exit (type h() ENTER for help)
+iex(serverNode@localhost)1> Weather.start_link
+{:ok, #PID<0.50.0>}
+----
+
+And here's another user in a different shell, calling upon the server. The output has been split across lines for ease of reading.
+
+// [source,iex]
+----
+[steve@localhost ch12-03]$ iex --sname clientNode --cookie meteorology
+Erlang/OTP 17 [erts-6.0] [source] [64-bit] [smp:2:2] [async-threads:10] [hipe] [kernel-poll:false]
+
+Interactive Elixir (0.14.1-dev) - press Ctrl+C to exit (type h() ENTER for help)
+iex(clientNode@localhost)1> Weather.connect(:serverNode@localhost)
+Connected to server.
+:ok
+iex(clientNode@localhost)2> Weather.report("KSJC")
+{:ok,
+ [location: "San Jose International Airport, CA",
+  observation_time_rfc822: "Sun, 06 Jul 2014 11:53:00 -0700",
+  weather: "A Few Clouds", temperature_string: "74.0 F (23.3 C)"]}
+iex(clientNode@localhost)3> Weather.report("KITH")
+{:ok,
+ [location: "Ithaca / Tompkins County, NY",
+  observation_time_rfc822: "Sun, 06 Jul 2014 14:56:00 -0400",
+  weather: "A Few Clouds", temperature_string: "81.0 F (27.2 C)"]}
+iex(clientNode@localhost)4> Weather.recent
+:ok
+----
+
+Whoa! What happened to the output from that last call? The problem is that the +Weather.recent/0+ call does
+an +IO.puts/1+ call; that output will go to the server shell, since the server is running that code, not the client. You could fix this problem by changing +Weather.recent/0+ from using +GenServer.cast/2+ to use +GenServedr.call/2+ instead to return the recently reported weather stations as its reply. This would also require a new clause for +Weather.handle_call/3+.
+
+There's one more question that went through my mind after I implemented my solution: how did I know that the client was calling the +Weather+  code that was running on the server and not the +Weather+ code in
+its own shell? It was easy to find out: I stopped the server.
+// [source,iex]
+----
+iex(serverNode@localhost)2> 
+User switch command
+ --> q
+michele@localhost $ 
+----
+
+Then I had the client try to get a weather report.
+
+// [source,iex]
+----
+iex(clientNode@localhost)5> Weather.report("KGAI")
+** (exit) exited in: :gen_server.call({:global, Weather}, "KGAI", 5000)
+    ** (EXIT) no process
+    (stdlib) gen_server.erl:190: :gen_server.call/3
+----
+
+The fact that it failed told me that yes, indeed, the client was
+getting its information from the server.
+
+<<SOLUTION12-ET03,See a suggested solution in Appendix A.>>
+
+[[CH12-ET04]]
+Étude 12-4: Chat Room
+~~~~~~~~~~~~~~~~~~~~~
+In the previous études, the client simply made a call to the server, and
+didn't do any processing of its own. In this étude, you will create a
+"chat room" with a chat server and multiple clients, much as you see in
+<<FIG1102>>.
+
+[[FIG1102]]
+.Server with multiple clients
+image:images/etel_1202.png[float="true"]
+
+The interesting part of this program is that the client will _also_ be
+a +GenServer+, as shown in <<FIG1203>>.
+
+[[FIG1203]]
+.Client as a +GenServer+
+image:images/etel_1203.png[float="true"]
+
+Up until now, you have been using a module name as the first argument to
++GenServer.call/2+, and in the previous étude, you used
++:net_adm.ping/1+ to connect to a server.
+
+In this étude, you won't need +:net_adm.ping/1+. Instead,
+you will use a tuple of the form
++{module, node}+ to directly connect to the node you want. So, for
+example, if you want to make a call to a module named +Chatroom+ on
+a node named +lobby@localhost+, you would do something like this:
+
++GenServer.call({:Chatroom, :lobby@localhost}, request)+
+
+Here is my design for the solution. You, of course, may come up
+with an entirely different and better design.
+
+My solution has two modules, both of which use the +GenServer+ behavior.
+
+The +Chatroom+ Module
+^^^^^^^^^^^^^^^^^^^^^
+The first module, +Chatroom+, will keep as its state a list of tuples, 
+one tuple for each person in the chat. Each tuple has the format
++{{_userName_, _userServer_}, _pid_}+. The pid is the one that
++GenServer.call+ receives in the +from+ parameter; it's guaranteed to 
+be unique for each person in chat.
+
+[NOTE]
+====
+The +from+ parameter that your functions receive is actually a tuple
+consisting of +{pid, refnum}+ where +refnum+ is a reference number for
+the message. Store only the +pid+, which is always the same; throw away
+the reference number, which always changes.
+====
+
+The +handle_call/3+ function will accept the following requests.
+
++{:login, user_name, server_name}+::
+Adds the user name, server name, and pid (which is in the +from+ parameter) to the server's state. Don't allow a duplicate user name from the same server. You can use +List.keymember?/3+ for this.
+
++:logout+::
+Removes the user from the state list.
+
++{:say, text}+::
+Sends the given text to all the other users in the chat room. Use
++GenServer.cast/2+ to send the message to each user. You may use
+a process id as the first argument to +GenServer.cast/2+.
+
++:users+::
+Returns the list of names and servers for all people currently in the
+chat room.
+
++{:profile, person, server_name}+::
+Return the profile of the given person/server. (This is "extra credit";
+see the following details about the +Person+ module). It works by
+finding the pid of +person+ at node +server_name+ and sending it a
++:get_profile+ request.
+
+The +Person+ Module
+^^^^^^^^^^^^^^^^^^^
+The other module, +Person+, has a +start_link/1+ function; the argument
+is the node name of the chat room server. This will be passed on to the
++init/1+ function. This is stored in the server's state. I did this 
+because many other calls need to know the chat room server's name, and
+keeping it in the person's state seemed a reasonable choice.
+
+For extra credit, the state will also include the person's profile,
+which is a list of +{key, value}+ tuples.
+
+The +:handle_call/3+ manages these requests:
+
++:get_chat_node+::
+Returns the chat node name that's stored in the server's state. (Almost 
+all of the wrapper functions to be described in the following section
+will need the chat node name.)
+
++{:login, user_name}+::
+Forward this request to the chat room server along with the person's
+server node name.
+
++:logout+::
+Forward this request to the chat room server.
+
++{:say, text}+::
+Forward this request to the chat room server.
+
++:get_profile+::
+Returns the profile that's stored in the server's state (extra credit)
+
++{:set_profile, key, value}+::
+If the profile already contains the key, replace it with the given value. Otherwise, add the key and value to the profile. You can use
++List:keymember?+ and +List:keyreplace+. (extra credit)
+
+Because the chat room server uses +GenServer.cast/2+ to send messages
+to the people in the room, your +handle_cast/3+ function will receive messages sent from other users in this form:
+
++{:message, {from_user, from_server}, text}+
+
+Wrapper Functions for the +Person+ module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
++get_chat_node()+::
+A convenience function to get the name of the chat host node by doing
++GenServer.call(Person, :get_chat_node)+
+
++login(user_name)+::
+Calls the Person server with a +{:login, user_name}+ request. If the
+user name is an atom, use +atom_to_binary/1+ to convert it to a string.
+
++logout()+::
+Calls the Person server with a +:logout+ request. As you saw in the
+description of +chatroom+, the server uses the process ID to figure out
+who should be logged out.
+
++say(text)+::
+Calls the Person server with a +{:say, text}+ request.
+
++users()+::
+Calls the chat server with a +:users+ request.
+
++who(user_name, user_node)+::
+Calls the chat server with a +{:who, user_name, user_node}+ request to
+see the profile of the given person. (extra credit)
+
++set_profile(key, value)+::
+A convenience method that calls the +Person+ server with a
++{:set_profile, key, value}+ request. (extra credit)
+
+[NOTE]
+====
+The +login/2+, +logout/0+, and +say/2+ wrapper functions do _not_ call
+the chat server directly, because the +from+ pid would be the shell,
+not the person server. Instead, these functions will make a 
++GenServer.call+ to the +Person+ server. Its +handle_call+
+function will forward the +:GenServer.call+ to the chat room. That way, the
+chat room server sees the request coming from the +Person+ server.
+====
+
+Putting it All Together
+^^^^^^^^^^^^^^^^^^^^^^^
+Here is what the chat room server looks like. Most of the output you
+will see is debugging output. I have gotten rid of the startup
+lines from the +iex+ command.
+
+// [source,iex]
+-------
+iex --sname lobby
+
+iex(lobby@localhost)1> c("chatroom.ex")
+[Chatroom]
+iex(lobby@localhost)2> c("person.ex")
+[Person,Person.State]
+iex(lobby@localhost)3> Chatroom.start_link
+{:ok,#PID<0.56.0>}
+Steve sales@localhost logging in from #PID<10982.46.0>
+David engineering@localhost logging in from #PID<10983.46.0>
+Michele marketing@localhost logging in from #PID<10984.46.0>
+iex(lobby@localhost)4> 
+-------
+
+And here are three other servers talking to one another and setting
+profile information.
+
+// [source,iex]
+-------    
+iex --sname sales
+
+iex(sales@localhost)1> Person.start_link(:lobby@localhost)   
+{:ok,#PID<0.46.0>}
+iex(sales@localhost)2> Person.login("Steve")
+"Sent login request"
+iex(sales@localhost)3> Person.set_profile(:city, "Chicago")
+{:ok,"Added city/Chicago to profile"}
+David (engineering@localhost) says: Hi, everyone.
+iex(sales@localhost)4> Person.say("How's things in Toronto, David?")
+"Message sent."
+Michele (marketing@localhost) says: Product launch is next week.
+iex(sales@localhost)5> Person.say("Have to leave. Bye, everyone.")
+"Message sent."
+iex(sales@localhost)6> Person.logout
+{:ok,"Steve@sales@localhost logged out."}
+-------
+
+// [source,iex]
+-------
+iex -sname engineering
+
+iex(engineering@localhost)1> Person.start_link(:lobby@localhost)
+{:ok,#PID<0.46.0>}
+iex(engineering@localhost)2> Person.login("David")
+"Sent login request"
+iex(engineering@localhost)3> Person.set_profile(:city, "Toronto")
+{:ok,"Added city/Toronto to profile"}
+iex(engineering@localhost)4> Person.say("Hi, everyone.")
+"Message sent."
+Steve (sales@localhost) says: How's things in Toronto, David?
+Michele (marketing@localhost) says: Product launch is next week.
+Steve (sales@localhost) says: Have to leave. Bye, everyone.
+iex(engineering@localhost)5> Person.users
+[{"Michele",:"marketing@localhost"},{"David",:"engineering@localhost"}]
+-------
+
+// [source,iex]
+------
+iex --sname marketing
+
+iex(marketing@localhost)1> Person.start_link(:lobby@localhost)
+{:ok,#PID<0.46.0>}
+iex(marketing@localhost)2> Person.login("Michele")
+"Sent login request"
+iex(marketing@localhost)3> Person.set_profile(:city, "San Jose")
+{:ok,"Added city/San Jose to profile"}
+David (engineering@localhost) says: Hi, everyone.
+Steve (sales@localhost) says: How's things in Toronto, David?
+iex(marketing@localhost)4> Person.say("Product launch is next week.")
+"Message sent."
+iex(marketing@localhost)5> Person.users
+[{"Michele",:"marketing@localhost"},{"David",:"engineering@localhost"},
+{"Steve",:"sales@localhost"}]
+iex(marketing@localhost)6> Person.who("Steve", :sales@localhost)
+#HashDict<[city: "Chicago"]>
+Steve (sales@localhost) says: Have to leave. Bye, everyone.
+------
+
+<<SOLUTION12-ET04,See a suggested solution in Appendix A.>>
+

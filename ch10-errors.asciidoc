@@ -1,0 +1,113 @@
+[[ERRORS]]
+Handling Errors
+---------------
+
+////
+NOTE: You can learn more about error handling in Chapters 3 and 17 of _Erlang Programming_, Chapter 4 and Section 18.2 of _Programming Erlang_, Section 2.8 and Chapters 5 and 7 of _Erlang and OTP in Action_, and Chapters 7 and 12 of _Learn You Some Erlang For Great Good!_.
+////
+
+[[CH10-ET01]]
+Étude 10-1: +try+ and +rescue+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Update the +stats+ module that you wrote in <<CH07-ET03,Étude 7-3>>
+so that it will catch errors in the +minimum/1+, +maximum/1+,
++mean/1+ and +stdv/1+ functions.
+
+Here is some sample output.
+
+// [source,iex]
+-------
+iex(1)> c("stats.ex")
+[Stats]
+iex(2)> Stats.minimum([])
+%MatchError{term: []}
+iex(3)> Stats.mean([])
+%ArithmeticError{}
+iex(4)> Stats.mean([:one, :two])
+%ArithmeticError{}
+iex(5)> Stats.stdv([1])
+%ArithmeticError{}
+--------
+
+<<SOLUTION10-ET01,See a suggested solution in Appendix A.>>
+
+[[CH10-ET02]]
+Étude 10-2: Logging Errors
+~~~~~~~~~~~~~~~~~~~~~~~~~
+Write a module named +Bank+ that contains a function +account/1+. The
+function takes a numeric +balance+, which gives the current balance in
+the account in imaginary dollars.
+
+The function will repeatedly ask for a transaction (deposit, withdraw,
+balance inquiry, or quit). If a deposit or withdrawal, it asks for
+the amount to deposit or withdraw, and then does that transaction.
+If a deposit is more than $10,000, the deposit may be subject to hold.
+
+Provide output to the customer, and also use +error_logger+ to
+write to a log file (which, in this case, will go to your terminal).
+Choose any form of input prompts and feedback and logging messages
+that you desire. Handle the following situtations:
+
+* Deposits and withdrawals cannot be negative numbers (error)
+* Deposits of $10,000 or more might be subject to hold (warning)
+* All other transactions are successful (informational)
+
+Use +get_number/1+ from <<CH05-ET02,Étude 5-2>> to allow either integer or float input; you may want to modify it to take the entire prompt as its argument.
+
+Here is sample output. Due to Elixir's asynchronous nature,
+the user prompts and logging are often interleaved in the most
+inconvenient places. 
+
+// [source,iex]
+-----------
+iex(1)> c("bank.ex")
+[Bank]
+iex(2)> Bank.account(2000)
+D)eposit, W)ithdraw, B)alance, Q)uit: d
+Amount to deposit: 300
+Your new balance is $2300
+D)eposit, W)ithdraw, B)alance, Q)uit: 
+=INFO REPORT==== 11-May-2013::14:48:57 ===
+Successful deposit of $300
+w
+Amount to withdraw: -200
+Withdrawals may not be less than zero.
+
+=ERROR REPORT==== 11-May-2013::14:49:07 ===
+Negative withdrawal amount $-200
+D)eposit, W)ithdraw, B)alance, Q)uit: d
+Amount to deposit: -200
+Deposits may not be less than zero.
+
+=ERROR REPORT==== 11-May-2013::14:49:18 ===
+Negative deposit $-200
+D)eposit, W)ithdraw, B)alance, Q)uit: d
+Amount to deposit: 15000
+Your deposit of $15000 may be subject to hold.
+
+=ERROR REPORT==== 11-May-2013::14:49:25 ===
+Large deposit $15000
+Your new balance is $17300
+D)eposit, W)ithdraw, B)alance, Q)uit: w
+Amount to withdraw: 32767
+You cannot withdraw more than your current balance of $17300
+
+=ERROR REPORT==== 11-May-2013::14:49:38 ===
+Overdraw $32767 from $17300
+D)eposit, W)ithdraw, B)alance, Q)uit: w
+Amount to withdraw: 150.25
+Your new balance is $17149.75
+
+=INFO REPORT==== 11-May-2013::14:49:44 ===
+Successful withdrawal $150.25
+D)eposit, W)ithdraw, B)alance, Q)uit: b
+Your current balance is $17149.75
+
+=INFO REPORT==== 11-May-2013::14:49:49 ===
+Balance inquiry $17149.75
+D)eposit, W)ithdraw, B)alance, Q)uit: q
+nil
+-----------
+
+<<SOLUTION10-ET02,See a suggested solution in Appendix A.>>
+

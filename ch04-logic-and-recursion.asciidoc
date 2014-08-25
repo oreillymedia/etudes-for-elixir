@@ -141,9 +141,9 @@ your +import+ as follows:
 
 // [source,elixir]
 ----
-import Kernel, except: [raise: 2, raise: 3]
+  import Kernel, except: [raise: 2, raise: 3]
 ----
-=====
+====
 
 <<SOLUTION04-ET04,See a suggested solution in Appendix A.>>
 

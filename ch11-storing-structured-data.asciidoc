@@ -1,0 +1,307 @@
+[[STORING-STRUCTURED-DATA]]
+Storing Structured Data
+-----------------------
+
+////
+NOTE: You can learn more about working with records in Chapter 7 of _Erlang Programming_, Section 3.9 of _Programming Erlang_, Section 2.11 of _Erlang and OTP in Action_, and Chapter 9 of _Learn You Some Erlang For Great Good!_.  ETS and DETS are in Chapter 10 of _Erlang Programming_, Chapter 15 of _Programming Erlang_, Section 2.14 and Chapter 6 of _Erlang and OTP in Action_, and Chapter 25 of _Learn You Some Erlang For Great Good!_.  Mnesia is covered in Chapter 13 of _Erlang Programming_, Chapter 17 of _Programming Erlang_, Section 2.7 of _Erlang and OTP in Action_, and Chapter 29 of _Learn You Some Erlang For Great Good!_.
+////
+
+[[CH11-ET01]]
+Étude 11-1: Using ETS
+~~~~~~~~~~~~~~~~~~~~~
+This étude will set up a small database that keeps track of phone calls.
+
+Part One
+^^^^^^^^
+Start by creating a record that defines these fields:
+
+* Phone number
+* Starting date (month, day, and year)
+* Starting time (hours, minutes, and seconds)
+* End date (month, day, and year)
+* End time (hours, minutes, and seconds)
+
+You may name the record whatever you wish, and you may use any
+field names you wish. For the default values for dates and times,
+use the strings +"1900-01-01"+ and +"00:00:00"+.
+
+In a module named +PhoneETS+, read a data file of phone call summaries 
+and create an ETS table for the calls. The function
+that does this will be named +setup/1+, and its argument will be the
+name of the file containing the data.
+
+Copy the following text into a file named
++call_data.csv+ and save the file in the same directory where you
+are going to write your module.
+
+----
+650-555-3326,2013-03-10,09:01:47,2013-03-10,09:05:11
+415-555-7871,2013-03-10,09:02:20,2013-03-10,09:05:09
+729-555-8855,2013-03-10,09:00:55,2013-03-10,09:02:18
+729-555-8855,2013-03-10,09:02:57,2013-03-10,09:03:56
+213-555-0172,2013-03-10,09:00:59,2013-03-10,09:03:49
+946-555-9760,2013-03-10,09:01:20,2013-03-10,09:03:10
+301-555-0433,2013-03-10,09:01:44,2013-03-10,09:04:06
+301-555-0433,2013-03-10,09:05:17,2013-03-10,09:07:53
+301-555-0433,2013-03-10,09:10:05,2013-03-10,09:13:14
+729-555-8855,2013-03-10,09:04:40,2013-03-10,09:07:29
+213-555-0172,2013-03-10,09:04:26,2013-03-10,09:06:00
+213-555-0172,2013-03-10,09:06:59,2013-03-10,09:10:35
+946-555-9760,2013-03-10,09:03:36,2013-03-10,09:04:23
+838-555-1099,2013-03-10,09:00:43,2013-03-10,09:02:44
+650-555-3326,2013-03-10,09:05:48,2013-03-10,09:09:08
+838-555-1099,2013-03-10,09:03:43,2013-03-10,09:06:26
+838-555-1099,2013-03-10,09:07:54,2013-03-10,09:10:10
+301-555-0433,2013-03-10,09:14:07,2013-03-10,09:15:08
+415-555-7871,2013-03-10,09:06:15,2013-03-10,09:09:32
+650-555-3326,2013-03-10,09:10:12,2013-03-10,09:13:09
+----
+
+Read the file in the same way that you did in
+<<CH07-ET01,Étude 7-1>>. Hint: use +File.open+,
++IO.readline+, and +String.split+
+
+The phone number is the key for this data. Since there are multiple
+calls per phone number, you will need a +bag+ type table. 
+To get the individual items from each line, use
++String.split/2+, much as you did in <<CH05-ET02,Étude 5-2>>.
+
+Part Two
+^^^^^^^^
+Write functions to summarize the number of minutes for a single
+phone number (+summary/1+) or for all phone numbers.
+(+summary/0+). These functions return a list of tuples in the form:
+
++[{_phoneNumber1_, _minutes_]},{_phoneNumber2_, _minutes_}, ...]+
+
+You could write your own code to do time and date calculations to
+figure out the duration of a phone call, but there's a limit on how
+much you really want to re-invent the wheel, especially with something
+as complex as calendar calculations. Consider, for example, a call that
+begins on 31 December 2013 at 11:58:36 p.m. and ends on 1 January 2014 at
+12:14:22 p.m. I don't even want to think about calls that start on
+28 February and go to the next day.
+
+So, instead, use Erlang's +:calendar.datetime_to_gregorian_seconds/1+ function to convert a date and time to the number of seconds since the year zero. (I swear I am not making this up.) The argument to this function is a tuple in the form:
+
+[subs="quotes"] 
+-----
+{{_year_, _month_, _day_}, {_hours_, _minutes_, _seconds_}} # for example
+{{2013, 07, 14}, {14, 49, 21}}
+-----
+
+Round up any number of seconds to the next minute for ech call. Thus, if
+a call lasts 4 minutes and 6 seconds, round it up to 5 minutes.
+Hint: add 59 to the total number of seconds before you +div 60+.
+
+NOTE: Now might be the time to rewrite part one so that your dates and times are stored in the appropriate format. That way, you do the conversion from string to tuple only once, instead of every time you ask for a summary. The +list_to_tuple+ function will come in handy here.
+
+Here is the sample output, reformatted to avoid long lines
+
+// [source,iex]
+-----
+iex(1)> PhoneEts.setup("call_data.csv")
+:ok
+iex(2)> PhoneEts.summary()
+[{"301-555-0433",12},{"946-555-9760",3},
+{"213-555-0172",9},{"415-555-7871",7},
+{"838-555-1099",9},{"650-555-3326",11},{"729-555-8855",6}]
+iex(3)> PhoneEts.summary("415-555-7871")
+[{"415-555-7871",7}]
+iex(4)> PhoneEts.summary("111-222-3333")
+[{"111-222-3333",0}]
+-----
+
+Creating the summary for all the phone numbers will be easier if you use +:ets.first/1+ and +:ets.next/2+.  The +:ets.first/1+ function takes a table name as its argument and returns the first key in the table. The +:ets.next/2+ function takes the table name as its first argument and the current key as its second argument. It returns the next key in the table. When there are no more keys, it returns the special atom +:"$end_of_table"+.
+
+<<SOLUTION11-ET01,See a suggested solution in Appendix A.>>
+
+////
+[[CH11-ET02]]
+Étude 11-2: Using Mnesia
+~~~~~~~~~~~~~~~~~~~~~~~~
+I have good news and bad news. First, the bad news. Mnesia is _not_
+a relational detabase management system. If you try to use a query
+list comprehension to join three tables, Erlang will complain that joins
+with more than two tables are not efficient.
+
+Now, the good news. While trying to find a way around this, I discovered
+something about query list comprehensions that is really pretty neat, and I'm 
+happy to share it with you.
+
+In this étude, you will use add a table of customer names and
+use Mnesia query list comprehensions to join data
+from those tables when producing a summary.
+
+Part One
+^^^^^^^^
+You will need to add a record for customers to +phone_records.hrl+. Its fields
+will be:
+
+* Phone Number (this is the key)
+* Customer's last name
+* Customer's first name
+* Customer's middle name
+* Rate paid per minute (float)
+
+Again, you may name the record whatever you wish, and you may use any
+field names you wish.
+
+Part Two
+^^^^^^^^
+In a module named +phone_mnesia+,
+create the Mnesia tables for the two files. The function
+that does this will be named +setup/2+, and its arguments will be the
+names of the file containing the data.
+
+Use the phone call data from <<ET10-01,Étude 11-1>>, and
+use this data for the customers. Put it in a file named
++customer_data.csv+ or whatever other name you wish.
+
+----
+213-555-0172,Nakamura,Noriko,,0.12
+301-555-0433,Ekberg,Erik,Engvald,0.07
+415-555-7871,Alvarez,Alberto,Agulto,0.15
+650-555-3326,Girard,Georges,Gaston,0.10
+729-555-8855,Tran,Truong,Thai,0.09
+838-555-1099,Smith,Samuel,Steven,0.10
+946-555-9760,Bobrov,Bogdan,Borisovitch,0.14
+----
+
+You could write two functions that all open a file, read data,
+split it into fields, write the data to the Mnesia table, and then keep
+going until end-of-file. These would share a lot of common code. Instead,
+try writing just one function that does the reading, and pass a higher-order
+function to it to do the appropriate "split-and-write" operation.
+
+When I solved this problem, my +fill_table/5+ function took these 
+arguments:
+
+* The name of the table (an atom)
+* The name of the file to read (a string)
+* The function that adds the data (a higher-order +fun+)
+* The +record_info+ for the field
+* The type of table. The phone call data is a +bag+, the
+customer data is a +set+.
+
+Part Three
+^^^^^^^^^^
+Write a function named +summary/3+ that takes a last name, first name,
+and middle name. It produces a tuple that contains the person's phone number,
+total number of minutes, and total cost for those minutes.
+
+Here is some sample output.
+
+// [source,iex]
+-----
+1> c(phone_mnesia).
+{ok,phone_mnesia}
+2> phone_mnesia:setup("call_data.csv", "customer_data.csv").
+{atomic,ok}
+3> phone_mnesia:summary("Smith", "Samuel", "Steven").       
+[{"838-555-1099",9,0.9}]
+4> phone_mnesia:summary("Nakamura", "Noriko", "").   
+[{"213-555-0172",9,1.08}]
+-----
+
+As promised, here's the good news about query list comprehensions.
+In this module, you need to access the
+customer table to match the phone number to the name when collecting the
+calls for the customer. You also need to access the customer table in
+order to access the customer's rate per minute. You don't want to have
+to write the specification for the guards on the customer table twice.
+
+As 
+http://shop.oreilly.com/product/0636920025818.do[Introducing Erlang]
+notes, "you can use the +qlc:q+ function to hold a
+list comprehension and the +qlc:e+ function to process it." Specifically,
+the +qlc:q+ function returns a _query handle_ which you can evaluate
+and which you can also use in place of a list name in a query list
+comprehension.
+
+Here's an example. Let's say you have tables of people and their pets.
+In the +pet+ table, the +owner_id+ references the +id_number+ of someone
+in the +person+ table.
+
+[source, erlang]
+------
+-record(person,
+  {id_number, name, age, gender, city, amount_owed}).
+-record(animal,
+  {id_number, name, species, gender, owner_id}).
+------
+
+You could do a query like this to find a
+specific set of people, and then to find information about their pets:
+
+[source, erlang]
+-------
+get_info() ->
+  People = mnesia:transaction(
+    fun() -> qlc:e(
+      qlc:q( [ P ||
+        P <- mnesia:table(person),
+        P#person.age >= 21,
+        P#person.gender == "M",
+        P#person.city == "Podunk"]
+        )
+      )
+    end
+  ),
+  
+  Pets = mnesia:transaction(
+    fun() -> qlc:e(
+      qlc:q( [{A#animal.name, A#animal.species, P#person.name} ||
+        P <- mnesia:table(person),
+        P#person.age >= 21,
+        P#person.gender == "M",
+        P#person.city == "Podunk",
+        A <- mnesia:table(animal),
+        A#animal.owner_id == P#person.id_number])
+      )
+    end
+  ),
+  [People, Pets].
+----
+
+To avoid duplicating the list and guards for the person table, you can make a 
+query list handle for that query and use it again in the animal search. Note
+that you don't have to be in a transaction to create a query handle,
+but you must be in a transaction to process it.
+
+// [source,iex]
+----
+get_info_easier() ->
+  
+  %% "Pre-process" the list comprehension for finding people
+  
+  QHandle = qlc:q( [ P ||
+    P <- mnesia:table(person),
+    P#person.age >= 21,
+    P#person.gender == "M",
+    P#person.city == "Podunk"]
+  ),
+  
+  %% Evaluate it to retrieve the people you want
+  
+  People = mnesia:transaction(
+    fun() -> qlc:e( QHandle ) end
+  ),
+  
+  %% And use the handle again when retrieving
+  %% information about their pets
+  
+  Pets = mnesia:transaction(
+    fun() -> qlc:e(
+      qlc:q( [{A#animal.name, A#animal.species, P#person.name} ||
+        P <- QHandle,
+        A <- mnesia:table(animal),
+        A#animal.owner_id == P#person.id_number])
+      )
+    end
+  ),
+  [People, Pets].
+----
+
+<<SOLUTION11-ET02,See a suggested solution in Appendix A.>>
+////

@@ -1,0 +1,224 @@
+[[HIGHER-ORDER_FNS]]
+Higher Order Functions and List Comprehensions
+----------------------------------------------
+
+////
+NOTE: You can learn more about working with higher order functions in Chapter 9 of _Erlang Programming_, Section 3.4 of _Programming Erlang_, Section 2.7 of _Erlang and OTP in Action_, and Chapter 6 of _Learn You Some Erlang For Great Good!_.  List comprehensions are in Chapter 9 of _Erlang Programming_, Section 3.6 of _Programming Erlang_, Section 2.9 of _Erlang and OTP in Action_, and Chapter 1 of _Learn You Some Erlang For Great Good!_.
+////
+
+[[CH08-ET01]]
+Étude 8-1: Simple Higher Order Functions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In calculus, the derivative of a function is "a measure of how a function
+changes as its input changes"
+(http://en.wikipedia.org/wiki/Derivative[Wikipedia]). For example,
+if an object is traveling at a constant velocity, that velocity is the same
+from moment to moment, so the derviative is zero. If an object is falling, its
+velocity changes a little bit as the object starts falling, and then falls
+faster and faster as time goes by.
+
+You can calculate the rate of change of a function by calculating:
++(f(x + delta) - f(x)) / delta+, where +delta+ is the interval
+between measurements. As delta approaches zero, you get closer and
+closer to the true value of the derivative.
+
+Write a module named +Calculus+ with a function +derivative/2+. The
+first argument is the function whose derivative you wish to find, and the
+second argument is the point at which you are measuring the derivative.
+
+What should you use for a value of +delta+? I used +1.0e-10+, as that is a small
+number that approaches zero.
+
+Here is some sample output.
+
+// [source,iex]
+-----
+iex(1)> c("calculus.ex")
+[Calculus]
+iex(2)> f1 = fn(x) -> x * x end
+#Function<erl_eval.6.17052888>
+iex(3)> f1.(7)
+49
+iex(4)> Calculus.derivative(f1, 3)
+6.00000049644222599454
+iex(5)> Calculus.derivative(fn(x) -> 3 * x * x + 2 * x + 1 end, 5)
+32.00000264769187197089
+iex(6)> Calculus.derivative(&:math.sin/1, 0) 
+1.0
+-----
+
+* Line 3 is a test to see if the +f1+ function works.
+* Line 5 shows that you don't have to assign a function to a variable;
+you can define the function in line.
+* Line 6 shows how to refer to a function in another module. You give its name, preceded by an ampersand, and use +/1+ to indicate its arity.
+
+<<SOLUTION08-ET01,See a suggested solution in Appendix A.>>
+
+[[CH08-ET02]]
+Étude 8-2: List Comprehensions and Pattern Matching
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Is it possible to use pattern matching inside a list comprehension? Try
+it and find out.
+
+Presume you have this list of people's names, genders, and ages:
+
+----
+[{"Federico", "M", 22}, {"Kim", "F", 45}, {"Hansa", "F", 30},
+  {"Tran", "M", 47}, {"Cathy", "F", 32}, {"Elias", "M", 50}]
+----
+
+In +iex+ (or in a module, if you prefer), write a list comprehension
+that creates a list consisting of the names of all the people who are male _and_ over 40. Use pattern matching to separate the tuple into three variables, and use two guards to do the tests for age and gender. When you use multiple guards in a list comprehension, you get the moral equivalent of combining the conditions with +and+. 
+
+Then, write a list comprehension that selects the names of all the people who are male _or_ over 40. You can't use multiple guards here; you want a single guard that explicitly uses the +or+ operator.
+
+<<SOLUTION08-ET02,See a suggested solution in Appendix A.>>
+
+[[CH08-ET03]]
+Étude 8-3: Using +lists:foldl/3+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Add +mean/1+ and +stdv/1+ functions to the +stats+ module which
+you created in <<CH06-01,Étude 6-1>> to calculate the mean and
+standard deviation for a list of numbers.
+
+// [source,iex]
+----
+iex(1)> c("stats.ex")        
+[Stats]
+iex(2)> Stats.mean([7, 2, 9])
+6.0
+iex(3)> Stats.stdv([7, 2, 9])
+3.60555127546398912486
+----
+
+The formula for the mean is simple; just add up all the numbers and
+divide by the number of items in the list (which you may find by using the
++Enum.count/1+ function).Use +List.foldl/3+ to calculate the sum of the items
+in the list.
+
+The following is the algorithm for calculating
+the standard deviation. Presume that +n+ is the number of items
+in the list.
+
+. Add up all the numbers in the list (call this the _sum_).
+. Add the squares of the numbers in the list (call this the _sum of squares_).
+. Multiply +n+ times the _sum of squares_.
+. Multiply the _sum_ times itself.
+. Subtract the result of step 4 from the result of step 3.
+. Divide the result of step 5 by +n * (n - 1)+.
+. Take the square root of that result.
+
+Thus, if your numbers are 7, 2, and 9, +N+ would be three, and
+you would do these calculations:
+
+* The sum is 7 + 2 + 9, or 18.
+* The sum of squares is 49 + 4 + 81, or 134.
+* +N+ times the sum of squares is 134 * 3, or 402.
+* The sum times itself is 18 * 18, or 324.
+* 402 - 324 is 78.
+* 78 divided by (3 * (3 - 1)) is 78 / 6, or 13.
+* The standard deviation is the square root of 13, or 3.606.
+
+In your code, you can do steps three through seven in one arithmetic
+expression. You'd have variables in your expression rather than constants,
+of course.
+
+[literal]
+:math.sqrt((3 * 134 - 18 * 18)/(3 * (3 - 1))
+
+Use +List.foldl/3+ to calculate the sum and the sum of squares.
+Bonus points if you can calculate both of them
+with one call to +List.foldl/3+. Hint:
+the argument for the accumulator doesn't have to be a single number. It can
+be a list or a tuple.
+
+<<SOLUTION08-ET03,See a suggested solution in Appendix A.>>
+
+[[CH08-ET04]]
+Étude 8-4: Using +Enum.split/2+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Use +h Enum.split+ to see how the +Enum.split/2+ function works, or try
+the following example and see if you can figure it out. Experiment to see
+what happens if the second argument is zero or greater than the length
+of the original list.
+
+// [source,iex]
+----
+iex(1)> Enum.split([110, 220, 330, 440, 550, 600], 4)
+{[110,220,330,440],[550,600]}
+----
+
+Use +Enum.split/2+ and +List.foldl/3+ to rewrite the
++Dates.julian/1+ function from 
+<<CH06-02,Étude 6-2>>. Hint: you'll use those functions when
+calculating the total number of days up to (but not including)
+the month in question.
+
+<<SOLUTION08-ET04,See a suggested solution in Appendix A.>>
+
+[[CH08-ET05]]
+Étude 8-5: Multiple Generators in List Comprehensions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Back to list comprehensions. You can have more than one generator in a list comprehension. Try this in +iex+:
+
+// [source,iex]
+----
+iex(1)> for x <- [3, 5, 7], y <- [2, 4, 6], do: x * y
+[6,12,18,10,20,30,14,28,42]
+----
+
+Using what you've learned from this example, write a module named +Cards+ that contains a function +make_deck/0+. The function will use a list comprehension with two generators to create a deck of cards as a list 52 tuples in this form:
+
+[literal]
+
+[{"A","Clubs"},
+ {"A","Diamonds"},
+ {"A","Hearts"},
+ {"A","Spades"},
+ {2,"Clubs"},
+ {2,"Diamonds"},
+ {2,"Hearts"},
+ {2,"Spades"},
+ ...
+ {"K", "Clubs"},
+ {"K", "Diamonds"},
+ {"K", "Hearts"},
+ {"K", "Spades"}]
+
+
+<<SOLUTION08-ET05,See a suggested solution in Appendix A.>>
+
+[[CH08-ET06]]
+Étude 8-6: Explaining an Algorithm
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+You need a way to shuffle the deck of cards. This is the code for
+doing a shuffle, adapted from the Erlang solution at
+the Literate Programs Wiki.
+
+// [source,elixir]
+-----
+def shuffle(list) do
+  :random.seed(:erlang.now())
+  shuffle(list, [])
+end
+
+def shuffle([], acc) do
+  acc
+end
+
+def shuffle(list, acc) do
+  {leading, [h | t]} =
+    Enum.split(list, :random.uniform(Enum.count(list)) - 1)
+    shuffle(leading ++ t, [h | acc])
+end
+----
+
+Wait a moment. If I've just given you the code, what's the purpose
+of this étude? I want you to understand the code. The object of this
+étude is to write the documentation for the algorithm.
+If you aren't sure what the code does, try adding some
++IO.puts+ statements to see what is happening. If you're totally
+stuck, 
+http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#Fisher_and_Yates.27_original_method[see the original explanation of the method at Wikipedia].
+
+<<SOLUTION08-ET06,See a suggested solution in Appendix A.>>

@@ -16,17 +16,21 @@ include::ch05-strings.asciidoc[]
 
 include::ch06-lists.asciidoc[]
 
-include::ch07-higher-order-functions-and-lists.asciidoc[]
+include::ch07-hashes.asciidoc[]
 
-include::ch08-processes.asciidoc[]
+include::ch08-higher-order-functions-and-lists.asciidoc[]
 
-include::ch09-errors.asciidoc[]
+include::ch09-processes.asciidoc[]
 
-include::ch10-storing-structured-data.asciidoc[]
+include::ch10-errors.asciidoc[]
 
-include::ch11-otp.asciidoc[]
+include::ch11-storing-structured-data.asciidoc[]
 
-include::ch12-macros.asciidoc[]
+include::ch12-otp.asciidoc[]
+
+include::ch13-macros.asciidoc[]
+
+include::contributors.asciidoc[]
 
 include::appendix-a.asciidoc[]
 

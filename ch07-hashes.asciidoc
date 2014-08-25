@@ -1,0 +1,187 @@
+[[HASHES]]
+Hashes
+-----
+////
+NOTE: You can learn more about working with lists in Chapter 2 of _Elixir Programming_, Sections 2.10 and 3.5 of _Programming Elixir_, Section 2.2.5 of _Elixir and OTP in Action_, and Chapter 1 of _Learn You Some Elixir For Great Good!_.
+////
+
+[[CH07-ET01]]
+Étude 7-1: Creating a HashDict from a File
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Your local college has given you a text file that contains data about which courses are taught in which rooms. Here is part of the file. The first column is the course ID number. The second column is the course name, and the third column is the room number.
+
+----
+64850,ENGL 033,RF141
+64851,ENGL 080,SC103
+64853,ENGL 102,C101B
+----
+
+Your job in this étude is to read the file and create a +HashDict+ whose key is the room number and whose value is a list of all the courses taught in that room.
+
+Opening Files
+^^^^^^^^^^^^^
+To open file _test.csv_, which you will find in the example download area at _URL goes here_, use +File.open/2+, which takes the path to a file as its first argument and a list of options as its second argument. Here is a shell session that opens the file, reads one line, and then closes the file.
+
+// [source,iex]
+----
+iex(1)> {result, device} = File.open("courses.csv", [:read, :utf8])
+{:ok,#PID<0.39.0>}
+iex(2)> data = IO.readline(device)
+"64850,ENGL 033,RF141\n"
+iex(3)> File.close(device)
+:ok
+----
+
+If you successfully open the file, +result+ will be +:ok+, and the +device+ will be the variable you when reading or closing the file. If there is some error, +result+ will be +:error+, and the +device+ variable will contain the reason that the file open failed.
+
++IO.readline/1+ reads a line from the file (including the ending +\n+ character) unless there is no more data, in which case you will get the atom +:eof+.
+
+[NOTE]
+====
+If you do not use the +:utf8+ option, the file will open in binary mode, and you will only be able to use the most basic input and output operations on the file.
+====
+
+Here is a portion of the output, edited to save space.
+
+// [source,iex]
+----
+iex(1)> c("college.ex")
+[College]
+iex(2)> College.make_room_list("courses.csv")
+#HashDict<[{"RF241",["CIT 050","CIT 042","CIT 020","PSYCH 018"]},
+{"RE311",["PSYCH 092","HIST 010A"]},
+{"AD211",["MATH 061","CHEM 030B","CHEM 030A","CHEM 001B",
+"CHEM 001A"]},
+{"RF234",["COMSC 076","CIT 010","BIS 107","ACCTG 030"]},
+{"RE301",["BUS 009","LA 050","ESL 346"]},
+{"C104",["MATH 311"]},...}
+----
+
+<<SOLUTION07-ET01,See a suggested solution in Appendix A.>>
+
+[[CH07-ET02]]
+Étude 7-2: Creating Structures from a File
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In this étude, you will read a CSV (comma-separated values) file with information about countries and cities, Lines with two entries give a country name and its primary language; lines with four entries give a city name, its population, its latitude, and its longitude. Here is some sample data, in file _code/ch07-02/geography.csv_:
+
+----
+Germany,German
+Hamburg,1739117,53.57532,10.01534
+Frankfurt am Main,650000,50.11552,8.68417
+Dresden,486854,51.05089,13.73832
+Spain,Spanish
+Madrid,3255944,40.4165,-3.70256
+Granada,234325,37.18817,-3.60667
+Barcelona,1621537,41.38879,2.15899
+South Korea,Korean
+Seoul,10349312,37.56826,126.97783
+Busan,3678555,35.10278,129.04028
+Daegu,2566540,35.87028,128.59111
+Peru,Spanish
+Lima,7737002,-12.04318,-77.02824
+Cusco,312140,-13.52264,-71.96734
+Arequipa,841130,-16.39889,-71.535
+----
+
+Define two structures. The first one, +Country+ has fields for the country name, its language, and a list of cities in that country. Each of the cities is represented by a +City+ structure, which has fields for the city name, population, latitude, and longitude. This is something new: a structure that has structures in it
+
+Then, define a module named +Geography+. It has a function +make_geo_list/1+, whose argument is the name of the CSV file. It returns a list of +Country+ structures and their cities, as shown here:
+
+// [source, iex]
+----
+iex(1)> c "geography.ex"
+[Geography, Country, City]
+iex(2)> Geography.make_geo_list("geography.csv")
+[%Country{cities: [%City{latitude: -16.39889, longitude: -71.535,
+    name: "Arequipa", population: 841130},                                                             
+   %City{latitude: -12.04318, longitude: -77.02824, name: "Lima",                                      
+    population: 7737002}], language: "Spanish", name: "Peru"},                                         
+ %Country{cities: [%City{latitude: 35.87028, longitude: 128.59111,
+    name: "Daegu", population: 2566540},
+   %City{latitude: 37.56826, longitude: 126.97783, name: "Seoul",
+    population: 10349312}], language: "Korean", name: "South Korea"},
+ %Country{cities: [%City{latitude: 41.38879, longitude: 2.15899,
+    name: "Barcelona", population: 1621537},
+   %City{latitude: 40.4165, longitude: -3.70256, name: "Madrid",
+    population: 3255944}], language: "Spanish", name: "Spain"},
+ %Country{cities: [%City{latitude: 51.05089, longitude: 13.73832,
+    name: "Dresden", population: 486854},
+   %City{latitude: 53.57532, longitude: 10.01534, name: "Hamburg",
+    population: 1739117}], language: "German", name: "Germany"}]
+----
+
+<<SOLUTION07-ET02,See a suggested solution in Appendix A.>>
+
+[[CH07-ET03]]
+Étude 7-3: Using Structures
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Add a function +total_population/2+ to the +Geography+ module. The first argument will be a list as constructed by +make_geo_list/1+, and the second argument is a string giving the name of a language. The function returns the total population of all the cities in countries whose primary language is the one you specified. Here is what it looks like:
+
+// [source, iex]
+-----
+iex(1)> glist = Geography.make_geo_list("geography.csv")
+[%Country{cities: [%City{latitude: -16.39889, longitude: -71.535,
+    name: "Arequipa", population: 841130},
+   %City{latitude: -12.04318, longitude: -77.02824, name: "Lima",
+    population: 7737002}], language: "Spanish", name: "Peru"},
+ %Country{cities: [%City{latitude: 35.87028, longitude: 128.59111,
+    name: "Daegu", population: 2566540},
+   %City{latitude: 37.56826, longitude: 126.97783, name: "Seoul",
+    population: 10349312}], language: "Korean", name: "South Korea"},
+ %Country{cities: [%City{latitude: 41.38879, longitude: 2.15899,
+    name: "Barcelona", population: 1621537},
+   %City{latitude: 40.4165, longitude: -3.70256, name: "Madrid",
+    population: 3255944}], language: "Spanish", name: "Spain"},
+ %Country{cities: [%City{latitude: 51.05089, longitude: 13.73832,
+    name: "Dresden", population: 486854},
+   %City{latitude: 53.57532, longitude: 10.01534, name: "Hamburg",
+    population: 1739117}], language: "German", name: "Germany"}]
+iex(2)> Geography.total_population(glist, "Korean")
+12915852
+----
+
+<<SOLUTION07-ET03,See a suggested solution in Appendix A.>>
+
+[[CH07-ET04]]
+Étude 7-4: Protocols with Structures
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Add a new protocol to check to see if a +City+ is valid. To be valid, the population must be greater than or equal to zero, the latitude must be between -90 and 90 (inclusive), and the longitude between -180 and 180 (inclusive). Your protocol will implement the +valid?/1+ function.
+
+// [source, elixir]
+----
+defprotocol Valid do
+  @doc "Returns true if data is considered valid"
+  def valid?(data)
+end
+----
+
+Then, add an implementation of +inspect+ for a +City+ that will display it in a more appealing form of your choice. The result might look something like this:
+
+// [source, iex]
+----
+iex(1)> c "geography.ex"
+[Geography, Country, Inspect.City, Valid.City, City, Valid]
+iex(2)> good = %City{name: "Hamburg", population: 1739117, latitude: 53.57532,
+...(2)>   longitude: 10.01534}
+Hamburg (1739117) 53.58°N 10.02°E
+iex(3)> Valid.valid?(good)
+true
+iex(4)> bad = %City{name: "Nowhere", population: -1000,
+...(4)>   latitude: 37.1234, longitude: -12.457}       
+Nowhere (-1000) 37.12°N 12.46°W
+iex(5)> Valid.valid?(bad)
+false
+iex(6)> bad2 = %City{name: "Impossible", population: 1000,
+...(6)>   latitude: 135.0, longitude: 175}              
+Impossible (1000) 135.0°N 175.0°E
+iex(7)> Valid.valid?(bad2)
+false
+-----
+
+Notice that I decided to round the latitude and longitude to two digits. If you decide to do this and you use +Kernel.round/2+, remember that its first argument must be of type +float+. In order to allow people to use integers for latitude and longitude, I simply multiplied them by 1.0, which converted them to the correct type.
+
+
+<<SOLUTION07-ET04,See a suggested solution in Appendix A.>>

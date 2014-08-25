@@ -17,7 +17,7 @@ continues to work.
 
 This philosophy, however, is not the one you want to employ when you
 have (atypical for Elixir) programs that ask for user input.
-You want those to crash infrequently and catch as many input errors as possible.
+You want to those to crash infrequently and catch as many input errors as possible.
 
 In this étude, you will write a module named +ask_area+, which prompts you
 for a shape and its dimensions, and then returns the area by calling
@@ -76,7 +76,7 @@ program work.
   This involves the following steps:
   
   * Use +String.strip/1+ to get rid of the trailing newline character
-  * Use +String.to_integer/1+ to convert the string to a number.
+  * Use +string_to_integer/1+ to convert the string to a number.
 
 +
 When you write the +-spec+ for this function (you _have_ been

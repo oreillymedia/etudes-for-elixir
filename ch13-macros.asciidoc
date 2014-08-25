@@ -1,0 +1,190 @@
+[[MACROS]]
+Using Macros to Extend Elixir
+-----------------------------
+
+
+////
+NOTE: You can learn more about macros in???
+////
+
+[[CH13-ET01]]
+Étude 13-1: Atomic weights
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+In this étude, you will create a macro that will create a
+set of functions whose names are the symbols for the elements (all lowercase,
+as Elixir does not allow a function name to start with an uppercase letter).
+These functions take no arguments and return the atomic weight of the
+element, rounded to three decimal places. Thus, your macro will do the
+moral equivalent of creating functions like these:
+
+// [source,elixir]
+----
+def h() do
+  1.008
+end
+
+def he() do
+  4.003
+end
+----
+
+Here is a list of the first
+26 elements in a form that may be useful to you.
+
+----
+[{:h, 1.008}, {:he, 4.003},
+ {:li, 6.94}, {:be, 9.012}, {:b, 10.81}, {:c, 12.011},
+ {:n, 14.007}, {:o, 15.999}, {:f, 18.998}, {:ne, 20.178},
+ {:na, 22.990}, {:mg, 24.305}, {:al, 26.981}, {:si, 28.085},
+ {:p, 30.974}, {:s, 32.06}, {:cl, 35.45}, {:ar, 39.948},
+ {:k, 39.098}, {:ca, 40.078}, {:sc, 44.956}, {:ti, 47.867},
+ {:v, 50.942}, {:cr, 51.996}, {:mn, 54.938}, {:fe, 55.845}]
+----
+
+You don't need to make a complete list of all 92 basic elements unless you
+feel especially ambitious; the purpose of this étude is to use macros, not
+to learn chemistry.
+
+Write one module named +AtomicMaker+ that has the +defmacro+ in it, and
+another module named +Atomic+ that will +require AtomicMaker+.
+
+Once you have this, you will be able to calculate the atomic weights of
+molecules:
+
+// [source, iex]
+----
+iex(1)> c("atomic_maker.ex")
+[AtomicMaker]
+iex(2)> c("atomic.ex")
+[Atomic]
+iex(3)> import Atomic
+nil
+iex(4)> water = h * 2 + o
+18.015
+iex(5)> sulfuric_acid = h * 2 + s + o * 4
+98.072
+iex(6)> salt = na + cl
+58.44
+----
+
+<<SOLUTION13-ET01,See a suggested solution in Appendix A.>>
+
+[[CH13-ET02]]
+Étude 13-2: Adding Durations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Presume that you are using a two-tuple to represent a duration of time
+in minutes and seconds; thus +{2, 15}+ represents a duration of two
+minutes and fifteen seconds. Write a macro named +add+ in a module
+named +Duration+ that takes two of these tuples as arguments and
+returns the total duration. Hint: use pattern matching in the
+macro definition to separate the elements of the tuple.
+
+// [source,iex]
+----
+iex(1)> require Duration
+nil
+iex(2)> Duration.add({2,15},{3,12})
+{5,27}
+iex(3)> Duration.add({2,45},{3,22})
+{6,7}
+----
+
+<<SOLUTION13-ET02,See a suggested solution in Appendix A.>>
+
+[[CH13-ET03]]
+Étude 13-3: Adding Durations (operator version)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can use +defmacro+ to create new meanings for mathematical
+operators. Take the code you wrote for
+<<CH13-ET02,Étude 13-2: Adding Durations>> and change the first line,
+which probably looks something like this:
+
+// [source,elixir]
+[subs="quotes"]
+----
+defmacro add (_first_operand_, _second_operand_)
+----
+
+and change it to this:
+
+// [source, elixir]
+[subs="quotes"]
+----
+defmacro _first_operand_ + _second_operand_
+----
+
+You may be wondering how this could possibly compile correctly;
+after all, you are using the plus sign in your calculations. The 
+reason everything works is that you can't invoke a macro just
+after it is defined, so as far as your code is concerned, the
+plus sign is the normal addition operation as defined in the 
++Kernel+ module.
+
+You can use this as if it were an ordinary function (just as you
+can use the +Kernel+ addition operator.
+
+// [source, iex]
+----
+iex(1)> require Duration
+nil
+iex(2)> Duration.+({1, 27}, {2, 44})
+{4,11}
+iex(3)> Kernel.+(7, 5)
+12
+----
+
+If you want to use the plus sign as an operator for doing addition,
+you have to +import Duration+; but that causes a problem, which you
+see in the following edited output.
+
+// [source, iex]
+----
+iex(4)> import Duration
+nil
+iex(5)> 3 + 4
+** (CompileError) iex:5: function +/2 imported from both
+Duration and Kernel, call is ambiguous
+----
+
+The solution is to avoid importing the default addition operator. If
+you want normal addition, you must ask for it explicitly.
+
+// [source, iex]
+----
+iex(5)> import Kernel, except: [+: 2]
+nil
+iex(6)> {2,24} + {3, 49}
+{6,13}
+iex(7)> Kernel.+(7, 5)
+12
+iex(8)> 7 + 5
+** (FunctionClauseError) no function clause matching in Duration.+/2
+    iex:8: Duration.+/2
+----
+
+There's a tricky way around this, however. If you used pattern
+matching in the definition of your macro, you can
+add another +defmacro+ clause to the +Duration+ module that redefines
++++ for two plain arguments (not two-tuples).
+That macro will just do a straight
+addition of its operands. Since you can't use a macro just after its
+definition, the macro will use the +Kernel+'s plus sign.
+
+// [source, iex]
+----
+iex(1)> c("duration.ex")
+/Users/elixir/code/ch13-03/duration.ex:1: redefining module Duration
+[Duration]
+iex(2)> import Duration
+nil
+iex(3)> import Kernel, except: [+: 2] 
+nil
+iex(4)> {5, 46} + {2, 14}
+{8,0}
+iex(5)> 12 + 9
+21
+----
+
+<<SOLUTION13-ET03,See a suggested solution in Appendix A.>>
