@@ -47,7 +47,7 @@ defmodule Geography do
 
   defp total_population([head|tail], language, total) do
     if (head.language == language) do
-      total_population(tail, language, subtotal(head.cities, 0))
+      total_population(tail, language, total + subtotal(head.cities, 0))
     else
       total_population(tail, language, total)
     end
