@@ -17,7 +17,7 @@ continues to work.
 
 This philosophy, however, is not the one you want to employ when you
 have (atypical for Elixir) programs that ask for user input.
-You want to those to crash infrequently and catch as many input errors as possible.
+You want those to crash infrequently and catch as many input errors as possible.
 
 In this étude, you will write a module named +ask_area+, which prompts you
 for a shape and its dimensions, and then returns the area by calling
@@ -74,7 +74,7 @@ program work.
   Given a string as a prompt, displays the string
   +"Enter _prompt_ > "+ and returns the number that was input.
   This involves the following steps:
-  
+
   * Use +String.strip/1+ to get rid of the trailing newline character
   * Use +string_to_integer/1+ to convert the string to a number.
 
@@ -129,7 +129,7 @@ The function you will use is the +Regex.match?/2+. It takes a regular expression
 
 // [source,iex]
 ----
-iex(1)> Regex.match?(~r/e/, "hello")             
+iex(1)> Regex.match?(~r/e/, "hello")
 true
 iex(2)> Regex.match?(~r/[0-9]/, "h3llo")
 true
@@ -160,11 +160,10 @@ iex(2)> Dates.date_parts("2013-06-15")
 
 Use the +String.split/3+ function to accomplish this task.
 How, you may ask, does that function work? Ask Elixir!
-In IEx, type +h String.split+ and you will see the online documentation for 
+In IEx, type +h String.split+ and you will see the online documentation for
 that function.
 
 Yes, I know this étude seems pointless, but trust me:
 I'm going somewhere with this. Stay tuned.
 
 <<SOLUTION05-ET03,See a suggested solution in Appendix A.>>
-
