@@ -19,7 +19,7 @@ This philosophy, however, is not the one you want to employ when you
 have (atypical for Elixir) programs that ask for user input.
 You want those to crash infrequently and catch as many input errors as possible.
 
-In this étude, you will write a module named +ask_area+, which prompts you
+In this étude, you will write a module named +AskArea+, which prompts you
 for a shape and its dimensions, and then returns the area by calling
 +Geom.area/3+, which you wrote in <<CH04-ET01,Étude 4-1>>.
 
