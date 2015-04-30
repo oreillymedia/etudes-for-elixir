@@ -27,7 +27,7 @@ iex(4)> Stats.mean([:one, :two])
 %ArithmeticError{}
 iex(5)> Stats.stdv([1])
 %ArithmeticError{}
---------
+-------
 
 <<SOLUTION10-ET01,See a suggested solution in Appendix A.>>
 
