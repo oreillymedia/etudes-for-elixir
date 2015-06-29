@@ -115,7 +115,7 @@ defmodule Weather do
   
   defp get_content(element_name, xml) do
     {_, pattern} = Regex.compile(
-    "<#{element_name}>([^<]+)</#{atom_to_binary(element_name)}>")
+    "<#{element_name}>([^<]+)</#{element_name}>")
     result = Regex.run(pattern, xml)
     case result do
       [_all, match] -> {element_name, match}
