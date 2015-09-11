@@ -119,7 +119,7 @@ she hasn't picked up yet.
 
 Hints for Testing
 ^^^^^^^^^^^^^^^^^
-Modify the +cards+ module that you wrote in <<CH07-ET06,Étude 7-6>>
+Modify the +cards+ module that you wrote in <<CH08-ET05,Étude 8-5>>
 to generate a small deck with, say, only
 four cards in two suits. If you try to play with a full deck, the game could
 go on for a very, very long time.
