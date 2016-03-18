@@ -70,7 +70,7 @@ defmodule PhoneEts do
   
   defp gregorianize(str, delimiter) do
     list_to_tuple(for item <- String.split(str, delimiter), do:
-      binary_to_integer(item))
+      String.to_integer(item))
   end   
   
   @doc """

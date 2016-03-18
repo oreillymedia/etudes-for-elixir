@@ -123,7 +123,7 @@ Enter width > 3.5
     /bin/elixir/lib/iex/lib/iex/server.ex:19: IEx.Server.do_loop/1
 ----
 
-In this étude, you will use _regular expressions_ to make sure that input is numeric and to distinguish integers from floating point numbers. You need to do this because +binary_to_float/1+ will not accept a string like +"1812"+ as an argument. If you aren't familiar with regular expressions, there is a short summary in <<APPENDIXB>>.
+In this étude, you will use _regular expressions_ to make sure that input is numeric and to distinguish integers from floating point numbers. You need to do this because +String.to_float/1+ will not accept a string like +"1812"+ as an argument. If you aren't familiar with regular expressions, there is a short summary in <<APPENDIXB>>.
 
 The function you will use is the +Regex.match?/2+. It takes a regular expression pattern as its first argument and a string as its second argument. The function returns +true+ if the pattern matches the string, +false+ otherwise. Here are some examples in IEx.
 
