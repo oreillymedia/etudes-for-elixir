@@ -34,7 +34,7 @@ iex(3)> Geom.area(12, 7)
 Étude 2-2: Writing a Function with Default Values
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Modify the function you wrote in <<CH02-ET01, Étude 2-2>> so that
+Modify the function you wrote in <<CH02-ET01, Étude 2-1>> so that
 the default variables for the length and width are +1+. Here is some
 sample output.
 
