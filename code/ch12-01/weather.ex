@@ -45,7 +45,12 @@ defmodule Weather do
   def get_weather(station, state) do
     url = "http://w1.weather.gov/xml/current_obs/" <> station
       <> ".xml"
-    {status, data} = :httpc.request(to_char_list(url))
+      
+    ## Fix for 403 error
+    url_header = [{'User-Agent',
+                   'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36'}]
+    
+    {status, data} = :httpc.request(:get, {to_char_list(url), url_header}, [], [])
     case status do
       :error -> 
         reply = {status, data}
