@@ -173,10 +173,10 @@ string matched by the entire pattern.)
 ----
 defp get_content(element_name, xml) do
   {_, pattern} = Regex.compile(
-    "<#{element_name}>([^<]+)</#{atom_to_binary(element_name)}>")
+    "<#{element_name}>([^<]+)</#{element_name}>")
   result = Regex.run(pattern, xml)
   case result do
-    [_all, match] -> {element_name, match}
+    [_all, match] -> {String.to_atom(element_name), match}
     nil -> {element_name, nil}
   end
 end
@@ -572,7 +572,7 @@ A convenience function to get the name of the chat host node by doing
 
 +login(user_name)+::
 Calls the Person server with a +{:login, user_name}+ request. If the
-user name is an atom, use +atom_to_binary/1+ to convert it to a string.
+user name is an atom, use +to_string/1+ to convert it to a string.
 
 +logout()+::
 Calls the Person server with a +:logout+ request. As you saw in the
