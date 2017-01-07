@@ -167,7 +167,7 @@ will call +a+. +nth_root/3+ works as follows:
 * Calculate +f+ as +(a^n^ - x)+
 * Calculate +f_prime+ as +n * a^(n - 1)^+
 * Calculate your next approximation (call it +next+) as +a - f / f_prime+
-* Calculate the change in value (call it +change+) as the absolute value of +next - a+
+* Calculate the change in value (call it +change+) as the absolute value of +(next - a)+
 * If the +change+ is
 less than some limit (say, 1.0e-8), stop the recursion and return
 +next+; that's as close to the root as you are going to get.
