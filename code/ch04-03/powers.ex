@@ -31,6 +31,10 @@ defmodule Powers do
   end
   
   def raise(x, n) when n < 0 do
-    1.0 / raise(x, -n)
+    if x != 0 do
+      1.0 / raise(x , -n)
+    else
+      "undefined"
+    end
   end
 end
