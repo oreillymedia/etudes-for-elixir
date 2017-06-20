@@ -75,7 +75,7 @@ program work.
   +"Enter _prompt_ > "+ and returns the number that was input.
   This involves the following steps:
 
-  * Use +String.strip/1+ to get rid of the trailing newline character
+  * Use +String.trim/1+ to get rid of the trailing newline character
   * Use +string_to_integer/1+ to convert the string to a number.
 
 +
