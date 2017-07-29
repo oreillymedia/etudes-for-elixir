@@ -316,7 +316,7 @@ include::code/ch07-03/geography.ex[]
 Here is a suggested solution for
 <<CH07-ET04,Étude 7-4>>. The code shown here is the code
 required to implement the additional protocols; the remaining
-code is the same as in [[SOLUTION07-ET03]]
+code is the same as in <<CH07-ET03,Étude 7-3>>.
 
 ==== +city.ex+
 // [source,elixir]
