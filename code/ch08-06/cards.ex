@@ -13,7 +13,7 @@ defmodule Cards do
   @spec shuffle(list) :: list
   
   def shuffle(list) do
-    :random.seed(:erlang.now())
+    :rand.seed(:exs1024, {123, 123534, 345345})
     shuffle(list, [])
   end
   
@@ -42,7 +42,7 @@ defmodule Cards do
 
   def shuffle(list, acc) do
     {leading, [h | t]} =
-      Enum.split(list, :random.uniform(Enum.count(list)) - 1)
+      Enum.split(list, :rand.uniform(Enum.count(list)) - 1)
       shuffle(leading ++ t, [h | acc])
   end
 
