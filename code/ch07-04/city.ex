@@ -16,24 +16,23 @@ end
 
 defimpl Inspect, for: City do
   import Inspect.Algebra
-  
+
   def inspect(item, _options) do
     lat = if (item.latitude < 0) do
       concat(to_string(Float.round(abs(item.latitude * 1.0), 2)), "°S")
     else
       concat(to_string(Float.round(item.latitude * 1.0, 2)), "°N")
     end
-    
+
     lon = if (item.longitude < 0) do
       concat(to_string(Float.round(abs(item.longitude * 1.0), 2)), "°W")
     else
       concat(to_string(Float.round(item.longitude * 1.0, 2)), "°E")
     end
-    
+
     msg = concat([item.name, break,
       "(", to_string(item.population), ")", break,
       lat, break, lon])
     pretty(msg, 80)
   end
 end
-

@@ -1,11 +1,11 @@
 defmodule Bank do
-  @moduledoc """ 
+  @moduledoc """
   Manipulate a "bank account" and log messages.
-  
+
   from *Études for Elixir*, O'Reilly Media, Inc., 2014.
   Copyright 2014 by J. David Eisenberg.
-  """ 
-  @vsn 0.1 
+  """
+  @vsn 0.1
 
   @doc """
   Create an account with a given balance, and repeatedly
@@ -33,7 +33,7 @@ defmodule Bank do
             :error_logger.warning_msg("Large deposit $#{amount}\n")
             IO.puts("Your deposit of $#{amount} may be subject to hold.")
             new_balance = balance + amount
-            IO.puts("Your new balance is $#{new_balance}") 
+            IO.puts("Your new balance is $#{new_balance}")
           amount < 0 ->
             :error_logger.error_msg("Negative deposit $#{amount}\n")
             IO.puts("Deposits may not be less than zero.")
@@ -68,23 +68,23 @@ defmodule Bank do
         new_balance = balance
     end
     new_balance
-  end        
-        
+  end
+
   @doc """
   Present a prompt and get a number from the
   user. Allow either integers or floats.
   """
   @spec get_number(String.t()) :: number()
-  
+
   def get_number(prompt) do
     input = IO.gets(prompt)
     input_str = String.strip(input)
     cond do
       Regex.match?(~r/^[+-]?\d+$/, input_str) ->
-        binary_to_integer(input_str)
+        :erlang.binary_to_integer(input_str)
       Regex.match?(~r/^[+-]?\d+\.\d+([eE][+-]?\d+)?$/, input_str) ->
-        binary_to_float(input_str)
+        :erlang.binary_to_float(input_str)
       true -> :error
     end
-  end     
+  end
 end
