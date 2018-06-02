@@ -290,7 +290,7 @@ include::code/ch07-01/college.ex[]
 ----
 
 [[SOLUTION07-ET02]]
-=== Solution 7-1
+=== Solution 7-2
 Here is a suggested solution for
 <<CH07-ET02,Étude 7-2>>.
 
