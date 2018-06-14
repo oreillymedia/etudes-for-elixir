@@ -303,15 +303,15 @@ iex(1)> :random.uniform()
 0.4435846174457203
 -----
 
-Now, exit +iex+, restart, and type the same command again. You'll get the same number. In order to ensure that you get different sets of random numbers, you have to _seed_ the random number generator with a three-tuple. The easiest way to get a different seed every time you run the program is to use the +:erlang.now/0+ built-in function, which returns a different three-tuple every time you call it.
+Now, exit +iex+, restart, and type the same command again. You'll get the same number. In order to ensure that you get different sets of random numbers, you have to _seed_ the random number generator with a three-tuple. The easiest way to get a different seed every time you run the program is to use the +:erlang.now/0+,(+:erlang.now/0+ is considered deprecated, use +:erlang.timestamp\0+ instead) built-in function, which returns a different three-tuple every time you call it.
 
 // [source,iex]
 -----
 iex(1)> :erlang.now()
 {1368,203897,899678}
-iex(2)> :erlang.now()
+iex(2)> :erlang.timestamp()
 {1368,203904,416818}
-iex(3)> :erlang.now()
+iex(3)> :erlang.timestamp()
 {1368,203909,179152}
 -----
 
@@ -322,7 +322,7 @@ random number generator wasn't seeded before.
 
 // [source,iex]
 ------
-iex(1)> :random.seed(:erlang.now())
+iex(1)> :random.seed(:erlang.timestamp())
 :undefined
 iex(2)> :random.uniform()
 0.4102329513116634

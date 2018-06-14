@@ -17,7 +17,7 @@ defmodule NonFP do
   @spec generate_pockets(list, number) :: list(list)
   
   def generate_pockets(tooth_list, prob_good) do
-    :random.seed(:erlang.now())
+    :random.seed(:erlang.timestamp())
     generate_pockets(tooth_list, prob_good, [])
   end
   
