@@ -15,7 +15,7 @@ defmodule Player do
         send(dealer, {:take, to_send, self()})
         play(to_keep)
       {:pick_up, cards, dealer} ->
-        new_hand = hand ++ cards
+        new_hand = Cards.shuffle(hand ++ cards)
         IO.puts("Player #{inspect(self)} has #{inspect(new_hand)}")
         send(dealer, {:got_cards, self()})
         play(new_hand)
