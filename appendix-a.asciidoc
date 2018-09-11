@@ -186,7 +186,7 @@ The +geom.ex+ file is the same as in <<CH05-ET01,Étude 5-1>>.
 ==== +ask_area.ex+
 // [source,elixir]
 ----
-include::code/ch05-01/ask_area.ex[]
+include::code/ch05-02/ask_area.ex[]
 ----
 
 [[SOLUTION05-ET03]]
