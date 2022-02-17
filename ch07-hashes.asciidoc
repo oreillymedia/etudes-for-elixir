@@ -20,7 +20,7 @@ Your job in this étude is to read the file and create a +HashDict+ whose key is
 
 Opening Files
 ^^^^^^^^^^^^^
-To open file _test.csv_, which you will find in the example download area at _URL goes here_, use +File.open/2+, which takes the path to a file as its first argument and a list of options as its second argument. Here is a shell session that opens the file, reads one line, and then closes the file.
+To open file _courses.csv_, which you will find in the https://github.com/oreillymedia/etudes-for-elixir/blob/master/code/ch07-01/courses.csv[Github repo here], use +File.open/2+, which takes the path to a file as its first argument and a list of options as its second argument. Here is a shell session that opens the file, reads one line, and then closes the file.
 
 // [source,iex]
 ----
